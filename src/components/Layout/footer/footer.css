@@ -1,0 +1,17 @@
+.footer {
+  background: linear-gradient(to right, #33a8e7, #1e3a8a); /* azul degradado */
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .footer-container {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  
+  .footer-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  
