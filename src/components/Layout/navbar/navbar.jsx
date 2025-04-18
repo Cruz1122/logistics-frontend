@@ -9,7 +9,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="navbar-left">
           <Link to="/" className="navbar-logo-link">
-            <img src={truckIcon} alt="Logo" className="navbar-logo" />
+          <img src={truckIcon} alt="Logo" className="navbar-logo white-logo" />
           </Link>
           <Link to="/" className="navbar-title-link">
             <span className="navbar-title">LogicSmart360</span>
