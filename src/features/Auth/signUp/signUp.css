@@ -1,0 +1,130 @@
+.signup-container {
+    display: flex;
+    height: 100vh; /* Asegura que ocupe toda la pantalla de altura */
+    width: 100%; /* Asegura que ocupe todo el ancho */
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+.signup-image {
+    flex: 1;
+    position: relative;
+    height: 100%; /* Asegura que la imagen ocupe toda la altura */
+}
+
+.signup-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cubre toda el área sin importar los recortes */
+}
+
+.signup-form {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    height: 100%; /* Asegura que el formulario ocupe toda la altura */
+    box-sizing: border-box;
+}
+
+.signup-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 60rem; /* Puedes ajustar el tamaño máximo según lo necesites */
+    padding: 20px; /* Un poco de padding alrededor */
+    box-sizing: border-box; /* Para que el padding no cambie el ancho */
+    height: auto; /* Para que el formulario se ajuste al contenido */
+}
+
+.signup-form h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #1e3a8a;
+}
+
+.signup-form p {
+    margin-bottom: 30px;
+    color: #4a5568;
+}
+
+.form-group {
+    display: flex;
+    gap: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  padding: 12px;
+  border: 1px solid #cbd5e0; /* Borde gris claro */
+  border-radius: 8px;
+  width: 100%;
+  font-size: 1rem;
+  background-color: white; /* Fondo blanco */
+  color: #333; /* Color del texto, puedes cambiarlo si lo necesitas */
+}
+
+.signin-link {
+    color: #1e3a8a;
+    text-decoration: none; /* Evita el subrayado */
+    font-weight: bold;
+  }
+  
+  .signin-link:hover {
+    text-decoration: underline;
+  }  
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #1e3a8a;
+    outline: none;
+}
+
+.signup-button {
+    padding: 12px;
+    background: linear-gradient(to right, #33a8e7, #1e3a8a);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.signup-button:hover {
+    opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .signup-form {
+        max-width: 90%; /* El formulario ocupa un 90% en dispositivos medianos */
+    }
+}
+
+@media (max-width: 768px) {
+    .signup-container {
+        flex-direction: column; /* En pantallas pequeñas, se apilan */
+    }
+
+    .signup-image {
+        display: none; /* Ocultamos la imagen en móviles */
+    }
+
+    .signup-form {
+        padding: 20px;
+        max-width: 100%; /* El formulario ocupa el 100% en pantallas pequeñas */
+    }
+
+    .signup-form form {
+        padding: 10px;
+    }
+}

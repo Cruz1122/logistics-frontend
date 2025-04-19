@@ -1,25 +1,31 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { FaArrowRight } from 'react-icons/fa';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Layout/navbar/navbar';
 import Footer from './components/Layout/footer/footer';
+
+import SignIn from './features/Auth/signIn/signIn'; // ← ruta real
+import SignUp from './features/Auth/signUp/signUp'; // ← ruta real
+import Home from './features/Home/home';            // ← ruta real
+import About from './features/aboutUs/aboutUs'; // ← nueva línea
+
 import './App.css';
 
 function App() {
   return (
-    <div className="app-container">
-      <Navbar />
+      <div className="app-container">
+        <Navbar />
 
-      <main className="container">
-        <h1>Welcome To LogicSmart360</h1>
-        <p>Sign in or create an account to start using our logistics platform</p>
-        <Link to="/about" className="main-button">
-          About Us <FaArrowRight className="arrow-icon" />
-        </Link>
-      </main>
+        <main className="container">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/about" element={<About />} /> {/* ← nueva ruta */}
+          </Routes>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
   );
 }
 
