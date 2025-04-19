@@ -1,3 +1,5 @@
+@import '../../../styles/colors.css';
+
 .signup-container {
     display: flex;
     height: 100vh; /* Asegura que ocupe toda la pantalla de altura */
@@ -5,6 +7,11 @@
     overflow: hidden;
     font-family: sans-serif;
 }
+
+.form-wrapper {
+    width: 100%;
+    max-width: 300px; /* Puedes ajustar este valor */
+  }
 
 .signup-image {
     flex: 1;
@@ -90,7 +97,7 @@ input[type="password"]:focus {
 
 .signup-button {
     padding: 12px;
-    background: linear-gradient(to right, #33a8e7, #1e3a8a);
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
     color: white;
     border: none;
     border-radius: 8px;
@@ -103,6 +110,12 @@ input[type="password"]:focus {
     opacity: 0.9;
 }
 
+.vertical-divider {
+    width: 2px;
+    background-color: black;
+    height: 100%;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
     .signup-form {
@@ -113,6 +126,10 @@ input[type="password"]:focus {
 @media (max-width: 768px) {
     .signup-container {
         flex-direction: column; /* En pantallas pequeñas, se apilan */
+    }
+
+    .vertical-divider {
+        display: none;
     }
 
     .signup-image {

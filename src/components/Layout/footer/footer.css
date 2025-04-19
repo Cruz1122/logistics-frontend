@@ -1,5 +1,9 @@
 .footer {
-  background: linear-gradient(to right, #33a8e7, #1e3a8a); /* azul degradado */
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
     color: white;
     padding: 20px 0;
     text-align: center;

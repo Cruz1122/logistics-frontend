@@ -1,0 +1,32 @@
+.verify-button {
+    padding: 12px;
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.verify-button:hover {
+    opacity: 0.9;
+}
+
+.form-wrapper {
+    width: 100%;
+    max-width: 300px; /* Puedes ajustar este valor */
+  }
+
+  .vertical-divider {
+    width: 2px;
+    background-color: black;
+    height: 100%;
+}
+
+  @media (max-width: 768px) {
+
+    .vertical-divider {
+        display: none;
+    }
+}

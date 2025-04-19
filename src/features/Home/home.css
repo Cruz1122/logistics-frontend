@@ -1,0 +1,21 @@
+
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  .main-button {
+    padding: 10px 18px;
+    font-size: 0.95rem;
+  }
+  
+  .home-container {
+    padding: 20px;
+  }
+}

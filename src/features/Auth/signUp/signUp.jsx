@@ -1,17 +1,26 @@
 import React from "react";
-import "./signUp.css"; // CSS que vamos a crear
+import "./signUp.css";
 import formImage from "../../../assets/backgrounds/form.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Importamos useNavigate
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Aquí puedes agregar validaciones o llamadas a API si es necesario
+    navigate("/verify-email"); // Redirige a la página de verificación de correo
+  };
+
   return (
     <div className="signup-container">
-      {/* Lado izquierdo con la imagen */}
       <div className="signup-image">
         <img src={formImage} alt="Form visual" />
       </div>
 
-      {/* Lado derecho con el formulario */}
+      {/* Línea divisoria */}
+      <div className="vertical-divider"></div>
 
       <div className="signup-form">
         <div className="form-wrapper">
@@ -23,7 +32,7 @@ const SignUp = () => {
             </Link>
           </p>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="form-group">
               <input type="text" placeholder="First Name" required />
               <input type="text" placeholder="Last Name" required />
