@@ -9,6 +9,7 @@ import Home from './features/Home/home';            // ← ruta real
 import About from './features/aboutUs/aboutUs'; // ← nueva línea
 import VerifyEmail from './features/Auth/verifyEmail/verifyEmail'; // ← nueva línea
 import VerifyCode from './features/Auth/verifyCode/verifyCode'; // ← nueva línea
+import Forgot from './features/Auth/forgot/forgot'; // ← nueva línea
 
 import './App.css';
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="/about" element={<About />} /> 
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/verify-code" element={<VerifyCode />} />
+            <Route path="/forgot-password" element={<Forgot />} />
             {/* Puedes agregar más rutas aquí */}
           </Routes>
         </main>

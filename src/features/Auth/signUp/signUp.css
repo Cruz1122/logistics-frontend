@@ -67,6 +67,7 @@
 }
 
 input[type="text"],
+input[type="tel"],
 input[type="email"],
 input[type="password"] {
   padding: 12px;
@@ -116,6 +117,15 @@ input[type="password"]:focus {
     height: 100%;
 }
 
+select {
+    padding: 12px;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: white;
+    color: #333;
+  }
+  
 /* Responsive Design */
 @media (max-width: 1024px) {
     .signup-form {

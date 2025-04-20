@@ -1,6 +1,5 @@
 .signin-button {
   padding: 12px;
-
   background: linear-gradient(
     to right,
     var(--primary-color),
@@ -34,6 +33,24 @@
   width: 2px;
   background-color: black;
   height: 100%;
+}
+
+.forgot-password {
+  margin-top: -12px; /* Puedes ajustar este valor */
+  text-align: center;
+}
+
+.forgot-password span {
+  color: var(--primary-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.forgot-password span:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
 }
 
 @media (max-width: 768px) {
