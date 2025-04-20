@@ -14,6 +14,10 @@ const SignIn = () => {
     navigate("/verify-code"); // Redirige a la página de verificación
   };
 
+  const handleForgotPassword = () => {
+    navigate("/forgot-password"); // Redirige a la página de "Forgot Password"
+  };
+
   return (
     <div className="signup-container">
       {/* Lado izquierdo con la imagen */}
@@ -38,7 +42,10 @@ const SignIn = () => {
             </button>
 
             <div className="forgot-password">
-              <a href="/forgot-password">Forgot your password?</a>
+              {/* Reemplazamos <a> por <span> y agregamos un onClick */}
+              <span onClick={handleForgotPassword} style={{ cursor: "pointer", color: "#007bff" }}>
+                Forgot your password?
+              </span>
             </div>
           </form>
         </div>

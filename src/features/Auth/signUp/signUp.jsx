@@ -41,16 +41,28 @@ const SignUp = () => {
             <input type="email" placeholder="Email" required />
 
             <div className="form-group">
+              <select required style={{ width: "40%" }}>
+                <option value="" disabled hidden>
+                  Code
+                </option>
+                <option value="+57">🇨🇴 +57</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+34">🇪🇸 +34</option>
+                <option value="+55">🇧🇷 +55</option>
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+81">🇯🇵 +81</option>
+                {/* Agrega más si necesitas */}
+              </select>
+
               <input
-                type="text"
-                placeholder="+Country Code"
-                style={{ width: "30%" }}
-                required
-              />
-              <input
-                type="text"
+                type="tel"
                 placeholder="Phone Number"
                 style={{ width: "68%" }}
+                pattern="[0-9]*"
+                inputMode="numeric"
                 required
               />
             </div>
