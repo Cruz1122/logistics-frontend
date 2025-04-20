@@ -1,0 +1,21 @@
+.footer {
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .footer-container {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  
+  .footer-text {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  
