@@ -1,9 +1,9 @@
 import React from "react";
-import "./signIn.css"; // CSS que vamos a crear
+import "./forgot.css"; // CSS que vamos a crear
 import formImage from "../../../assets/backgrounds/form.png";
 import { useNavigate } from "react-router-dom"; // Para redirección
 
-const SignIn = () => {
+const Forgot = () => {
   const navigate = useNavigate(); // Hook de navegación
 
   const handleSubmit = (e) => {
@@ -26,20 +26,15 @@ const SignIn = () => {
 
       <div className="signup-form">
         <div className="form-wrapper">
-          <h2>Login</h2>
-          <p>Sign in to continue</p>
+          <h2>Forgot Password</h2>
+          <p>Enter your email to receive a code for password reset.</p>
 
           <form onSubmit={handleSubmit}>
             <input type="email" placeholder="Email" required />
-            <input type="password" placeholder="Password" required />
 
-            <button type="submit" className="signin-button">
-              Sign In
+            <button type="submit" className="forgot-button">
+              Send
             </button>
-
-            <div className="forgot-password">
-              <a href="/forgot-password">Forgot your password?</a>
-            </div>
           </form>
         </div>
       </div>
@@ -47,4 +42,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Forgot;

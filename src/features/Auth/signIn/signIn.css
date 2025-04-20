@@ -36,6 +36,24 @@
   height: 100%;
 }
 
+.forgot-password {
+  margin-top: -12px; /* Puedes ajustar este valor */
+  text-align: center;
+}
+
+.forgot-password a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.forgot-password a:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
+}
+
 @media (max-width: 768px) {
   .vertical-divider {
     display: none;
