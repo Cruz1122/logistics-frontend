@@ -7,7 +7,6 @@ const API_URL =
 
 export const signUpRequest = async (userData) => {
   try {
-    console.log("API_URL:", API_URL);
     const response = await axios.post(`${API_URL}/signup`, userData);
     return response.data;
   } catch (error) {
