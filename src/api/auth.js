@@ -1,7 +1,9 @@
 import axios from "axios";
 
 // Lee la variable de entorno o usa una predeterminada
-const API_URL = import.meta.env.VITE_AUTH_URL || "http://localhost:3000/auth";
+const API_URL =
+  import.meta.env.VITE_AUTH_URL ||
+  "https://logistics-backend-n3be.onrender.com/auth";
 
 export const signUpRequest = async (userData) => {
   try {
