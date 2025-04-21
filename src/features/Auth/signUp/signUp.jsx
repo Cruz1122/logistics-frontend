@@ -1,16 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 import "./signUp.css";
 import formImage from "../../../assets/backgrounds/form.png";
-import { Link, useNavigate } from "react-router-dom"; // Importamos useNavigate
+import { Link, useNavigate } from "react-router-dom";
+import { signUpRequest } from "../../../api/auth";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const [form, setForm] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    code: "",
+    password: "",
+  });
 
-    // Aquí puedes agregar validaciones o llamadas a API si es necesario
-    navigate("/verify-email"); // Redirige a la página de verificación de correo
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
+    if (!passwordRegex.test(form.password)) {
+      toast.warn("Password must be at least 6 characters, include uppercase, lowercase, number and special character");
+      return;
+    }
+
+    try {
+      const fullPhone = `${form.code}${form.phone}`;
+      const payload = {
+        name: form.name,
+        lastName: form.lastName,
+        email: form.email,
+        phone: fullPhone,
+        password: form.password,
+        roleId: "4d36f126-e3c0-4740-8ef0-215dbf71733f",
+      };
+
+      await signUpRequest(payload);
+      toast.success("Account created successfully!");
+      navigate("/verify-email");
+    } catch (err) {
+      setError(err.response?.data?.error || "Error registering user");
+      toast.error("Something went wrong during registration");
+    }
   };
 
   return (
@@ -19,7 +60,6 @@ const SignUp = () => {
         <img src={formImage} alt="Form visual" />
       </div>
 
-      {/* Línea divisoria */}
       <div className="vertical-divider"></div>
 
       <div className="signup-form">
@@ -32,16 +72,45 @@ const SignUp = () => {
             </Link>
           </p>
 
+          {error && <p className="error-message">{error}</p>}
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <input type="text" placeholder="First Name" required />
-              <input type="text" placeholder="Last Name" required />
+              <input
+                type="text"
+                name="name"
+                placeholder="First Name"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+              <input
+                type="text"
+                name="lastName"
+                placeholder="Last Name"
+                value={form.lastName}
+                onChange={handleChange}
+                required
+              />
             </div>
 
-            <input type="email" placeholder="Email" required />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
 
             <div className="form-group">
-              <select required style={{ width: "40%" }}>
+              <select
+                name="code"
+                required
+                style={{ width: "40%" }}
+                value={form.code}
+                onChange={handleChange}
+              >
                 <option value="" disabled hidden>
                   Code
                 </option>
@@ -54,20 +123,31 @@ const SignUp = () => {
                 <option value="+55">🇧🇷 +55</option>
                 <option value="+91">🇮🇳 +91</option>
                 <option value="+81">🇯🇵 +81</option>
-                {/* Agrega más si necesitas */}
               </select>
 
               <input
                 type="tel"
+                name="phone"
                 placeholder="Phone Number"
                 style={{ width: "68%" }}
                 pattern="[0-9]*"
                 inputMode="numeric"
+                value={form.phone}
+                onChange={handleChange}
                 required
               />
             </div>
 
-            <input type="password" placeholder="Password" required />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}"
+              title="Min 6 characters with uppercase, lowercase, number and special character"
+            />
 
             <button type="submit" className="signup-button">
               Sign Up
