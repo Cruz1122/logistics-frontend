@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_AUTH_URL; // Asegúrate que en tu .env esté como VITE_
+// Lee la variable de entorno o usa una predeterminada
+const API_URL = import.meta.env.VITE_AUTH_URL || "http://localhost:3000/auth";
 
 export const signUpRequest = async (userData) => {
   try {
