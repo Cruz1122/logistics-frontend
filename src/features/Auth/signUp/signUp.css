@@ -2,7 +2,7 @@
 
 .signup-container {
     display: flex;
-    height: 100vh; /* Asegura que ocupe toda la pantalla de altura */
+    height: 82.4vh; /* Asegura que ocupe toda la pantalla de altura */
     width: 100%; /* Asegura que ocupe todo el ancho */
     overflow: hidden;
     font-family: sans-serif;
@@ -29,7 +29,7 @@
 }
 
 .signup-form {
-    flex: 1;
+    flex: 1.2;
     background: #fff;
     display: flex;
     align-items: center;
@@ -113,7 +113,7 @@ input[type="password"]:focus {
 
 .vertical-divider {
     width: 2px;
-    background-color: black;
+    background-color: #2975bc;
     height: 100%;
 }
 

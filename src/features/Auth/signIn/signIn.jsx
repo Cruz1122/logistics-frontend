@@ -1,6 +1,6 @@
 import React from "react";
 import "./signIn.css"; // CSS que vamos a crear
-import formImage from "../../../assets/backgrounds/form.png";
+import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate } from "react-router-dom"; // Para redirección
 
 const SignIn = () => {

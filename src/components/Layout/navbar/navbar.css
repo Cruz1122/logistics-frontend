@@ -30,7 +30,7 @@
 }
 
 .navbar-logo {
-  width: 90px;
+  width: 36px;
   height: 36px;
   margin-right: 10px;
 }
@@ -38,7 +38,6 @@
 .navbar-title {
   font-size: 1.5rem;
   font-weight: 700;
-  text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .navbar-right {
