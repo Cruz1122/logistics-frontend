@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./signUp.css";
-import formImage from "../../../assets/backgrounds/form.png";
+import formImage from "../../../assets/backgrounds/form.webp";
 import { Link, useNavigate } from "react-router-dom";
 import { signUpRequest } from "../../../api/auth";
 import { toast } from "react-toastify";

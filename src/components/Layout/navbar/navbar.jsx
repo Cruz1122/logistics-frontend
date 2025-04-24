@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import truckIcon from '../../../assets/backgrounds/icon.png';
+import truckIcon from '../../../assets/backgrounds/icon.webp';
 import './navbar.css';
 
 const Navbar = () => {

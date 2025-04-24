@@ -11,20 +11,31 @@ body {
   font-family: sans-serif;
 }
 
-/* Fondo transparente */
-body::before {
+.home-background::before {
   content: '';
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 200%;
   height: 100%;
-  background-image: url('./assets/backgrounds/start.png');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.1;
+  background-image: url('./assets/backgrounds/start.webp'); 
+  background-repeat: repeat-x;
+  background-size: contain;
+  background-position: 0 50%;
+  opacity: 0.08; /* puedes ajustar esto a tu gusto */
   z-index: -1;
+  animation: scroll-world 60s linear infinite;
 }
+
+@keyframes scroll-world {
+  from {
+    background-position: 0 50%;
+  }
+  to {
+    background-position: -100% 50%;
+  }
+}
+
 
 /* Contenedor principal (flex vertical) */
 .app-container {
@@ -76,6 +87,22 @@ footer {
 .arrow-icon {
   font-size: 1.2rem;
 }
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-top: 6px solid var(--primary-color); /* O cualquier color */
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 
 .container {
   padding: 0;

@@ -1,6 +1,6 @@
 import React from "react";
 import "./verifyCode.css"; // CSS que vamos a crear
-import formImage from "../../../assets/backgrounds/form.png";
+import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate } from "react-router-dom"; // Importamos useNavigate
 
 
