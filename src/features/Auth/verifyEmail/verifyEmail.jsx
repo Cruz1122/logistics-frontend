@@ -4,11 +4,15 @@ import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate } from "react-router-dom"; // Importamos useNavigate
 
 const verifyEmail = () => {
+    const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+    
 
+    setLoading(false);
     // Aquí puedes agregar validaciones o llamadas a API si es necesario
     navigate("/"); // Redirige a la página de verificación de correo
   };
@@ -34,8 +38,9 @@ const verifyEmail = () => {
             <input type="text" placeholder="Enter the verification Code" required />
 
 
-            <button type="submit" className="verify-button">
+            <button type="submit" className="verify-button" disabled={loading}>
               Verify
+              {loading ? "Verifying..." : "Verify"}
             </button>
           </form>
         </div>

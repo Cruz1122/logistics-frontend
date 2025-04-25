@@ -4,9 +4,10 @@ import {
   Routes,
   Route,
   useLocation,
+  Navigate,
 } from "react-router-dom";
-import Navbar from "./components/Layout/navbar/navbar";
-import Footer from "./components/Layout/footer/footer";
+import Navbar from "./components/layout/navbar/navbar";
+import Footer from "./components/layout/footer/footer";
 import Home from "./features/Home/home";
 import SignUp from "./features/Auth/signUp/signUp";
 
@@ -18,10 +19,14 @@ const VerifyEmail = lazy(() =>
 );
 const VerifyCode = lazy(() => import("./features/Auth/verifyCode/verifyCode"));
 const Forgot = lazy(() => import("./features/Auth/forgot/forgot"));
+const NotFound = lazy(() => import("./components/errors/notFound/notFound"));
+const ServerError = lazy(() =>  import("./components/errors/serverError/serverError"));
+const Unauthorized = lazy(() => import("./components/errors/unauthorized/unauthorized"));
+
 const FullScreenLoader = () => (
   <div
     style={{
-      height: "100vh",
+      height: "82.4vh",
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
@@ -36,9 +41,16 @@ import "./App.css";
 
 function App() {
   const location = useLocation();
+  const backgroundLocations = [
+    "/",
+    "/about",
+    "/not-found",
+    "/server-error",
+    "/unauthorized",
+  ];
 
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "/about") {
+    if (backgroundLocations.includes(location.pathname)) {
       document.body.classList.add("home-background");
     } else {
       document.body.classList.remove("home-background");
@@ -59,6 +71,10 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/verify-code" element={<VerifyCode />} />
             <Route path="/forgot-password" element={<Forgot />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
+            <Route path="/server-error" element={<ServerError />} />
+            <Route path="/not-found" element={<NotFound />} />
+            <Route path="*" element={<Navigate to="/not-found" replace />} />
           </Routes>
         </Suspense>
       </main>

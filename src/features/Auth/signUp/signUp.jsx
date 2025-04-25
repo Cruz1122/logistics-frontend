@@ -6,6 +6,7 @@ import { signUpRequest } from "../../../api/auth";
 import { toast } from "react-toastify";
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -25,12 +26,15 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
 
     if (!passwordRegex.test(form.password)) {
-      toast.warn("Password must be at least 6 characters, include uppercase, lowercase, number and special character");
+      toast.warn(
+        "Password must be at least 6 characters, include uppercase, lowercase, number and special character"
+      );
       return;
     }
 
@@ -47,10 +51,12 @@ const SignUp = () => {
 
       await signUpRequest(payload);
       toast.success("Account created successfully!");
-      navigate("/verify-email");
     } catch (err) {
       setError(err.response?.data?.error || "Error registering user");
       toast.error("Something went wrong during registration");
+    } finally {
+      setLoading(false);
+      navigate("/verify-email");
     }
   };
 
@@ -149,8 +155,8 @@ const SignUp = () => {
               title="Min 6 characters with uppercase, lowercase, number and special character"
             />
 
-            <button type="submit" className="signup-button">
-              Sign Up
+            <button type="submit" disabled={loading} className="signup-button">
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
         </div>
