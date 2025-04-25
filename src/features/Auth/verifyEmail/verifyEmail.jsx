@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./verifyEmail.css"; // CSS que vamos a crear
 import formImage from "../../../assets/backgrounds/form.webp";
-import { useNavigate } from "react-router-dom"; // Importamos useNavigate
+import { useNavigate} from "react-router-dom"; // Importamos useNavigate
 
-const verifyEmail = () => {
+const VerifyEmail = () => {
     const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   
@@ -49,4 +49,4 @@ const verifyEmail = () => {
   );
 };
 
-export default verifyEmail;
+export default VerifyEmail;
