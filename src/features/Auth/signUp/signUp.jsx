@@ -51,12 +51,12 @@ const SignUp = () => {
 
       await signUpRequest(payload);
       toast.success("Account created successfully!");
+      navigate("/verify-email");
     } catch (err) {
       setError(err.response?.data?.error || "Error registering user");
       toast.error("Something went wrong during registration");
     } finally {
       setLoading(false);
-      navigate("/verify-email");
     }
   };
 
@@ -78,7 +78,7 @@ const SignUp = () => {
             </Link>
           </p>
 
-          {error && <p className="error-message">{error}</p>}
+          {/* {error && <p className="error-message">{error}</p>} */}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -113,7 +113,6 @@ const SignUp = () => {
               <select
                 name="code"
                 required
-                style={{ width: "40%" }}
                 value={form.code}
                 onChange={handleChange}
               >
@@ -135,12 +134,11 @@ const SignUp = () => {
                 type="tel"
                 name="phone"
                 placeholder="Phone Number"
-                style={{ width: "68%" }}
-                pattern="[0-9]*"
-                inputMode="numeric"
                 value={form.phone}
                 onChange={handleChange}
                 required
+                pattern="[0-9]*"
+                inputMode="numeric"
               />
             </div>
 

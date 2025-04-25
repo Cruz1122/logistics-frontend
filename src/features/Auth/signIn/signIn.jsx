@@ -1,34 +1,31 @@
 import React from "react";
-import "./signIn.css"; // CSS que vamos a crear
+import "./signIn.css";
 import formImage from "../../../assets/backgrounds/form.webp";
-import { useNavigate } from "react-router-dom"; // Para redirección
+import { useNavigate } from "react-router-dom";
 
 const SignIn = () => {
-  const navigate = useNavigate(); // Hook de navegación
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Aquí puedes hacer validaciones o llamada a API
-    // Si todo está bien, redirige a /2fa
-    navigate("/verify-code"); // Redirige a la página de verificación
+    navigate("/verify-code");
   };
 
   const handleForgotPassword = () => {
-    navigate("/forgot-password"); // Redirige a la página de "Forgot Password"
+    navigate("/forgot-password");
   };
 
   return (
-    <div className="signup-container">
+    <div className="signin-container">
       {/* Lado izquierdo con la imagen */}
-      <div className="signup-image">
-        <img src={formImage} alt="Form visual" />
+      <div className="signin-image">
+        <img src={formImage} alt="Login visual" />
       </div>
 
       {/* Línea divisoria */}
       <div className="vertical-divider"></div>
 
-      <div className="signup-form">
+      <div className="signin-form">
         <div className="form-wrapper">
           <h2>Login</h2>
           <p>Sign in to continue</p>
@@ -42,8 +39,9 @@ const SignIn = () => {
             </button>
 
             <div className="forgot-password">
-              {/* Reemplazamos <a> por <span> y agregamos un onClick */}
-              <span onClick={handleForgotPassword} style={{ cursor: "pointer", color: "#007bff" }}>
+              <span
+                onClick={handleForgotPassword}
+              >
                 Forgot your password?
               </span>
             </div>

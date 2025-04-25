@@ -10,28 +10,28 @@ const Forgot = () => {
     e.preventDefault();
 
     // Aquí puedes hacer validaciones o llamada a API
-    // Si todo está bien, redirige a /2fa
+    // Si todo está bien, redirige a /verify-code
     navigate("/verify-code"); // Redirige a la página de verificación
   };
 
   return (
-    <div className="signup-container">
+    <div className="forgot-container">
       {/* Lado izquierdo con la imagen */}
-      <div className="signup-image">
+      <div className="forgot-image">
         <img src={formImage} alt="Form visual" />
       </div>
 
       {/* Línea divisoria */}
       <div className="vertical-divider"></div>
 
-      <div className="signup-form">
+      {/* Formulario de recuperación */}
+      <div className="forgot-form">
         <div className="form-wrapper">
           <h2>Forgot Password</h2>
           <p>Enter your email to receive a code for password reset.</p>
 
           <form onSubmit={handleSubmit}>
             <input type="email" placeholder="Email" required />
-
             <button type="submit" className="forgot-button">
               Send
             </button>

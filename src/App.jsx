@@ -9,14 +9,12 @@ import {
 import Navbar from "./components/layout/navbar/navbar";
 import Footer from "./components/layout/footer/footer";
 import Home from "./features/Home/home";
-import SignUp from "./features/Auth/signUp/signUp";
 
 // Lazy loading para los componentes necesarios
 const SignIn = lazy(() => import("./features/Auth/signIn/signIn"));
+const SignUp = lazy(() => import("./features/Auth/signUp/signUp"));
 const About = lazy(() => import("./features/aboutUs/aboutUs"));
-const VerifyEmail = lazy(() =>
-  import("./features/Auth/verifyEmail/verifyEmail")
-);
+const VerifyEmail = lazy(() => import("./features/Auth/verifyEmail/verifyEmail"));
 const VerifyCode = lazy(() => import("./features/Auth/verifyCode/verifyCode"));
 const Forgot = lazy(() => import("./features/Auth/forgot/forgot"));
 const NotFound = lazy(() => import("./components/errors/notFound/notFound"));
