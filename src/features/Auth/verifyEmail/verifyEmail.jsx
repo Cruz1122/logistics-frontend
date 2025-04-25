@@ -39,7 +39,6 @@ const VerifyEmail = () => {
 
 
             <button type="submit" className="verify-button" disabled={loading}>
-              Verify
               {loading ? "Verifying..." : "Verify"}
             </button>
           </form>

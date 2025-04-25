@@ -91,7 +91,7 @@ body {
   justify-content: center; /* Centrado vertical */
   align-items: center;     /* Centrado horizontal */
   text-align: center;
-  padding: 20px;
+  padding: 0px;
   color: black;
 }
 
