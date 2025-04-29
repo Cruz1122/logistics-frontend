@@ -1,41 +1,47 @@
-import React from "react";
-import "./verifyEmail.css"; // CSS que vamos a crear
+import React, { useState } from "react";
+import "./verifyEmail.css";
 import formImage from "../../../assets/backgrounds/form.webp";
-import { useNavigate } from "react-router-dom"; // Importamos useNavigate
+import { useNavigate } from "react-router-dom";
 
-const verifyEmail = () => {
+const VerifyEmail = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // Aquí puedes agregar validaciones o llamadas a API si es necesario
-    navigate("/"); // Redirige a la página de verificación de correo
+    setTimeout(() => {
+      setLoading(false);
+      navigate("/");
+    }, 1000); // Le metí un pequeño setTimeout para simular proceso de verificación
   };
 
   return (
-    <div className="signup-container">
+    <div className="verify-container">
       {/* Lado izquierdo con la imagen */}
-      <div className="signup-image">
+      <div className="verify-image">
         <img src={formImage} alt="Form visual" />
       </div>
 
       {/* Línea divisoria */}
       <div className="vertical-divider"></div>
 
-      <div className="signup-form">
+      {/* Formulario de verificación */}
+      <div className="verify-form">
         <div className="form-wrapper">
           <h2>Verification Email</h2>
-          <p>We’ve sent a 6-digit verification code to your Email          </p>
+          <p>We’ve sent a 6-digit verification code to your Email</p>
           <p>Please enter it below to complete your sign up</p>
 
           <form onSubmit={handleSubmit}>
-
-            <input type="text" placeholder="Enter the verification Code" required />
-
-
-            <button type="submit" className="verify-button">
-              Verify
+            <input
+              type="text"
+              placeholder="Enter the verification code"
+              required
+            />
+            <button type="submit" className="verify-button" disabled={loading}>
+              {loading ? "Verifying..." : "Verify"}
             </button>
           </form>
         </div>
@@ -44,4 +50,4 @@ const verifyEmail = () => {
   );
 };
 
-export default verifyEmail;
+export default VerifyEmail;

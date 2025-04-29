@@ -6,6 +6,7 @@ import { signUpRequest } from "../../../api/auth";
 import { toast } from "react-toastify";
 
 const SignUp = () => {
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -25,12 +26,15 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setError("");
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
 
     if (!passwordRegex.test(form.password)) {
-      toast.warn("Password must be at least 6 characters, include uppercase, lowercase, number and special character");
+      toast.warn(
+        "Password must be at least 6 characters, include uppercase, lowercase, number and special character"
+      );
       return;
     }
 
@@ -51,6 +55,8 @@ const SignUp = () => {
     } catch (err) {
       setError(err.response?.data?.error || "Error registering user");
       toast.error("Something went wrong during registration");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,7 +78,7 @@ const SignUp = () => {
             </Link>
           </p>
 
-          {error && <p className="error-message">{error}</p>}
+          {/* {error && <p className="error-message">{error}</p>} */}
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -107,7 +113,6 @@ const SignUp = () => {
               <select
                 name="code"
                 required
-                style={{ width: "40%" }}
                 value={form.code}
                 onChange={handleChange}
               >
@@ -129,12 +134,11 @@ const SignUp = () => {
                 type="tel"
                 name="phone"
                 placeholder="Phone Number"
-                style={{ width: "68%" }}
-                pattern="[0-9]*"
-                inputMode="numeric"
                 value={form.phone}
                 onChange={handleChange}
                 required
+                pattern="[0-9]*"
+                inputMode="numeric"
               />
             </div>
 
@@ -149,8 +153,8 @@ const SignUp = () => {
               title="Min 6 characters with uppercase, lowercase, number and special character"
             />
 
-            <button type="submit" className="signup-button">
-              Sign Up
+            <button type="submit" disabled={loading} className="signup-button">
+              {loading ? "Signing Up..." : "Sign Up"}
             </button>
           </form>
         </div>
