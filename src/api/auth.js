@@ -7,7 +7,7 @@ const API_URL =
 
 export const signUpRequest = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/signup`, userData);
+    const response = await axios.post(`${API_URL}/auth/signup`, userData);
     return response.data;
   } catch (error) {
     throw error.response?.data || { error: "Unknown error" };
