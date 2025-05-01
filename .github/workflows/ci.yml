@@ -32,6 +32,6 @@ jobs:
           docker stop test-frontend && docker rm test-frontend
         
       - name: Deploy on Render
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/develop'
         run: |
           curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
