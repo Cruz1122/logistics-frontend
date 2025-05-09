@@ -98,21 +98,21 @@ input[type="password"]:focus {
 
 .signup-button {
   padding: 12px;
-  background: linear-gradient(
-    to right,
-    var(--primary-color),
-    var(--secondary-color)
-  );
+  font-size: 1rem;
+  font-weight: 600;
   color: white;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s ease;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .signup-button:hover {
-  opacity: 0.9;
+  transform: scale(1.05);
+  color: white;
 }
 
 .vertical-divider {

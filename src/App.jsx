@@ -42,6 +42,8 @@ function App() {
     }
   }, [location.pathname]);
 
+  const isHome = location.pathname === "/";
+
   return (
     <div className="app-container">
       <Navbar />
@@ -50,7 +52,7 @@ function App() {
           <AppRoutes isAuthenticated={isAuthenticated} /> {/* Usamos el componente de rutas */}
         </Suspense>
       </main>
-      <Footer />
+      <Footer className={isHome ? "footer-home" : ""} />
     </div>
   );
 }
