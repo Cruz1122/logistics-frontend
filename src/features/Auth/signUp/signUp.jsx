@@ -46,12 +46,16 @@ const SignUp = () => {
         email: form.email,
         phone: fullPhone,
         password: form.password,
-        roleId: "4d36f126-e3c0-4740-8ef0-215dbf71733f",
       };
 
+      // Hacemos la solicitud de registro
       await signUpRequest(payload);
+
+      // Mostramos un mensaje de éxito
       toast.success("Account created successfully!");
-      navigate("/verify-email");
+
+      // Redirigimos a la página de verificación de correo
+      navigate("/verify-email", { state: { email: form.email } });
     } catch (err) {
       setError(err.response?.data?.error || "Error registering user");
       toast.error("Something went wrong during registration");
@@ -78,9 +82,8 @@ const SignUp = () => {
             </Link>
           </p>
 
-          {/* {error && <p className="error-message">{error}</p>} */}
-
           <form onSubmit={handleSubmit}>
+            {/* Campos del formulario */}
             <div className="form-group">
               <input
                 type="text"

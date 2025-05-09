@@ -1,15 +1,45 @@
 import axios from "axios";
 
-// Lee la variable de entorno o usa una predeterminada
 const API_URL =
-  import.meta.env.VITE_AUTH_URL ||
-  "https://logistics-backend-n3be.onrender.com/auth";
+  import.meta.env.VITE_GATEWAY_URL;
 
+console.log(`API_URL: ${API_URL}`);
+  
 export const signUpRequest = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/signup`, userData);
+    const response = await axios.post(`${API_URL}/auth/auth/signup`, userData);
     return response.data;
   } catch (error) {
     throw error.response?.data || { error: "Unknown error" };
   }
+};
+
+export const signInRequest = async (loginData) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/auth/signin`, loginData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { error: "Unknown error" };
+  }
+};
+
+// Nueva función para verificación de código
+export const verifyCodeRequest = async ({ email, code }) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/auth/verify-two-factor`, {
+      email,
+      code,
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { error: "Unknown error" };
+  }
+};
+
+export const verifyEmailRequest = async ({ email, code }) => {
+  const response = await axios.post(`${API_URL}/auth/auth/verify-email`, {
+    email,
+    code,
+  });
+  return response.data;
 };
