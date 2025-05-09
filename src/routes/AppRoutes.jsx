@@ -9,6 +9,7 @@ const About = lazy(() => import("../features/aboutUs/aboutUs"));
 const VerifyEmail = lazy(() => import("../features/Auth/verifyEmail/verifyEmail"));
 const VerifyCode = lazy(() => import("../features/Auth/verifyCode/verifyCode"));
 const Forgot = lazy(() => import("../features/Auth/forgot/forgot"));
+const ForgotVerifyCode = lazy(() => import("../features/Auth/forgotVerifyCode/forgotVerifyCode"));
 const Dashboard = lazy(() => import("../features/Dashboard/dashboard"));
 const NotFound = lazy(() => import("../components/errors/notFound/notFound"));
 const ServerError = lazy(() => import("../components/errors/serverError/serverError"));
@@ -41,6 +42,7 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/verify-code" element={<VerifyCode />} />
       <Route path="/forgot-password" element={<Forgot />} />
+      <Route path="/forgot-verify-code" element={<ForgotVerifyCode />} />
 
       {/* Rutas de error */}
       <Route path="/unauthorized" element={<Unauthorized />} />

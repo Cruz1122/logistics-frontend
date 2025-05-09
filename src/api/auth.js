@@ -43,3 +43,19 @@ export const verifyEmailRequest = async ({ email, code }) => {
   });
   return response.data;
 };
+
+export const forgotPasswordRequest = async ({ email }) => {
+  const response = await axios.post(`${API_URL}/auth/auth/request-password-reset`, {
+    email
+  });
+  return response.data;
+};
+
+export const verifyCodeAndUpdatePassword = async ({ email, code, newPassword }) => {
+  const response = await axios.post(`${API_URL}/auth/auth/reset-password`, {
+    email, // Usamos el email extraído de la navegación
+    code,
+    newPassword,
+  });
+  return response.data;
+};

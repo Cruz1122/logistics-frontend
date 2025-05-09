@@ -55,7 +55,8 @@
   color: #4a5568;
 }
 
-input[type="email"] {
+input[type="text"],
+input[type="password"] {
   padding: 12px;
   border: 1px solid #cbd5e0;
   border-radius: 8px;
@@ -65,7 +66,8 @@ input[type="email"] {
   color: #333;
 }
 
-input[type="email"]:focus {
+input[type="text"]:focus,
+input[type="password"]:focus {
   border-color: #1e3a8a;
   outline: none;
 }
