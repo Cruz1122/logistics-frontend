@@ -27,12 +27,22 @@ export const signInRequest = async (loginData) => {
 // Nueva función para verificación de código
 export const verifyCodeRequest = async ({ email, code }) => {
   try {
+    // Hacemos la solicitud POST para verificar el código de 2FA
     const response = await axios.post(`${API_URL}/auth/auth/verify-two-factor`, {
       email,
       code,
     });
+
+    // Si la respuesta contiene un token, lo almacenamos en el localStorage
+    if (response.data.token) {
+      localStorage.setItem("token", response.data.token);
+    }
+
+    // Devolvemos los datos de la respuesta
     return response.data;
+
   } catch (error) {
+    // Si ocurre un error, lanzamos un error con la respuesta o un mensaje por defecto
     throw error.response?.data || { error: "Unknown error" };
   }
 };

@@ -24,7 +24,7 @@ export const AppRoutes = ({ isAuthenticated }) => {
       {/* Panel de administración (protegido) */}
       <Route
         path="/admin"
-        element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+        element={isAuthenticated ? <NotFound /> : <Navigate to="/" />}
       />
 
       {/* Autenticación */}
@@ -43,6 +43,9 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route path="/verify-code" element={<VerifyCode />} />
       <Route path="/forgot-password" element={<Forgot />} />
       <Route path="/forgot-verify-code" element={<ForgotVerifyCode />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+
+      {/* Rutas protegidas */}
 
       {/* Rutas de error */}
       <Route path="/unauthorized" element={<Unauthorized />} />

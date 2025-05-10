@@ -4,15 +4,18 @@ import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyCodeRequest } from "../../../api/auth";
+import { setAuthenticated, setLoading } from "../../../redux/authSlice";
+import { useDispatch } from "react-redux";
 
 const VerifyCode = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const email = location.state?.email;
   const method = location.state?.method || "email"; // por defecto email
   const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoadingPage] = useState(false);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -27,16 +30,27 @@ const VerifyCode = () => {
       toast.error("Missing email for verification");
       return;
     }
-
+  
+    dispatch(setLoading(true));
+  
     try {
-      setLoading(true);
-      await verifyCodeRequest({ email, code });
+      setLoadingPage(true);
+      const response = await verifyCodeRequest({ email, code });
+  
+      if (response.token) {
+        dispatch(setAuthenticated(true));
+      } else {
+        toast.error(response.message || "Login failed");
+        dispatch(setAuthenticated(false)); // Asegura reset del auth
+      }
+  
       toast.success("Verification successful!");
       navigate("/");
     } catch (err) {
       toast.error(err.error || "Verification failed");
+      dispatch(setAuthenticated(false));
     } finally {
-      setLoading(false);
+      setLoadingPage(false);
     }
   };
 

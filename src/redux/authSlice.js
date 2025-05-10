@@ -14,6 +14,7 @@ const authSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+    
     setAuthenticated: (state, action) => {
       state.isAuthenticated = action.payload;
       if (!action.payload) {
