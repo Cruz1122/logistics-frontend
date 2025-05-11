@@ -1,21 +1,80 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
+import { getUserPermissions, getUserIdFromToken } from "../../api/user";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  FaUser,
+  FaUsersCog,
+  FaKey,
+  FaTasks,
+  FaQuestionCircle,
+} from "react-icons/fa";
 import "./dashboard.css";
-import { CardData } from "./cardData";
 
 const Dashboard = () => {
+  const [permissions, setPermissions] = useState([]);
   const navigate = useNavigate();
 
-  const handleButtonClick = (title) => {
-    if (title === "Users") {
-      navigate("/usersPanel");
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const userId = getUserIdFromToken();
+      console.log(`userId: ${userId}`);
+
+      if (!userId) {
+        toast.error("Sesión expirada o inválida. Inicia sesión de nuevo.");
+        navigate("/signin");
+        return;
+      }
+
+      const data = await getUserPermissions(userId);
+      if (data && Array.isArray(data)) {
+        setPermissions(data);
+      } else {
+        toast.error("No se pudieron cargar los permisos del usuario");
+      }
+    };
+
+    fetchPermissions();
+  }, [navigate]);
+
+  const getIconForPermission = (name) => {
+    const permissionName = name.toLowerCase(); // Convertir el nombre a minúsculas para la comparación
+
+    // Asignar iconos según los permisos
+    if (permissionName.includes("user")) return <FaUser size={40} />;
+    if (permissionName.includes("role") && !permissionName.includes("permission"))
+      return <FaUsersCog size={40} />;
+    if (permissionName.includes("role") && permissionName.includes("permission"))
+      return <FaKey size={40} />;
+    if (permissionName.includes("permission")) return <FaTasks size={40} />;
+
+    // Ícono por defecto en caso de que no coincida con ningún permiso
+    return <FaQuestionCircle size={40} />;
+  };
+
+  const handleButtonClick = (permName) => {
+    const permissionName = permName.toLowerCase(); // Convertir a minúsculas para comparar
+
+    let route = "";
+
+    // Condiciones para asignar las rutas según el permiso
+    if (permissionName.includes("user")) {
+      route = "/usersPanel";
+    } else if (permissionName.includes("role") && !permissionName.includes("permission")) {
+      route = "/rolesPanel";
+    } else if (permissionName.includes("role") && permissionName.includes("permission")) {
+      route = "/roleXpermissionPanel";
+    } else if (permissionName.includes("permission")) {
+      route = "/permissionsPanel";
     } else {
-      toast.info(`No route configured for "${title}"`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      route = "/defaultPanel"; // Ruta por defecto si no hay coincidencia
+    }
+
+    if (route) {
+      navigate(route);
+    } else {
+      toast.info(`No hay ruta configurada para "${permName}"`); // Mensaje si no se encuentra ruta
     }
   };
 
@@ -23,14 +82,14 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <ToastContainer />
       <div className="cards-grid">
-        {CardData.map((card, index) => (
-          <div className="dashboard-card" key={index}>
-            <div className="card-icon">{card.icon}</div>
-            <h3>{card.title}</h3>
-            <p>{card.description}</p>
+        {permissions.map((perm) => (
+          <div className="dashboard-card" key={perm.permissionId}>
+            <div className="card-icon">{getIconForPermission(perm.name)}</div>
+            <h3>{perm.name}</h3>
+            <p>{perm.description}</p>
             <button
               className="card-button"
-              onClick={() => handleButtonClick(card.title)}
+              onClick={() => handleButtonClick(perm.name)}
             >
               Manage
             </button>

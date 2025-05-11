@@ -1,79 +1,104 @@
 .dashboard-container {
   padding: 40px;
   font-family: sans-serif;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  flex-direction: column;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Fijo: 4 columnas */
+  grid-template-columns: repeat(4, 1fr); /* Hasta 4 columnas */
   gap: 24px;
-}
-
-/* Cuando se hace hover sobre la tarjeta, el ícono se vuelve azul */
-.dashboard-card:hover .card-icon {
-  color: #2563eb; /* Azul (usa el tono que prefieras) */
+  max-width: 1200px; /* Limitar el ancho máximo */
+  width: 100%; /* Se ajusta al 100% */
+  justify-items: center; /* Centra los items (tarjetas) */
+  justify-content: center; /* Asegura que las tarjetas se centren si no hay 4 en una fila */
 }
 
 @media (max-width: 1024px) {
   .cards-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+    grid-template-columns: repeat(2, 1fr); /* Cambiar a 2 columnas en pantallas medianas */
+  }
+
+  .dashboard-card {
+    padding: 18px 12px; /* Reduce el padding de las tarjetas */
   }
 }
 
 @media (max-width: 640px) {
   .cards-grid {
-    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+    grid-template-columns: 1fr; /* Cambiar a 1 columna en pantallas pequeñas */
+  }
+
+  .dashboard-card {
+    padding: 14px 10px; /* Reduce aún más el padding */
+    max-width: 90%; /* Hace que las tarjetas no se vean tan grandes en móviles */
   }
 }
 
 .dashboard-card {
-  background: #fff;
+  background: #ffffff;
   border-radius: 16px;
   padding: 24px 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   text-align: center;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
+  width: 100%; /* Asegura que las tarjetas ocupen todo el ancho disponible */
+  max-width: 300px; /* Limita el tamaño máximo de las tarjetas */
 }
 
 .dashboard-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Aumenta la sombra para un efecto más notorio */
 }
 
 .card-icon {
   margin-bottom: 12px;
-  color: #000; /* Negro por defecto */
+  color: black;
   transition: color 0.3s ease;
 }
 
-/* Cuando se hace hover sobre la tarjeta, el ícono se vuelve azul */
 .dashboard-card:hover .card-icon {
-  color: var(--primary-color); /* Azul (usa el tono que prefieras) */
+  color: var(--primary-color, #4f46e5);
 }
 
 .dashboard-card h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 8px;
   color: #1a202c;
+  word-break: break-word;
 }
 
 .dashboard-card p {
   font-size: 0.9rem;
   color: #4a5568;
   margin-bottom: 16px;
+  word-break: break-word;
 }
 
 .card-button {
-  background: linear-gradient(to right, var(--primary-color, #4f46e5), var(--secondary-color, #6366f1));
+  background: linear-gradient(
+    to right,
+    var(--primary-color, #4f46e5),
+    var(--secondary-color, #6366f1)
+  );
   border: none;
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 12px 18px; /* Tamaño del botón */
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .card-button:hover {
   opacity: 0.9;
+  transform: scale(1.05); /* Efecto de escala en hover */
+}
+
+.card-button:focus {
+  outline: none; /* Eliminar borde de enfoque */
 }
