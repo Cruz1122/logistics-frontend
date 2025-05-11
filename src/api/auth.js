@@ -70,3 +70,12 @@ export const verifyCodeAndUpdatePassword = async ({ email, code, newPassword }) 
   });
   return response.data;
 };
+
+export const getUserRequest = async (userId) => {
+  try {
+    const response = await axios.get(`${API_URL}/auth/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { error: "Unknown error" };
+  }
+};

@@ -1,4 +1,5 @@
 @import '../../../styles/colors.css';
+
 * {
   margin: 0;
   padding: 0;
@@ -44,21 +45,26 @@
 .navbar-right {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
 }
 
-.navbar-logo-link, .navbar-title-link {
-  text-decoration: none; /* Elimina el subrayado por defecto del enlace */
-  color: inherit; /* Asegura que el color del enlace sea el mismo que el de su contenedor */
+.navbar-logo-link,
+.navbar-title-link {
+  text-decoration: none;
+  color: inherit;
 }
-
 
 .navbar-link {
-  margin-left: 20px;
+  margin-left: 24px;
   color: white;
   text-decoration: none;
   font-weight: 500;
   position: relative;
   transition: color 0.3s ease;
+  padding: 6px 8px;
+  white-space: nowrap;
 }
 
 .navbar-link::after {
@@ -111,7 +117,6 @@
   width: 100%;
 }
 
-
 @media (max-width: 640px) {
   .navbar-title {
     display: none;
@@ -131,9 +136,11 @@
   .navbar-right {
     flex-direction: row;
     margin-top: 0;
+    gap: 4px;
   }
 
   .navbar-link {
-    margin: 0 8px;
+    margin: 0 6px;
+    font-size: 0.875rem;
   }
 }

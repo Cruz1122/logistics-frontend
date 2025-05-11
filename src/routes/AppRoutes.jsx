@@ -1,7 +1,6 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazy } from "react";
 
-// Lazy loading de componentes
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
 const Home = lazy(() => import("../features/Home/home"));
 const SignUp = lazy(() => import("../features/Auth/signUp/signUp"));
@@ -16,43 +15,59 @@ const ServerError = lazy(() => import("../components/errors/serverError/serverEr
 const Unauthorized = lazy(() => import("../components/errors/unauthorized/unauthorized"));
 
 export const AppRoutes = ({ isAuthenticated }) => {
+  const location = useLocation(); // ✅ Hook correcto
+
+  const checkFlow = (state) => {
+    return state?.fromFlow === true;
+  };
+
   return (
     <Routes>
-      {/* Página de inicio (Home pública) */}
       <Route path="/" element={<Home />} />
 
-      {/* Panel de administración (protegido) */}
       <Route
-        path="/admin"
-        element={isAuthenticated ? <NotFound /> : <Navigate to="/" />}
+        path="/dashboard"
+        element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
       />
 
-      {/* Autenticación */}
       <Route
         path="/signin"
-        element={!isAuthenticated ? <SignIn /> : <Navigate to="/admin" />}
+        element={!isAuthenticated ? <SignIn /> : <Navigate to="/" />}
       />
       <Route
         path="/signup"
-        element={!isAuthenticated ? <SignUp /> : <Navigate to="/admin" />}
+        element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />}
+      />
+      <Route
+        path="/forgot"
+        element={!isAuthenticated ? <Forgot /> : <Navigate to="/" />}
       />
 
-      {/* Rutas públicas */}
       <Route path="/about" element={<About />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/verify-code" element={<VerifyCode />} />
-      <Route path="/forgot-password" element={<Forgot />} />
-      <Route path="/forgot-verify-code" element={<ForgotVerifyCode />} />
-      <Route path="/dashboard" element={<Dashboard />} />
 
-      {/* Rutas protegidas */}
+      <Route
+        path="/verify-email"
+        element={
+          checkFlow(location.state) ? <VerifyEmail /> : <Navigate to="/unauthorized" />
+        }
+      />
+      <Route
+        path="/verify-code"
+        element={
+          checkFlow(location.state) ? <VerifyCode /> : <Navigate to="/unauthorized" />
+        }
+      />
+      <Route
+        path="/forgot-verify-code"
+        element={
+          checkFlow(location.state) ? <ForgotVerifyCode /> : <Navigate to="/unauthorized" />
+        }
+      />
 
-      {/* Rutas de error */}
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/server-error" element={<ServerError />} />
       <Route path="/not-found" element={<NotFound />} />
 
-      {/* Ruta catch-all */}
       <Route path="*" element={<Navigate to="/not-found" />} />
     </Routes>
   );

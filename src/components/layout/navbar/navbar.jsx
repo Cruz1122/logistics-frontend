@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import truckIcon from '../../../assets/backgrounds/icon.webp';
 import './navbar.css';
 
 const Navbar = () => {
-  const location = useLocation(); // 👈 Hook para conocer la ruta actual
+  const location = useLocation();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const isOnDashboard = location.pathname === "/dashboard";
+  const isOnSignin = location.pathname === "/signin";
+  const isOnSignup = location.pathname === "/signup";
 
   return (
     <header className="navbar">
@@ -18,11 +24,19 @@ const Navbar = () => {
           </Link>
         </div>
         <nav className="navbar-right">
-          {location.pathname !== "/signin" && (
+          {!isAuthenticated && !isOnSignin && (
             <Link to="/signin" className="navbar-link">Sign In</Link>
           )}
-          {location.pathname !== "/signup" && (
+          {!isAuthenticated && !isOnSignup && (
             <Link to="/signup" className="navbar-link">Sign Up</Link>
+          )}
+          {isAuthenticated && (
+            <>
+              <Link to="/account" className="navbar-link">Account</Link>
+              {!isOnDashboard && (
+                <Link to="/dashboard" className="navbar-link">Management Panel</Link>
+              )}
+            </>
           )}
         </nav>
       </div>

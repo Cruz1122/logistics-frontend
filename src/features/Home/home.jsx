@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { FaArrowRight, FaArrowUp, FaShippingFast } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import Footer from "../../components/layout/footer/footer";
+import { useSelector } from "react-redux"; // 👈 Importamos useSelector
 import "./home.css";
 
 const Home = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth); // 👈 Obtenemos el estado de autenticación
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
 
@@ -24,7 +26,9 @@ const Home = () => {
         <div className="home-container">
           <h1>Welcome To LogicSmart360</h1>
           <p>
-            Sign in or create an account to start using our logistics platform
+            {isAuthenticated
+              ? "You are logged in. Manage your logistics and deliveries now!"
+              : "Sign in or create an account to start using our logistics platform"}
           </p>
           <button onClick={scrollToAbout} className="main-button">
             Learn more <FaArrowRight className="arrow-icon" />

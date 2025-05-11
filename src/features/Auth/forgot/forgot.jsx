@@ -33,7 +33,7 @@ const Forgot = () => {
     try {
       await forgotPasswordRequest(payload); // Llamada a la API para recuperar la contraseña
       toast.success("Verification code sent to your email!"); // Notificación de éxito
-      navigate("/forgot-verify-code", { state: { email: email } }); // Redirige a la página de verificación de código
+      navigate("/forgot-verify-code", { state: { email: email, fromFlow: true } }); // Redirige a la página de verificación de código
     } catch (err) {
       toast.error(err.error || "Failed to send verification code"); // Muestra un error si algo sale mal
     } finally {
