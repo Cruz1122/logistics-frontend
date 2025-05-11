@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./user.css";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import { MdCheckCircle, MdCancel } from "react-icons/md";
-import CreateUserModal from "./crud/createUserModal";
-import EditUserModal from "./crud/editUserModal";
-import DeleteUserModal from "./crud/deleteUserModal";
+import CreateUserModal from "./crud/create";
+import EditUserModal from "./crud/edit";
+import DeleteUserModal from "./crud/delete";
 import { getAllUsers } from "../../../api/user"; // Ajusta la ruta si es necesario
 
 const USERS_PER_PAGE = 5;

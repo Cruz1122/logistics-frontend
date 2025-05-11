@@ -47,7 +47,9 @@ const EditUserModal = ({ user, onClose, onSave }) => {
   return (
     <div className="modal">
       <form onSubmit={handleSubmit} className="modal-form">
-        <h2>Edit User <strong>{user.name}</strong> </h2>
+        <h2>
+          Edit User <strong>{user.name}</strong>{" "}
+        </h2>
 
         <div className="form-field">
           <label>ID:</label>

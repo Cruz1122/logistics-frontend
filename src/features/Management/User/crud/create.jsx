@@ -39,7 +39,9 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
     // Validación para password
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
     if (!passwordRegex.test(formData.password)) {
-      alert("Password must be at least 6 characters, include uppercase, lowercase, number and special character");
+      alert(
+        "Password must be at least 6 characters, include uppercase, lowercase, number and special character"
+      );
       return;
     }
 
@@ -122,7 +124,9 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
               onChange={handleChange}
               required
             >
-              <option value="" disabled hidden>Select Role</option>
+              <option value="" disabled hidden>
+                Select Role
+              </option>
               <option value="Admin">Admin</option>
               <option value="Delivery">Delivery</option>
               <option value="Dispatcher">Dispatcher</option>

@@ -11,10 +11,16 @@ const DeleteUserModal = ({ user, onClose, onDelete }) => {
     <div className="modal">
       <div className="modal-form">
         <h2>Delete User</h2>
-        <p>Are you sure you want to delete <strong>{user.name}</strong>?</p>
+        <p>
+          Are you sure you want to delete <strong>{user.name}</strong>?
+        </p>
         <div className="modal-actions">
-          <button onClick={handleDelete} className="save-btn">Yes, Delete</button>
-          <button onClick={onClose} className="cancel-btn">Cancel</button>
+          <button onClick={handleDelete} className="save-btn">
+            Yes, Delete
+          </button>
+          <button onClick={onClose} className="cancel-btn">
+            Cancel
+          </button>
         </div>
       </div>
     </div>

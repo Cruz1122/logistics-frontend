@@ -14,6 +14,10 @@ const NotFound = lazy(() => import("../components/errors/notFound/notFound"));
 const ServerError = lazy(() => import("../components/errors/serverError/serverError"));
 const Unauthorized = lazy(() => import("../components/errors/unauthorized/unauthorized"));
 const User = lazy(() => import("../features/Management/User/user"));
+const Permission = lazy(() => import("../features/Management/Permission/permission"));
+const Role = lazy(() => import("../features/Management/Role/role"));
+const RolPermission = lazy(() => import("../features/Management/RolPermission/rolpermission"));
+
 
 export const AppRoutes = ({ isAuthenticated }) => {
   const location = useLocation(); // ✅ Hook correcto
@@ -34,6 +38,21 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route
         path="/usersPanel"
         element={isAuthenticated ? <User /> : <Navigate to="/" />}
+      />
+
+      <Route 
+        path="/permissionsPanel"
+        element={isAuthenticated ? <Permission /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/rolesPanel"
+        element={isAuthenticated ? <Role /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/roleXpermissionPanel"
+        element={isAuthenticated ? <RolPermission /> : <Navigate to="/" />}
       />
 
       <Route

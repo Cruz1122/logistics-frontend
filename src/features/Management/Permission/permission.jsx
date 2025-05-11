@@ -1,49 +1,51 @@
 import React, { useState, useEffect } from "react";
-import "./role.css";
+import "./permission.css";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
-import CreateRoleModal from "./crud/create";
-import EditRoleModal from "./crud/edit";
-import DeleteRoleModal from "./crud/delete";
-import { getAllRoles } from "../../../api/role";
+import CreatePermissionModal from "./crud/create";
+import EditPermissionModal from "./crud/edit";
+import DeletePermissionModal from "./crud/delete";
+import { getAllPermissions } from "../../../api/permission"; 
 
-const ROLES_PER_PAGE = 5;
+const PERMISSIONS_PER_PAGE = 5;
 
-const Role = () => {
-  const [roles, setRoles] = useState([]);
+const Permission = () => {
+  const [permissions, setPermissions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [editRole, setEditRole] = useState(null);
-  const [deleteRole, setDeleteRole] = useState(null);
+  const [editPermission, setEditPermission] = useState(null);
+  const [deletePermission, setDeletePermission] = useState(null);
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      const rawRoles = await getAllRoles();
+    const fetchPermissions = async () => {
+      const rawPermissions = await getAllPermissions();
 
-      const mappedRoles = rawRoles.map((role) => ({
-        id: role.id,
-        name: role.name,
-        description: role.description,
+      const mappedPermissions = rawPermissions.map((permission) => ({
+        id: permission.id,
+        name: permission.name,
+        description: permission.description,
       }));
 
-      setRoles(mappedRoles);
+      setPermissions(mappedPermissions);
     };
 
-    fetchRoles();
+    fetchPermissions();
   }, []);
 
-  const filteredRoles = roles.filter((role) =>
-    Object.values(role)
+  const filteredPermissions = permissions.filter((permission) =>
+    Object.values(permission)
       .join(" ")
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredRoles.length / ROLES_PER_PAGE);
-  const startIndex = (currentPage - 1) * ROLES_PER_PAGE;
-  const paginatedRoles = filteredRoles.slice(
+  const totalPages = Math.ceil(
+    filteredPermissions.length / PERMISSIONS_PER_PAGE
+  );
+  const startIndex = (currentPage - 1) * PERMISSIONS_PER_PAGE;
+  const paginatedPermissions = filteredPermissions.slice(
     startIndex,
-    startIndex + ROLES_PER_PAGE
+    startIndex + PERMISSIONS_PER_PAGE
   );
 
   const handlePageChange = (newPage) => {
@@ -53,8 +55,8 @@ const Role = () => {
   };
 
   return (
-    <div className="role-container">
-      <div className="role-controls">
+    <div className="permission-container">
+      <div className="permission-controls">
         <div className="search-wrapper">
           <input
             type="text"
@@ -75,7 +77,7 @@ const Role = () => {
         </button>
       </div>
 
-      <table className="role-table">
+      <table className="permission-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -85,28 +87,31 @@ const Role = () => {
           </tr>
         </thead>
         <tbody>
-          {paginatedRoles.map((role, index) => (
-            <tr key={index} className="role-row">
-              <td>{role.id}</td>
-              <td>{role.name}</td>
-              <td>{role.description}</td>
+          {paginatedPermissions.map((permission, index) => (
+            <tr key={index} className="permission-row">
+              <td>{permission.id}</td>
+              <td>{permission.name}</td>
+              <td>{permission.description}</td>
               <td className="icon-actions">
-                <button className="icon-btn" onClick={() => setEditRole(role)}>
+                <button
+                  className="icon-btn"
+                  onClick={() => setEditPermission(permission)}
+                >
                   <FaEdit />
                 </button>
                 <button
                   className="icon-btn"
-                  onClick={() => setDeleteRole(role)}
+                  onClick={() => setDeletePermission(permission)}
                 >
                   <FaTrash />
                 </button>
               </td>
             </tr>
           ))}
-          {paginatedRoles.length === 0 && (
+          {paginatedPermissions.length === 0 && (
             <tr>
               <td colSpan="4" style={{ textAlign: "center", padding: "1rem" }}>
-                No roles found.
+                No permissions found.
               </td>
             </tr>
           )}
@@ -136,19 +141,22 @@ const Role = () => {
 
       {/* Modals */}
       {showCreateModal && (
-        <CreateRoleModal onClose={() => setShowCreateModal(false)} />
+        <CreatePermissionModal onClose={() => setShowCreateModal(false)} />
       )}
-      {editRole && (
-        <EditRoleModal role={editRole} onClose={() => setEditRole(null)} />
+      {editPermission && (
+        <EditPermissionModal
+          permission={editPermission}
+          onClose={() => setEditPermission(null)}
+        />
       )}
-      {deleteRole && (
-        <DeleteRoleModal
-          role={deleteRole}
-          onClose={() => setDeleteRole(null)}
+      {deletePermission && (
+        <DeletePermissionModal
+          permission={deletePermission}
+          onClose={() => setDeletePermission(null)}
         />
       )}
     </div>
   );
 };
 
-export default Role;
+export default Permission;
