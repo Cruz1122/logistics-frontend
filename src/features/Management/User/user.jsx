@@ -22,11 +22,16 @@ const User = () => {
       const rawUsers = await getAllUsers();
 
       const mappedUsers = rawUsers.map((user) => ({
-        name: `${user.name} ${user.lastName}`,
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
         email: user.email,
         phone: user.phone,
         role: user.role?.name || "N/A",
-        verified: user.emailVerified,
+        roleId: user.roleId,
+        verified: !!user.emailVerified, // <- fuerza booleano
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
       }));
 
       setUsers(mappedUsers);
@@ -44,7 +49,10 @@ const User = () => {
 
   const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
   const startIndex = (currentPage - 1) * USERS_PER_PAGE;
-  const paginatedUsers = filteredUsers.slice(startIndex, startIndex + USERS_PER_PAGE);
+  const paginatedUsers = filteredUsers.slice(
+    startIndex,
+    startIndex + USERS_PER_PAGE
+  );
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -89,7 +97,7 @@ const User = () => {
         <tbody>
           {paginatedUsers.map((user, index) => (
             <tr key={index} className="user-row">
-              <td>{user.name}</td>
+              <td>{`${user.name} ${user.lastName}`}</td>
               <td>{user.email}</td>
               <td>{user.phone}</td>
               <td>{user.role}</td>
@@ -104,7 +112,10 @@ const User = () => {
                 <button className="icon-btn" onClick={() => setEditUser(user)}>
                   <FaEdit />
                 </button>
-                <button className="icon-btn" onClick={() => setDeleteUser(user)}>
+                <button
+                  className="icon-btn"
+                  onClick={() => setDeleteUser(user)}
+                >
                   <FaTrash />
                 </button>
               </td>
@@ -123,7 +134,10 @@ const User = () => {
       {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="pagination">
-          <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
             ⬅ Prev
           </button>
           <span>
@@ -139,9 +153,18 @@ const User = () => {
       )}
 
       {/* Modales */}
-      {showCreateModal && <CreateUserModal onClose={() => setShowCreateModal(false)} />}
-      {editUser && <EditUserModal user={editUser} onClose={() => setEditUser(null)} />}
-      {deleteUser && <DeleteUserModal user={deleteUser} onClose={() => setDeleteUser(null)} />}
+      {showCreateModal && (
+        <CreateUserModal onClose={() => setShowCreateModal(false)} />
+      )}
+      {editUser && (
+        <EditUserModal user={editUser} onClose={() => setEditUser(null)} />
+      )}
+      {deleteUser && (
+        <DeleteUserModal
+          user={deleteUser}
+          onClose={() => setDeleteUser(null)}
+        />
+      )}
     </div>
   );
 };

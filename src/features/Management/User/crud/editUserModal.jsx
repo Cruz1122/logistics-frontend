@@ -1,15 +1,34 @@
-// src/components/EditUserModal.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./modal.css";
 
 const EditUserModal = ({ user, onClose, onSave }) => {
   const [formData, setFormData] = useState({
+    id: user.id,
     name: user.name,
+    lastName: user.lastName,
     email: user.email,
     phone: user.phone,
-    role: user.role,
-    verified: user.verified,
+    role: user.role, // Verifica que user.role sea el valor esperado
+    roleId: user.roleId,
+    verified: user.verified, // ya viene como booleano
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
   });
+
+  useEffect(() => {
+    setFormData({
+      id: user.id,
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role, // Aquí asignamos correctamente el valor del rol
+      roleId: user.roleId,
+      verified: !!user.verified, // asegura que sea booleano
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -27,41 +46,95 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 
   return (
     <div className="modal">
-      
       <form onSubmit={handleSubmit} className="modal-form">
-        <h2>Edit User</h2>
-        <label>
-          Name:
-          <input name="name" value={formData.name} onChange={handleChange} />
-        </label>
-        <label>
-          Email:
-          <input name="email" value={formData.email} onChange={handleChange} />
-        </label>
-        <label>
-          Phone:
+        <h2>Edit User <strong>{user.name}</strong> </h2>
+
+        <div className="form-field">
+          <label>ID:</label>
+          <input name="id" value={formData.id} readOnly disabled />
+        </div>
+
+        <div className="form-group">
+          <div className="form-field">
+            <label>Name:</label>
+            <input name="name" value={formData.name} onChange={handleChange} />
+          </div>
+          <div className="form-field">
+            <label>Last Name:</label>
+            <input
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <div className="form-field">
+            <label>Email:</label>
+            <input name="email" value={formData.email} readOnly disabled />
+          </div>
+          <div className="form-field checkbox-field">
+            <label>Email Verified:</label>
+            <input
+              name="verified"
+              type="checkbox"
+              checked={formData.verified}
+              disabled
+            />
+          </div>
+        </div>
+
+        <div className="form-field">
+          <label>Phone:</label>
           <input name="phone" value={formData.phone} onChange={handleChange} />
-        </label>
-        <label>
-          Role:
-          <select name="role" value={formData.role} onChange={handleChange}>
-            <option value="Admin">Admin</option>
-            <option value="Dealer">Dealer</option>
-            <option value="Support">Support</option>
-          </select>
-        </label>
-        <label className="checkbox-label">
-          Verified:
-          <input
-            name="verified"
-            type="checkbox"
-            checked={formData.verified}
-            onChange={handleChange}
-          />
-        </label>
+        </div>
+
+        <div className="form-group">
+          <div className="form-field">
+            <label>Role:</label>
+            <select name="role" value={formData.role} onChange={handleChange}>
+              <option value="Admin">Admin</option>
+              <option value="Delivery">Delivery</option>
+              <option value="Dispatcher">Dispatcher</option>
+              <option value="Manager">Manager</option> {/* Cambié el valor */}
+              <option value="Guest">Guest</option> {/* Cambié el valor */}
+            </select>
+          </div>
+          <div className="form-field">
+            <label>Role ID:</label>
+            <input name="roleId" value={formData.roleId} readOnly disabled />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <div className="form-field">
+            <label>Created At:</label>
+            <input
+              name="createdAt"
+              value={formData.createdAt}
+              readOnly
+              disabled
+            />
+          </div>
+          <div className="form-field">
+            <label>Updated At:</label>
+            <input
+              name="updatedAt"
+              value={formData.updatedAt}
+              readOnly
+              disabled
+            />
+          </div>
+        </div>
+
         <div className="modal-actions">
-          <button type="submit" className="save-btn">Save</button>
-          <button type="button" onClick={onClose} className="cancel-btn">Cancel</button>
+          <button type="submit" className="save-btn">
+            Save
+          </button>
+          <button type="button" onClick={onClose} className="cancel-btn">
+            Cancel
+          </button>
         </div>
       </form>
     </div>
