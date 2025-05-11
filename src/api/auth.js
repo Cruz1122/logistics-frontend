@@ -24,7 +24,6 @@ export const signInRequest = async (loginData) => {
   }
 };
 
-// Nueva función para verificación de código
 export const verifyCodeRequest = async ({ email, code }) => {
   try {
     // Hacemos la solicitud POST para verificar el código de 2FA

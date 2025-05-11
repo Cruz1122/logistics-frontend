@@ -1,0 +1,79 @@
+.dashboard-container {
+  padding: 40px;
+  font-family: sans-serif;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Fijo: 4 columnas */
+  gap: 24px;
+}
+
+/* Cuando se hace hover sobre la tarjeta, el ícono se vuelve azul */
+.dashboard-card:hover .card-icon {
+  color: #2563eb; /* Azul (usa el tono que prefieras) */
+}
+
+@media (max-width: 1024px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columnas en pantallas medianas */
+  }
+}
+
+@media (max-width: 640px) {
+  .cards-grid {
+    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+  }
+}
+
+.dashboard-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  margin-bottom: 12px;
+  color: #000; /* Negro por defecto */
+  transition: color 0.3s ease;
+}
+
+/* Cuando se hace hover sobre la tarjeta, el ícono se vuelve azul */
+.dashboard-card:hover .card-icon {
+  color: var(--primary-color); /* Azul (usa el tono que prefieras) */
+}
+
+.dashboard-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #1a202c;
+}
+
+.dashboard-card p {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 16px;
+}
+
+.card-button {
+  background: linear-gradient(to right, var(--primary-color, #4f46e5), var(--secondary-color, #6366f1));
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.card-button:hover {
+  opacity: 0.9;
+}

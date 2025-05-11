@@ -4,7 +4,7 @@ import { lazy } from "react";
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
 const Home = lazy(() => import("../features/Home/home"));
 const SignUp = lazy(() => import("../features/Auth/signUp/signUp"));
-const About = lazy(() => import("../features/aboutUs/aboutUs"));
+const About = lazy(() => import("../features/AboutUs/aboutUs"));
 const VerifyEmail = lazy(() => import("../features/Auth/verifyEmail/verifyEmail"));
 const VerifyCode = lazy(() => import("../features/Auth/verifyCode/verifyCode"));
 const Forgot = lazy(() => import("../features/Auth/forgot/forgot"));
@@ -13,6 +13,7 @@ const Dashboard = lazy(() => import("../features/Dashboard/dashboard"));
 const NotFound = lazy(() => import("../components/errors/notFound/notFound"));
 const ServerError = lazy(() => import("../components/errors/serverError/serverError"));
 const Unauthorized = lazy(() => import("../components/errors/unauthorized/unauthorized"));
+const User = lazy(() => import("../features/Management/User/user"));
 
 export const AppRoutes = ({ isAuthenticated }) => {
   const location = useLocation(); // ✅ Hook correcto
@@ -28,6 +29,11 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route
         path="/dashboard"
         element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/usersPanel"
+        element={isAuthenticated ? <User /> : <Navigate to="/" />}
       />
 
       <Route
