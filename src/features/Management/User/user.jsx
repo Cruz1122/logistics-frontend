@@ -5,11 +5,24 @@ import { MdCheckCircle, MdCancel } from "react-icons/md";
 import CreateUserModal from "./crud/create";
 import EditUserModal from "./crud/edit";
 import DeleteUserModal from "./crud/delete";
-import { getAllUsers, updateUser, deleteUser as deleteUserApi } from "../../../api/user"; // Renombramos deleteUser a deleteUserApi
+import {
+  getAllUsers,
+  updateUser,
+  deleteUser as deleteUserApi,
+  createUser,
+} from "../../../api/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const USERS_PER_PAGE = 5;
+
+const roleNameToId = {
+  Admin: "4d36f126-e3c0-4740-8ef0-215dbf71733f",
+  Delivery: "efa6e130-69ef-4386-b035-fbb6f268c016",
+  Dispatcher: "5208d160-41e8-40a1-a813-7fa601331b9e",
+  Manager: "bab8aee4-0d03-4fc8-94a3-2118b3b4ea69",
+  Guest: "2b406949-6340-4801-ac31-06449644a6a4",
+};
 
 const User = () => {
   const [users, setUsers] = useState([]);
@@ -17,7 +30,7 @@ const User = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
-  const [userToDelete, setUserToDelete] = useState(null); // Renombrado aquí
+  const [userToDelete, setUserToDelete] = useState(null);
 
   const fetchUsers = async () => {
     try {
@@ -42,10 +55,8 @@ const User = () => {
 
   const handleDelete = async (user) => {
     try {
-      console.log("Deleting user:", user);
-      
-      await deleteUserApi(user.id);  // Llamamos a la función deleteUserApi pasando el ID del usuario
-      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id)); // Actualizamos el estado eliminando el usuario
+      await deleteUserApi(user.id);
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
       toast.success("User deleted successfully!");
     } catch (error) {
       toast.error("Failed to delete user");
@@ -79,7 +90,7 @@ const User = () => {
   return (
     <div className="user-container">
       <ToastContainer position="top-right" autoClose={3000} />
-      
+
       <div className="user-controls">
         <div className="search-wrapper">
           <input
@@ -132,7 +143,7 @@ const User = () => {
                 </button>
                 <button
                   className="icon-btn"
-                  onClick={() => setUserToDelete(user)} // Usamos userToDelete
+                  onClick={() => setUserToDelete(user)}
                 >
                   <FaTrash />
                 </button>
@@ -171,7 +182,30 @@ const User = () => {
 
       {/* Modales */}
       {showCreateModal && (
-        <CreateUserModal onClose={() => setShowCreateModal(false)} />
+        <CreateUserModal
+          isOpen={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onCreate={async (formData) => {
+            try {
+              const roleId = roleNameToId[formData.role];
+              if (!roleId) throw new Error("Invalid role selected");
+
+              const userToCreate = {
+                ...formData,
+                roleId,
+              };
+
+              await createUser(userToCreate);
+              await fetchUsers();
+              toast.success("User created successfully!");
+            } catch (error) {
+              console.error("Error creating user:", error);
+              toast.error("Failed to create user");
+            } finally {
+              setShowCreateModal(false);
+            }
+          }}
+        />
       )}
 
       {editUser && (
@@ -180,12 +214,11 @@ const User = () => {
           onClose={() => setEditUser(null)}
           onSave={async (formData) => {
             try {
-              console.log("Form data to save:", formData);
               await updateUser(formData.id, formData);
               await fetchUsers();
               toast.success("User updated successfully!");
             } catch (error) {
-              console.error("Error al guardar cambios:", error);
+              console.error("Error updating user:", error);
               toast.error("Failed to update user");
             } finally {
               setEditUser(null);
@@ -194,11 +227,11 @@ const User = () => {
         />
       )}
 
-      {userToDelete && (  // Cambiamos deleteUser a userToDelete
+      {userToDelete && (
         <DeleteUserModal
           user={userToDelete}
-          onClose={() => setUserToDelete(null)} // Cambiamos deleteUser a userToDelete
-          onDelete={handleDelete} // Pasamos handleDelete aquí
+          onClose={() => setUserToDelete(null)}
+          onDelete={handleDelete}
         />
       )}
     </div>

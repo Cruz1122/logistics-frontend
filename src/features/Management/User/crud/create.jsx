@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./modal.css";
+import { toast } from "react-toastify";
 
 const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
   const [formData, setFormData] = useState({
@@ -8,10 +9,9 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
     name: "",
     lastName: "",
     phone: "",
-    role: "", // Cambié a "role" en vez de "roleId"
+    role: "",
   });
 
-  // Resetear los valores cuando el modal se cierre o cuando `isOpen` cambie
   useEffect(() => {
     if (!isOpen) {
       setFormData({
@@ -36,10 +36,9 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validación para password
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
     if (!passwordRegex.test(formData.password)) {
-      alert(
+      toast.error(
         "Password must be at least 6 characters, include uppercase, lowercase, number and special character"
       );
       return;

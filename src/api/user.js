@@ -98,3 +98,31 @@ export const deleteUser = async (userId) => {
     throw new Error("Failed to delete user");
   }
 };
+
+export const createUser = async (userData) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.post(
+      `${API_URL}/auth/users`,
+      {
+        name: userData.name,
+        lastName: userData.lastName,
+        email: userData.email,
+        password: userData.password,
+        phone: userData.phone,
+        roleId: userData.roleId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al crear usuario:", error.response?.data || error.message);
+    throw error;
+  }
+};
