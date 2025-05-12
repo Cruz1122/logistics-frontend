@@ -1,36 +1,73 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Layout/navbar/navbar';
-import Footer from './components/Layout/footer/footer';
+import { useDispatch, useSelector } from "react-redux"; // 👈 IMPORTA useDispatch
+import { Suspense, lazy, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import Navbar from "./components/layout/navbar/navbar";
+import Footer from "./components/layout/footer/footer";
+import { AppRoutes } from "./routes/AppRoutes";
+import { setUser, setAuthenticated } from "./redux/authSlice"; // 👈 Asegúrate de importar tus acciones
+import "./App.css";
 
-import SignIn from './features/Auth/signIn/signIn'; // ← ruta real
-import SignUp from './features/Auth/signUp/signUp'; // ← ruta real
-import Home from './features/Home/home';            // ← ruta real
-import About from './features/aboutUs/aboutUs'; // ← nueva línea
-import VerifyEmail from './features/Auth/verifyEmail/verifyEmail'; // ← nueva línea
-import VerifyCode from './features/Auth/verifyCode/verifyCode'; // ← nueva línea
-
-import './App.css';
+const FullScreenLoader = () => (
+  <div
+    style={{
+      height: "82.4vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div className="spinner"></div>
+  </div>
+);
 
 function App() {
+  const dispatch = useDispatch(); // 👈 DEFINIR dispatch AQUÍ
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      dispatch(setUser({ token }));
+    } else {
+      dispatch(setAuthenticated(false));
+      dispatch(setUser({ token: null}));
+    }
+
+  }, [dispatch]);
+
+  console.log("[App] Estado de autenticación:", isAuthenticated);
+
+  const backgroundLocations = [
+    "/",
+    "/about",
+    "/not-found",
+    "/server-error",
+    "/unauthorized",
+  ];
+
+  useEffect(() => {
+    if (backgroundLocations.includes(location.pathname)) {
+      document.body.classList.add("home-background");
+    } else {
+      document.body.classList.remove("home-background");
+    }
+  }, [location.pathname]);
+
+  const isHome = location.pathname === "/";
+
   return (
-      <div className="app-container">
-        <Navbar />
-
-        <main className="container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/about" element={<About />} /> 
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/verify-code" element={<VerifyCode />} />
-            {/* Puedes agregar más rutas aquí */}
-          </Routes>
-        </main>
-
-        <Footer />
-      </div>
+    <div className="app-container">
+      <Navbar />
+      <main className="container">
+        <Suspense fallback={<FullScreenLoader />}>
+          <AppRoutes isAuthenticated={isAuthenticated} />
+        </Suspense>
+      </main>
+      <Footer className={isHome ? "footer-home" : ""} />
+    </div>
   );
 }
 
