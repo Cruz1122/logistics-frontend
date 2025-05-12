@@ -5,7 +5,9 @@ import { MdCheckCircle, MdCancel } from "react-icons/md";
 import CreateUserModal from "./crud/create";
 import EditUserModal from "./crud/edit";
 import DeleteUserModal from "./crud/delete";
-import { getAllUsers } from "../../../api/user"; // Ajusta la ruta si es necesario
+import { getAllUsers, updateUser, deleteUser as deleteUserApi } from "../../../api/user"; // Renombramos deleteUser a deleteUserApi
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const USERS_PER_PAGE = 5;
 
@@ -15,12 +17,11 @@ const User = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
-  const [deleteUser, setDeleteUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null); // Renombrado aquí
 
-  useEffect(() => {
-    const fetchUsers = async () => {
+  const fetchUsers = async () => {
+    try {
       const rawUsers = await getAllUsers();
-
       const mappedUsers = rawUsers.map((user) => ({
         id: user.id,
         name: user.name,
@@ -29,14 +30,29 @@ const User = () => {
         phone: user.phone,
         role: user.role?.name || "N/A",
         roleId: user.roleId,
-        verified: !!user.emailVerified, // <- fuerza booleano
+        verified: !!user.emailVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       }));
-
       setUsers(mappedUsers);
-    };
+    } catch (err) {
+      toast.error("Error fetching users");
+    }
+  };
 
+  const handleDelete = async (user) => {
+    try {
+      console.log("Deleting user:", user);
+      
+      await deleteUserApi(user.id);  // Llamamos a la función deleteUserApi pasando el ID del usuario
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id)); // Actualizamos el estado eliminando el usuario
+      toast.success("User deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete user");
+    }
+  };
+
+  useEffect(() => {
     fetchUsers();
   }, []);
 
@@ -62,6 +78,8 @@ const User = () => {
 
   return (
     <div className="user-container">
+      <ToastContainer position="top-right" autoClose={3000} />
+      
       <div className="user-controls">
         <div className="search-wrapper">
           <input
@@ -71,7 +89,7 @@ const User = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); // reiniciar a la primera página en nueva búsqueda
+              setCurrentPage(1);
             }}
           />
           <button className="search-btn">
@@ -114,7 +132,7 @@ const User = () => {
                 </button>
                 <button
                   className="icon-btn"
-                  onClick={() => setDeleteUser(user)}
+                  onClick={() => setUserToDelete(user)} // Usamos userToDelete
                 >
                   <FaTrash />
                 </button>
@@ -131,7 +149,6 @@ const User = () => {
         </tbody>
       </table>
 
-      {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -156,13 +173,32 @@ const User = () => {
       {showCreateModal && (
         <CreateUserModal onClose={() => setShowCreateModal(false)} />
       )}
+
       {editUser && (
-        <EditUserModal user={editUser} onClose={() => setEditUser(null)} />
+        <EditUserModal
+          user={editUser}
+          onClose={() => setEditUser(null)}
+          onSave={async (formData) => {
+            try {
+              console.log("Form data to save:", formData);
+              await updateUser(formData.id, formData);
+              await fetchUsers();
+              toast.success("User updated successfully!");
+            } catch (error) {
+              console.error("Error al guardar cambios:", error);
+              toast.error("Failed to update user");
+            } finally {
+              setEditUser(null);
+            }
+          }}
+        />
       )}
-      {deleteUser && (
+
+      {userToDelete && (  // Cambiamos deleteUser a userToDelete
         <DeleteUserModal
-          user={deleteUser}
-          onClose={() => setDeleteUser(null)}
+          user={userToDelete}
+          onClose={() => setUserToDelete(null)} // Cambiamos deleteUser a userToDelete
+          onDelete={handleDelete} // Pasamos handleDelete aquí
         />
       )}
     </div>

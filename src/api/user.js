@@ -1,7 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-
 const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
@@ -53,5 +52,49 @@ export const getUserPermissions = async (userId) => {
   } catch (error) {
     console.error("Error fetching permissions:", error.message);
     return [];
+  }
+};
+
+// ✅ Función corregida para actualizar usuario por PUT
+export const updateUser = async (userId, updatedData) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.put(
+      `${API_URL}/auth/users/${userId}`,
+      {
+        name: updatedData.name,
+        lastName: updatedData.lastName,
+        phone: updatedData.phone,
+        roleId: updatedData.roleId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const deleteUser = async (userId) => {
+  try {
+    const token = localStorage.getItem("token"); 
+    console.log("UserID to delete: ",userId);
+    
+    const response = await axios.delete(`${API_URL}/auth/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Failed to delete user");
   }
 };

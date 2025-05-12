@@ -2,6 +2,15 @@ import React, { useState, useEffect } from "react";
 import "./modal.css";
 
 const EditUserModal = ({ user, onClose, onSave }) => {
+  // Mapa de los roles a sus respectivos Role ID
+  const roleNameToId = {
+    Admin: "4d36f126-e3c0-4740-8ef0-215dbf71733f",
+    Delivery: "efa6e130-69ef-4386-b035-fbb6f268c016",
+    Dispatcher: "5208d160-41e8-40a1-a813-7fa601331b9e",
+    Manager: "bab8aee4-0d03-4fc8-94a3-2118b3b4ea69",
+    Guest: "2b406949-6340-4801-ac31-06449644a6a4",
+  };
+
   const [formData, setFormData] = useState({
     id: user.id,
     name: user.name,
@@ -32,16 +41,27 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+    if (name === "role") {
+      // Si el campo es "role", actualizamos el roleId automáticamente
+      const newRoleId = roleNameToId[value] || null;
+      setFormData((prev) => ({
+        ...prev,
+        role: value,
+        roleId: newRoleId, // Se actualiza el roleId basado en el role seleccionado
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
-    onClose();
+    onSave(formData); // Pasa los datos del formulario al método onSave
+    onClose(); // Cierra el modal después de guardar
   };
 
   return (
@@ -99,8 +119,8 @@ const EditUserModal = ({ user, onClose, onSave }) => {
               <option value="Admin">Admin</option>
               <option value="Delivery">Delivery</option>
               <option value="Dispatcher">Dispatcher</option>
-              <option value="Manager">Manager</option> {/* Cambié el valor */}
-              <option value="Guest">Guest</option> {/* Cambié el valor */}
+              <option value="Manager">Manager</option>
+              <option value="Guest">Guest</option>
             </select>
           </div>
           <div className="form-field">
