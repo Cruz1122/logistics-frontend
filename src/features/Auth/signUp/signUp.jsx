@@ -35,6 +35,7 @@ const SignUp = () => {
       toast.warn(
         "Password must be at least 6 characters, include uppercase, lowercase, number and special character"
       );
+      setLoading(false);
       return;
     }
 
@@ -55,7 +56,9 @@ const SignUp = () => {
       toast.success("Account created successfully!");
 
       // Redirigimos a la página de verificación de correo
-      navigate("/verify-email", { state: { email: form.email } });
+      navigate("/verify-email", {
+        state: { email: form.email, fromFlow: true },
+      });
     } catch (err) {
       setError(err.response?.data?.error || "Error registering user");
       toast.error("Something went wrong during registration");

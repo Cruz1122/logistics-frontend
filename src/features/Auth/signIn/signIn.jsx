@@ -37,6 +37,7 @@ const SignIn = () => {
         state: {
           email: form.email,
           method: method,
+          fromFlow: true
         },
       });
     } catch (err) {

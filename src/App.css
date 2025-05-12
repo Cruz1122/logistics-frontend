@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Asegura que html y body ocupen el 100% */
 html, body {
@@ -8,7 +9,7 @@ html, body {
 
 body {
   position: relative;
-  font-family: sans-serif;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .home-background::before {

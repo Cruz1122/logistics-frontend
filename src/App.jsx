@@ -1,12 +1,12 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux"; // 👈 IMPORTA useDispatch
 import { Suspense, lazy, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/layout/navbar/navbar";
 import Footer from "./components/layout/footer/footer";
-import { AppRoutes } from "./routes/AppRoutes"; // Importamos el archivo de rutas
+import { AppRoutes } from "./routes/AppRoutes";
+import { setUser, setAuthenticated } from "./redux/authSlice"; // 👈 Asegúrate de importar tus acciones
 import "./App.css";
 
-// Loader para Suspense
 const FullScreenLoader = () => (
   <div
     style={{
@@ -21,10 +21,25 @@ const FullScreenLoader = () => (
 );
 
 function App() {
+  const dispatch = useDispatch(); // 👈 DEFINIR dispatch AQUÍ
   const { isAuthenticated } = useSelector((state) => state.auth);
+  
   const location = useLocation();
 
-  // Rutas que deben mostrar la animación de fondo
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      dispatch(setUser({ token }));
+    } else {
+      dispatch(setAuthenticated(false));
+      dispatch(setUser({ token: null}));
+    }
+
+  }, [dispatch]);
+
+  console.log("[App] Estado de autenticación:", isAuthenticated);
+
   const backgroundLocations = [
     "/",
     "/about",
@@ -33,7 +48,6 @@ function App() {
     "/unauthorized",
   ];
 
-  // Cambiar el fondo según la ruta
   useEffect(() => {
     if (backgroundLocations.includes(location.pathname)) {
       document.body.classList.add("home-background");
@@ -49,7 +63,7 @@ function App() {
       <Navbar />
       <main className="container">
         <Suspense fallback={<FullScreenLoader />}>
-          <AppRoutes isAuthenticated={isAuthenticated} /> {/* Usamos el componente de rutas */}
+          <AppRoutes isAuthenticated={isAuthenticated} />
         </Suspense>
       </main>
       <Footer className={isHome ? "footer-home" : ""} />

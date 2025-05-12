@@ -1,11 +1,10 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazy } from "react";
 
-// Lazy loading de componentes
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
 const Home = lazy(() => import("../features/Home/home"));
 const SignUp = lazy(() => import("../features/Auth/signUp/signUp"));
-const About = lazy(() => import("../features/aboutUs/aboutUs"));
+const About = lazy(() => import("../features/AboutUs/aboutUs"));
 const VerifyEmail = lazy(() => import("../features/Auth/verifyEmail/verifyEmail"));
 const VerifyCode = lazy(() => import("../features/Auth/verifyCode/verifyCode"));
 const Forgot = lazy(() => import("../features/Auth/forgot/forgot"));
@@ -14,42 +13,98 @@ const Dashboard = lazy(() => import("../features/Dashboard/dashboard"));
 const NotFound = lazy(() => import("../components/errors/notFound/notFound"));
 const ServerError = lazy(() => import("../components/errors/serverError/serverError"));
 const Unauthorized = lazy(() => import("../components/errors/unauthorized/unauthorized"));
+const User = lazy(() => import("../features/Management/User/user"));
+const Permission = lazy(() => import("../features/Management/Permission/permission"));
+const Role = lazy(() => import("../features/Management/Role/role"));
+const RolPermission = lazy(() => import("../features/Management/RolPermission/rolpermission"));
+const UserProfile = lazy(() => import("../features/UserProfile/userProfile"));
+const ResetPassword = lazy(() => import("../features/Auth/resetPassword/resetPassword"));
+
 
 export const AppRoutes = ({ isAuthenticated }) => {
+  const location = useLocation(); // ✅ Hook correcto
+
+  const checkFlow = (state) => {
+    return state?.fromFlow === true;
+  };
+
   return (
     <Routes>
-      {/* Página de inicio (Home pública) */}
       <Route path="/" element={<Home />} />
 
-      {/* Panel de administración (protegido) */}
       <Route
-        path="/admin"
+        path="/dashboard"
         element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
       />
 
-      {/* Autenticación */}
+      <Route
+        path="/userProfile"
+        element={isAuthenticated ? <UserProfile /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/reset-password"
+        element={isAuthenticated ? <ResetPassword /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/usersPanel"
+        element={isAuthenticated ? <User /> : <Navigate to="/" />}
+      />
+
+      <Route 
+        path="/permissionsPanel"
+        element={isAuthenticated ? <Permission /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/rolesPanel"
+        element={isAuthenticated ? <Role /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/roleXpermissionPanel"
+        element={isAuthenticated ? <RolPermission /> : <Navigate to="/" />}
+      />
+
       <Route
         path="/signin"
-        element={!isAuthenticated ? <SignIn /> : <Navigate to="/admin" />}
+        element={!isAuthenticated ? <SignIn /> : <Navigate to="/" />}
       />
       <Route
         path="/signup"
-        element={!isAuthenticated ? <SignUp /> : <Navigate to="/admin" />}
+        element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />}
+      />
+      <Route
+        path="/forgot"
+        element={!isAuthenticated ? <Forgot /> : <Navigate to="/" />}
       />
 
-      {/* Rutas públicas */}
       <Route path="/about" element={<About />} />
-      <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/verify-code" element={<VerifyCode />} />
-      <Route path="/forgot-password" element={<Forgot />} />
-      <Route path="/forgot-verify-code" element={<ForgotVerifyCode />} />
 
-      {/* Rutas de error */}
+      <Route
+        path="/verify-email"
+        element={
+          checkFlow(location.state) ? <VerifyEmail /> : <Navigate to="/unauthorized" />
+        }
+      />
+      <Route
+        path="/verify-code"
+        element={
+          checkFlow(location.state) ? <VerifyCode /> : <Navigate to="/unauthorized" />
+        }
+      />
+      <Route
+        path="/forgot-verify-code"
+        element={
+          checkFlow(location.state) ? <ForgotVerifyCode /> : <Navigate to="/unauthorized" />
+        }
+      />
+
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/server-error" element={<ServerError />} />
       <Route path="/not-found" element={<NotFound />} />
 
-      {/* Ruta catch-all */}
       <Route path="*" element={<Navigate to="/not-found" />} />
     </Routes>
   );

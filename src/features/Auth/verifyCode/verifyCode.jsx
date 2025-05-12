@@ -4,15 +4,18 @@ import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyCodeRequest } from "../../../api/auth";
+import { setAuthenticated, setUser, setLoading } from "../../../redux/authSlice";  // Asegúrate de importar setUser
+import { useDispatch } from "react-redux";
 
 const VerifyCode = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const email = location.state?.email;
   const method = location.state?.method || "email"; // por defecto email
   const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoadingPage] = useState(false);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -28,15 +31,29 @@ const VerifyCode = () => {
       return;
     }
 
+    dispatch(setLoading(true));
+
     try {
-      setLoading(true);
-      await verifyCodeRequest({ email, code });
-      toast.success("Verification successful!");
-      navigate("/");
+      setLoadingPage(true);
+      const response = await verifyCodeRequest({ email, code });
+
+      if (response.token) {
+        // Guardamos el token en el estado y en localStorage
+        dispatch(setUser({ token: response.token})); // Aquí usas setUser para guardar el token
+        dispatch(setAuthenticated(true));  // Establece el estado de autenticación a true
+        toast.success("Verification successful!");
+      } else {
+        toast.error(response.message || "Login failed");
+        dispatch(setAuthenticated(false)); // Asegura reset del auth
+      }
+
+      navigate("/"); // Redirige al usuario a la página principal después de la verificación exitosa
     } catch (err) {
       toast.error(err.error || "Verification failed");
+      dispatch(setAuthenticated(false)); // Asegura reset del auth
     } finally {
-      setLoading(false);
+      setLoadingPage(false);
+      dispatch(setLoading(false));
     }
   };
 
