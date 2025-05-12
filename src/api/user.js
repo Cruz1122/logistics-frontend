@@ -1,5 +1,5 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||

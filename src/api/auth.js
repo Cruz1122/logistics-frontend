@@ -1,10 +1,38 @@
 import axios from "axios";
+import jwtDecode from 'jwt-decode';
+
 
 const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
 console.log(`API_URL: ${API_URL}`);
+
+export const getUserEmail = async () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) return null;
+
+  try {
+    const decoded = jwtDecode(token);
+    const userId = decoded.userId; // Extraemos el userId del token
+
+    if (!userId) return null; // Si no hay userId en el token, retornamos null
+
+    // Realizamos la solicitud GET pasando el token como Bearer en los headers
+    const response = await axios.get(`${API_URL}/auth/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Enviamos el token en el header
+      },
+    });
+
+    // Retornamos el email del usuario
+    return response.data.email || null;
+  } catch (err) {
+    console.error("Error obteniendo el email del usuario:", err);
+    return null;
+  }
+};
   
 export const signUpRequest = async (userData) => {
   try {
@@ -78,3 +106,32 @@ export const getUserRequest = async (userId) => {
     throw error.response?.data || { error: "Unknown error" };
   }
 };
+
+export const resetPasswordRequest = async ({ email, password, newPassword }) => {
+  const token = localStorage.getItem("token"); // Obtener el token desde localStorage
+
+  if (!token) {
+    throw { error: "Token not found, please log in again." }; // Si no hay token, lanzamos un error
+  }
+
+  try {
+    const response = await axios.patch(
+      `${API_URL}/auth/auth/change-password`,
+      {
+        email,
+        password,     // Contraseña actual
+        newPassword,  // Nueva contraseña
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Enviar el token en la cabecera
+        },
+      }
+    );
+    return response.data; // Retorna los datos de la respuesta
+  } catch (error) {
+    // Si ocurre un error, lanza el error con la respuesta del backend o un mensaje genérico
+    throw error.response?.data || { error: "Unknown error" };
+  }
+};
+

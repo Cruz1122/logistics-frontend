@@ -17,6 +17,8 @@ const User = lazy(() => import("../features/Management/User/user"));
 const Permission = lazy(() => import("../features/Management/Permission/permission"));
 const Role = lazy(() => import("../features/Management/Role/role"));
 const RolPermission = lazy(() => import("../features/Management/RolPermission/rolpermission"));
+const UserProfile = lazy(() => import("../features/UserProfile/userProfile"));
+const ResetPassword = lazy(() => import("../features/Auth/resetPassword/resetPassword"));
 
 
 export const AppRoutes = ({ isAuthenticated }) => {
@@ -33,6 +35,16 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route
         path="/dashboard"
         element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/userProfile"
+        element={isAuthenticated ? <UserProfile /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/reset-password"
+        element={isAuthenticated ? <ResetPassword /> : <Navigate to="/" />}
       />
 
       <Route
