@@ -65,7 +65,7 @@ const RolPermission = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reset to the first page on a new search
+              setCurrentPage(1); // Reiniciar a la primera página en nueva búsqueda
             }}
           />
           <button className="search-btn">
@@ -80,7 +80,6 @@ const RolPermission = () => {
       <table className="rolpermission-table">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Role Name</th>
             <th>Permission Name</th>
             <th>Actions</th>
@@ -89,28 +88,23 @@ const RolPermission = () => {
         <tbody>
           {paginatedRolPermissions.map((rolPermission, index) => (
             <tr key={index} className="rolpermission-row">
-              <td>{rolPermission.id}</td>
               <td>{rolPermission.roleName}</td>
               <td>{rolPermission.permissionName}</td>
-              <td className="icon-actions">
-                <button
-                  className="icon-btn"
+              <td>
+                <FaEdit
+                  className="edit-btn"
                   onClick={() => setEditRolPermission(rolPermission)}
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  className="icon-btn"
+                />
+                <FaTrash
+                  className="delete-btn"
                   onClick={() => setDeleteRolPermission(rolPermission)}
-                >
-                  <FaTrash />
-                </button>
+                />
               </td>
             </tr>
           ))}
           {paginatedRolPermissions.length === 0 && (
             <tr>
-              <td colSpan="4" style={{ textAlign: "center", padding: "1rem" }}>
+              <td colSpan="3" style={{ textAlign: "center", padding: "1rem" }}>
                 No role-permission relationships found.
               </td>
             </tr>
@@ -139,7 +133,7 @@ const RolPermission = () => {
         </div>
       )}
 
-      {/* Modals */}
+      {/* Modales */}
       {showCreateModal && (
         <CreateRolPermissionModal onClose={() => setShowCreateModal(false)} />
       )}

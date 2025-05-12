@@ -1,146 +1,127 @@
+/* Cambiar la fuente de toda la página a Inter */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro translúcido */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
-  font-family: sans-serif;
-}
-
-.checkbox-field input[type="checkbox"] {
-  width: 16px; /* Reducido el tamaño del checkbox */
-  height: 16px; /* Reducido el tamaño del checkbox */
-  accent-color: var(--primary-color);
-  cursor: not-allowed;
-  background-color: #fff; /* Fondo blanco */
-  border: 2px solid #cbd5e0; /* Borde gris claro */
-  border-radius: 4px;
-  display: inline-block;
-  position: relative;
-}
-
-.checkbox-field input[type="checkbox"]:checked {
-  background-color: var(--primary-color); /* Fondo azul cuando está marcado */
-  border-color: var(--primary-color); /* Borde azul */
-}
-
-.checkbox-field input[type="checkbox"]:checked::after {
-  content: '\2713'; /* Unicode para el check mark */
-  color: white;
-  position: absolute;
-  top: 2px;
-  left: 5px;
-  font-size: 12px; /* Ajuste de tamaño del icono */
-}
-
-.checkbox-field input[disabled] {
-  background-color: #f0f0f0; /* Fondo gris cuando está deshabilitado */
-  border: 1px solid #e0e0e0; /* Borde gris claro cuando está deshabilitado */
+  z-index: 9999; /* Asegura que esté por encima de todo */
 }
 
 .modal-form {
   background-color: #ffffff;
-  padding: 20px; /* Reducido el padding */
-  border-radius: 12px;
+  padding: 30px;
+  border-radius: 16px;
   width: 100%;
-  max-width: 480px; /* Reducido el max-width */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  max-width: 520px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Reducido el gap entre los elementos */
+  gap: 20px;
   box-sizing: border-box;
 }
 
-.modal-form h2 {
-  font-size: 1.8rem; /* Reducción de tamaño de fuente */
-  margin-bottom: 8px; /* Reducido el margen */
-  color: var(--text-color);
-}
-
 .modal-form label {
-  font-weight: bold;
-  color: #2d3748;
+  font-weight: 500;
+  color: #374151;
+  font-size: 0.95rem;
 }
 
 .modal-form input,
 .modal-form select {
-  padding: 10px; /* Reducción de padding */
-  border: 1px solid #cbd5e0;
-  border-radius: 8px;
-  font-size: 0.95rem; /* Reducido el tamaño de fuente */
-  background-color: white;
-  color: #333;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background-color: #f9fafb;
+  color: #111827;
   width: 100%;
-  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .modal-form input:focus,
 .modal-form select:focus {
-  border-color: #1e3a8a;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   outline: none;
 }
 
 .modal-form input[readonly] {
-  background-color: #f0f0f0;
+  background-color: #f3f4f6;
+  color: #9ca3af;
   cursor: not-allowed;
 }
 
 .checkbox-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
+  font-weight: 500;
+}
+
+.checkbox-field input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
+  border-radius: 4px;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 30px;
 }
 
 .save-btn, .cancel-btn {
-  padding: 10px 15px; /* Reducido el padding en botones */
-  font-size: 0.95rem; /* Reducido el tamaño de fuente */
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .save-btn {
-  font-weight: 600;
   color: white;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .save-btn:hover {
   transform: scale(1.05);
-  color: white;
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.4);
 }
 
 .cancel-btn {
-  font-weight: 600;
-  background-color: #e5e7eb;
-  color: black;
+  background-color: #f3f4f6;
+  color: #374151;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .cancel-btn:hover {
-  background-color: #d1d5db;
+  background-color: #e5e7eb;
 }
 
 .form-group {
   display: flex;
-  gap: 20px;
   flex-wrap: wrap;
+  gap: 20px;
 }
 
 .form-field {
@@ -153,5 +134,5 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 32px;
+  margin-top: 28px;
 }

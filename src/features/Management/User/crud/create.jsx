@@ -137,11 +137,11 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
         </div>
 
         <div className="modal-actions">
-          <button type="submit" className="save-btn">
-            Create
-          </button>
           <button type="button" onClick={onClose} className="cancel-btn">
             Cancel
+          </button>
+          <button type="submit" className="save-btn">
+            Create
           </button>
         </div>
       </form>

@@ -10,16 +10,16 @@ const DeleteUserModal = ({ user, onClose, onDelete }) => {
   return (
     <div className="modal">
       <div className="modal-form">
-        <h2>Delete User</h2>
-        <p>
+        <h2 style={{ fontSize: "1.5rem" }}>Delete User</h2>
+        <p style={{ fontSize: "1rem" }}>
           Are you sure you want to delete <strong>{user.name} {user.lastName}</strong>? 
           <br />This action is <strong>irreversible</strong>.
         </p>
         <div className="modal-actions">
-          <button onClick={onClose} className="cancel-btn">
+          <button onClick={onClose} className="cancel-btn" style={{ fontSize: "0.9rem" }}>
             Cancel
           </button>
-          <button onClick={handleDelete} className="save-btn">
+          <button onClick={handleDelete} className="save-btn" style={{ fontSize: "0.9rem" }}>
             Delete
           </button>
         </div>

@@ -4,7 +4,7 @@ import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import CreatePermissionModal from "./crud/create";
 import EditPermissionModal from "./crud/edit";
 import DeletePermissionModal from "./crud/delete";
-import { getAllPermissions } from "../../../api/permission"; 
+import { getAllPermissions } from "../../../api/permission";
 
 const PERMISSIONS_PER_PAGE = 5;
 
@@ -65,7 +65,7 @@ const Permission = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reset to the first page on a new search
+              setCurrentPage(1); // Reiniciar a la primera página en nueva búsqueda
             }}
           />
           <button className="search-btn">
@@ -80,7 +80,6 @@ const Permission = () => {
       <table className="permission-table">
         <thead>
           <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>Description</th>
             <th>Actions</th>
@@ -89,28 +88,23 @@ const Permission = () => {
         <tbody>
           {paginatedPermissions.map((permission, index) => (
             <tr key={index} className="permission-row">
-              <td>{permission.id}</td>
               <td>{permission.name}</td>
               <td>{permission.description}</td>
-              <td className="icon-actions">
-                <button
-                  className="icon-btn"
+              <td>
+                <FaEdit
+                  className="edit-btn"
                   onClick={() => setEditPermission(permission)}
-                >
-                  <FaEdit />
-                </button>
-                <button
-                  className="icon-btn"
+                />
+                <FaTrash
+                  className="delete-btn"
                   onClick={() => setDeletePermission(permission)}
-                >
-                  <FaTrash />
-                </button>
+                />
               </td>
             </tr>
           ))}
           {paginatedPermissions.length === 0 && (
             <tr>
-              <td colSpan="4" style={{ textAlign: "center", padding: "1rem" }}>
+              <td colSpan="3" style={{ textAlign: "center", padding: "1rem" }}>
                 No permissions found.
               </td>
             </tr>
@@ -139,7 +133,7 @@ const Permission = () => {
         </div>
       )}
 
-      {/* Modals */}
+      {/* Modales */}
       {showCreateModal && (
         <CreatePermissionModal onClose={() => setShowCreateModal(false)} />
       )}

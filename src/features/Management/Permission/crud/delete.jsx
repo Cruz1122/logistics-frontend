@@ -1,18 +1,18 @@
 import React from "react";
 import "./modal.css";
 
-const DeleteUserModal = ({ user, onClose, onDelete }) => {
+const DeletePermissionModal = ({ permission, onClose, onDelete }) => {
   const handleDelete = () => {
-    onDelete(user);
+    onDelete(permission);
     onClose();
   };
 
   return (
     <div className="modal">
       <div className="modal-form">
-        <h2>Delete User</h2>
+        <h2>Delete Permission</h2>
         <p>
-          Are you sure you want to delete <strong>{user.name}</strong>?
+          Are you sure you want to delete <strong>{permission.name}</strong>?
         </p>
         <div className="modal-actions">
           <button onClick={handleDelete} className="save-btn">
@@ -27,4 +27,4 @@ const DeleteUserModal = ({ user, onClose, onDelete }) => {
   );
 };
 
-export default DeleteUserModal;
+export default DeletePermissionModal;

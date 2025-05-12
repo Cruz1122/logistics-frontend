@@ -108,16 +108,15 @@ const User = () => {
                   <MdCancel size={24} color="red" />
                 )}
               </td>
-              <td className="icon-actions">
-                <button className="icon-btn" onClick={() => setEditUser(user)}>
-                  <FaEdit />
-                </button>
-                <button
-                  className="icon-btn"
-                  onClick={() => setDeleteUser(user)}
-                >
-                  <FaTrash />
-                </button>
+              <td>
+                  <FaEdit
+                    className="edit-btn"
+                    onClick={() => setEditUser(user)}
+                  />
+                  <FaTrash
+                    className="delete-btn"
+                    onClick={() => setDeleteUser(user)}
+                  />
               </td>
             </tr>
           ))}

@@ -48,21 +48,21 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     <div className="modal">
       <form onSubmit={handleSubmit} className="modal-form">
         <h2>
-          Edit User <strong>{user.name}</strong>{" "}
+          Edit User
         </h2>
 
         <div className="form-field">
-          <label>ID:</label>
+          <label>ID</label>
           <input name="id" value={formData.id} readOnly disabled />
         </div>
 
         <div className="form-group">
           <div className="form-field">
-            <label>Name:</label>
+            <label>Name</label>
             <input name="name" value={formData.name} onChange={handleChange} />
           </div>
           <div className="form-field">
-            <label>Last Name:</label>
+            <label>Last name</label>
             <input
               name="lastName"
               value={formData.lastName}
@@ -73,28 +73,33 @@ const EditUserModal = ({ user, onClose, onSave }) => {
 
         <div className="form-group">
           <div className="form-field">
-            <label>Email:</label>
+            <label>Email</label>
             <input name="email" value={formData.email} readOnly disabled />
           </div>
-          <div className="form-field checkbox-field">
-            <label>Email Verified:</label>
-            <input
-              name="verified"
-              type="checkbox"
-              checked={formData.verified}
-              disabled
-            />
+          <div className="form-field">
+            <label>Email verified</label>
+            {formData.verified ? (
+              <span
+                style={{ color: "green", fontWeight: "bold", fontSize: 25 }}
+              >
+                ✔
+              </span>
+            ) : (
+              <span style={{ color: "red", fontWeight: "bold", fontSize: 25 }}>
+                ✖
+              </span>
+            )}
           </div>
         </div>
 
         <div className="form-field">
-          <label>Phone:</label>
+          <label>Phone</label>
           <input name="phone" value={formData.phone} onChange={handleChange} />
         </div>
 
         <div className="form-group">
           <div className="form-field">
-            <label>Role:</label>
+            <label>Role</label>
             <select name="role" value={formData.role} onChange={handleChange}>
               <option value="Admin">Admin</option>
               <option value="Delivery">Delivery</option>
@@ -104,14 +109,14 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             </select>
           </div>
           <div className="form-field">
-            <label>Role ID:</label>
+            <label>Role ID</label>
             <input name="roleId" value={formData.roleId} readOnly disabled />
           </div>
         </div>
 
         <div className="form-group">
           <div className="form-field">
-            <label>Created At:</label>
+            <label>Created at</label>
             <input
               name="createdAt"
               value={formData.createdAt}
@@ -120,7 +125,7 @@ const EditUserModal = ({ user, onClose, onSave }) => {
             />
           </div>
           <div className="form-field">
-            <label>Updated At:</label>
+            <label>Updated at</label>
             <input
               name="updatedAt"
               value={formData.updatedAt}
@@ -131,11 +136,11 @@ const EditUserModal = ({ user, onClose, onSave }) => {
         </div>
 
         <div className="modal-actions">
-          <button type="submit" className="save-btn">
-            Save
-          </button>
           <button type="button" onClick={onClose} className="cancel-btn">
             Cancel
+          </button>
+          <button type="submit" className="save-btn">
+            Save
           </button>
         </div>
       </form>

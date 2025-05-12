@@ -49,8 +49,8 @@
   margin-right: 10px;
   background: linear-gradient(
     to right,
-    var(--primary-color, #4f46e5),
-    var(--secondary-color, #6366f1)
+    var(--primary-color),
+    var(--secondary-color)
   );
   color: white;
   border: none;
@@ -58,11 +58,13 @@
   padding: 10px 20px;
   cursor: pointer;
   font-weight: bold;
-  transition: background 0.3s ease;
+  transition: transform 0.2s ease, opacity 0.3s ease, background-position 0.5s ease;
 }
 
 .create-btn:hover {
-  background-color: var(--primary-color);
+  transform: scale(1.05);
+  background-position: right center;
+  color: white;
 }
 
 .user-table {
@@ -91,24 +93,19 @@
   background-color: #f9f9f9;
 }
 
-.icon-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
+.edit-btn {
+  margin-right: 10px;
 }
 
-.icon-btn {
-  background: none;
-  border: none;
-  color: black;
-  font-size: 16px;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.user-row:hover .icon-btn {
+.edit-btn:hover,
+.delete-btn:hover {
   color: var(--primary-color);
+  cursor: pointer;
 }
+.user-table td {
+  padding: 10px 15px;
+}
+
 
 /* Pagination styles */
 .pagination {
@@ -120,15 +117,33 @@
 }
 
 .pagination button {
-  padding: 8px 16px;
-  border: none;
-  background-color: #4f46e5;
+  margin-right: 10px;
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   color: white;
-  border-radius: 20px;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s ease-in-out;
+  font-weight: bold;
+  transition: transform 0.2s ease, opacity 0.3s ease, background-position 0.5s ease;
 }
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover {
+  transform: scale(1.05);
+  background-position: right center;
+  color: white;
+}
+
+
 
 .pagination button:disabled {
   background-color: #ccc;
