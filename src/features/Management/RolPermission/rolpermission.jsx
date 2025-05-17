@@ -5,6 +5,7 @@ import CreateRolPermissionModal from "./crud/create";
 import EditRolPermissionModal from "./crud/edit";
 import DeleteRolPermissionModal from "./crud/delete";
 import { getAllRolPermissions } from "../../../api/rolpermission";
+import { MdCheckCircle, MdCancel } from "react-icons/md";
 
 const ROL_PERMISSIONS_PER_PAGE = 5;
 
@@ -24,6 +25,10 @@ const RolPermission = () => {
         id: rolPermission.id,
         roleName: rolPermission.role.name,
         permissionName: rolPermission.permission.name,
+        crear: rolPermission.crear,
+        listar: rolPermission.listar,
+        editar: rolPermission.editar,
+        eliminar: rolPermission.eliminar,
       }));
 
       setRolPermissions(mappedRolPermissions);
@@ -82,6 +87,10 @@ const RolPermission = () => {
           <tr>
             <th>Role Name</th>
             <th>Permission Name</th>
+            <th>Read</th>
+            <th>Create</th>
+            <th>Edit</th>
+            <th>Delete</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -90,6 +99,34 @@ const RolPermission = () => {
             <tr key={index} className="rolpermission-row">
               <td>{rolPermission.roleName}</td>
               <td>{rolPermission.permissionName}</td>
+              <td>
+                {rolPermission.listar ? (
+                  <MdCheckCircle size={24} color="#5edd60" />
+                ) : (
+                  <MdCancel size={24} color="red" />
+                )}
+              </td>
+              <td>
+                {rolPermission.crear ? (
+                  <MdCheckCircle size={24} color="#5edd60" />
+                ) : (
+                  <MdCancel size={24} color="red" />
+                )}
+              </td>
+              <td>
+                {rolPermission.editar ? (
+                  <MdCheckCircle size={24} color="#5edd60" />
+                ) : (
+                  <MdCancel size={24} color="red" />
+                )}
+              </td>
+              <td>
+                {rolPermission.eliminar ? (
+                  <MdCheckCircle size={24} color="#5edd60" />
+                ) : (
+                  <MdCancel size={24} color="red" />
+                )}
+              </td>
               <td>
                 <FaEdit
                   className="edit-btn"
@@ -104,7 +141,7 @@ const RolPermission = () => {
           ))}
           {paginatedRolPermissions.length === 0 && (
             <tr>
-              <td colSpan="3" style={{ textAlign: "center", padding: "1rem" }}>
+              <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
                 No role-permission relationships found.
               </td>
             </tr>
