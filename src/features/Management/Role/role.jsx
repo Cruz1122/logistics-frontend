@@ -4,7 +4,10 @@ import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import CreateRoleModal from "./crud/create";
 import EditRoleModal from "./crud/edit";
 import DeleteRoleModal from "./crud/delete";
-import { getAllRoles } from "../../../api/role";
+import { getAllRoles, createRole, updateRole, deleteRole } from "../../../api/role";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ROLES_PER_PAGE = 5;
 
@@ -14,21 +17,26 @@ const Role = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editRole, setEditRole] = useState(null);
-  const [deleteRole, setDeleteRole] = useState(null);
+  const [roleToDelete, setRoleToDelete] = useState(null);
 
   useEffect(() => {
     const fetchRoles = async () => {
-      const rawRoles = await getAllRoles();
+      try {
+        const rawRoles = await getAllRoles();
 
-      const mappedRoles = rawRoles.map((role) => ({
-        id: role.id,
-        name: role.name,
-        description: role.description,
-        createdAt: role.createdAt,
-        updatedAt: role.updatedAt,
-      }));
+        const mappedRoles = rawRoles.map((role) => ({
+          id: role.id,
+          name: role.name,
+          description: role.description,
+          createdAt: role.createdAt,
+          updatedAt: role.updatedAt,
+        }));
 
-      setRoles(mappedRoles);
+        setRoles(mappedRoles);
+      } catch (error) {
+        toast.error("Error fetching roles");
+        console.error(error);
+      }
     };
 
     fetchRoles();
@@ -54,8 +62,54 @@ const Role = () => {
     }
   };
 
+  // Crear nuevo rol
+  const handleCreateRole = async (roleData) => {
+    try {
+      const newRole = await createRole(roleData);
+      setRoles((prev) => [...prev, newRole]);
+      setShowCreateModal(false);
+      toast.success("Role created successfully");
+    } catch (error) {
+      toast.error("Error creating role");
+      console.error("Error creating role:", error);
+    }
+  };
+
+  // Editar rol existente
+  const handleSaveEditRole = async (updatedData) => {
+    try {
+      const updatedRole = await updateRole(editRole.id, updatedData);
+      setRoles((prev) =>
+        prev.map((role) =>
+          role.id === updatedRole.id ? updatedRole : role
+        )
+      );
+      setEditRole(null);
+      toast.success("Role updated successfully");
+    } catch (error) {
+      toast.error("Error updating role");
+      console.error("Error updating role:", error);
+    }
+  };
+
+  // Eliminar rol
+  const handleDeleteRole = async (role) => {
+    try {
+      await deleteRole(role.id);
+      setRoles((prev) => prev.filter((r) => r.id !== role.id));
+      setRoleToDelete(null);
+      setCurrentPage(1);
+      toast.success("Role deleted successfully");
+    } catch (error) {
+      toast.error("Error deleting role");
+      console.error("Error deleting role:", error);
+    }
+  };
+
   return (
     <div className="role-container">
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <div className="role-controls">
         <div className="search-wrapper">
           <input
@@ -65,7 +119,7 @@ const Role = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reiniciar a la primera página en nueva búsqueda
+              setCurrentPage(1);
             }}
           />
           <button className="search-btn">
@@ -97,7 +151,7 @@ const Role = () => {
                 />
                 <FaTrash
                   className="delete-btn"
-                  onClick={() => setDeleteRole(role)}
+                  onClick={() => setRoleToDelete(role)}
                 />
               </td>
             </tr>
@@ -112,7 +166,6 @@ const Role = () => {
         </tbody>
       </table>
 
-      {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -133,17 +186,24 @@ const Role = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
-        <CreateRoleModal onClose={() => setShowCreateModal(false)} />
+        <CreateRoleModal
+          onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreateRole}
+        />
       )}
       {editRole && (
-        <EditRoleModal role={editRole} onClose={() => setEditRole(null)} />
+        <EditRoleModal
+          role={editRole}
+          onClose={() => setEditRole(null)}
+          onSave={handleSaveEditRole}
+        />
       )}
-      {deleteRole && (
+      {roleToDelete && (
         <DeleteRoleModal
-          role={deleteRole}
-          onClose={() => setDeleteRole(null)}
+          role={roleToDelete}
+          onClose={() => setRoleToDelete(null)}
+          onDelete={handleDeleteRole}
         />
       )}
     </div>

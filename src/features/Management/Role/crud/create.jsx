@@ -17,8 +17,7 @@ const CreateRoleModal = ({ onClose, onCreate }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onCreate(formData); // Esta función se define en el componente padre
-    onClose();
+    onCreate(formData); // Envía los datos al padre
   };
 
   return (
