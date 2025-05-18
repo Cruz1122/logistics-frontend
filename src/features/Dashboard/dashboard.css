@@ -1,39 +1,39 @@
 .dashboard-container {
+  display: grid;
+  place-items: center; /* Centra horizontal y verticalmente */
   padding: 40px;
   box-sizing: border-box;
-  display: flex;
-  justify-content: center; /* Centra horizontalmente */
-  flex-direction: column;
 }
 
 .cards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Hasta 4 columnas */
+  display: flex;
+  flex-wrap: wrap;            /* Permite bajar filas */
+  justify-content: center;    /* Centra horizontalmente */
   gap: 24px;
-  max-width: 1200px; /* Limitar el ancho máximo */
-  width: 100%; /* Se ajusta al 100% */
-  justify-items: center; /* Centra los items (tarjetas) */
-  justify-content: center; /* Asegura que las tarjetas se centren si no hay 4 en una fila */
+  max-width: 1200px;
+  margin: 0 auto;             /* Centra el contenedor en la página */
 }
 
+.dashboard-card {
+  flex: 1 1 22%; /* Crece, encoge, base ~22% para 4 columnas con gap */
+  max-width: 300px;  /* Limita el ancho máximo */
+  min-width: 250px;  /* Para evitar que se hagan demasiado pequeñas */
+  box-sizing: border-box;
+}
+
+/* Medianos: 2 columnas */
 @media (max-width: 1024px) {
-  .cards-grid {
-    grid-template-columns: repeat(2, 1fr); /* Cambiar a 2 columnas en pantallas medianas */
-  }
-
   .dashboard-card {
-    padding: 18px 12px; /* Reduce el padding de las tarjetas */
+    flex: 1 1 45%; /* base 45% para 2 columnas con gap */
+    max-width: none;
   }
 }
 
+/* Pequeños: 1 columna */
 @media (max-width: 640px) {
-  .cards-grid {
-    grid-template-columns: 1fr; /* Cambiar a 1 columna en pantallas pequeñas */
-  }
-
   .dashboard-card {
-    padding: 14px 10px; /* Reduce aún más el padding */
-    max-width: 90%; /* Hace que las tarjetas no se vean tan grandes en móviles */
+    flex: 1 1 90%; /* base 90% para 1 columna */
+    max-width: none;
   }
 }
 
