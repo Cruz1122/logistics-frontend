@@ -126,3 +126,20 @@ export const createUser = async (userData) => {
     throw error;
   }
 };
+
+export const getUserByID = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(`${API_URL}/auth/users/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener usuario:", error.response?.data || error.message);
+    throw error;
+  }
+}

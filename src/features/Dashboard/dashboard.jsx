@@ -12,6 +12,7 @@ import {
   FaTruck,
   FaCity,
   FaMap ,
+  FaWarehouse ,
   FaQuestionCircle,
 } from "react-icons/fa";
 import "./dashboard.css";
@@ -62,6 +63,7 @@ const Dashboard = () => {
     if (permissionName.includes("supplier")) return <FaTruck size={40} />;
     if (permissionName.includes("state")) return <FaMap  size={40} />;
     if (permissionName.includes("city")) return <FaCity size={40} />;
+    if (permissionName.includes("warehouse")) return <FaWarehouse size={40} />;
 
     // Ícono por defecto en caso de que no coincida con ningún permiso
     return <FaQuestionCircle size={40} />;
@@ -95,6 +97,8 @@ const Dashboard = () => {
       route = "/statesPanel";
     } else if (permissionName.includes("city")) {
       route = "/citiesPanel";
+    } else if (permissionName.includes("warehouse")) {
+      route = "/warehousesPanel";
     } else {
       route = "/defaultPanel"; // Ruta por defecto si no hay coincidencia
     }
