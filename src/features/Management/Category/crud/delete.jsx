@@ -1,17 +1,17 @@
 import React from "react";
 import "./modal.css";
 
-const DeletePermissionModal = ({ permission, onClose, onDelete, loading }) => {
+const DeleteCategoryModal = ({ category, onClose, onDelete, loading }) => {
   const handleDelete = async () => {
-    await onDelete(permission);
+    await onDelete(category);
   };
 
   return (
     <div className="modal">
       <div className="modal-form">
-        <h2>Delete Permission</h2>
+        <h2>Delete Category</h2>
         <p>
-          Are you sure you want to delete <strong>{permission.name}</strong>?
+          Are you sure you want to delete <strong>{category.name}</strong>?
         </p>
         <div className="modal-actions">
           <button
@@ -34,4 +34,4 @@ const DeletePermissionModal = ({ permission, onClose, onDelete, loading }) => {
   );
 };
 
-export default DeletePermissionModal;
+export default DeleteCategoryModal;

@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./modal.css";
 
-const CreatePermissionModal = ({ onClose, onCreate, loading }) => {
+const EditCityModal = ({ city, states, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    description: "",
+    name: city.name,
+    stateId: city.stateId || "",
   });
+
+  useEffect(() => {
+    // Si el city cambia, actualizamos el estado del form
+    setFormData({
+      name: city.name,
+      stateId: city.stateId || "",
+    });
+  }, [city]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,13 +25,17 @@ const CreatePermissionModal = ({ onClose, onCreate, loading }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await onCreate(formData);
+    if (!formData.stateId) {
+      alert("Please select a state");
+      return;
+    }
+    await onSave(formData);
   };
 
   return (
     <div className="modal">
       <form onSubmit={handleSubmit} className="modal-form">
-        <h2>Create New Permission</h2>
+        <h2>Edit City</h2>
 
         <label>
           Name:
@@ -33,21 +45,31 @@ const CreatePermissionModal = ({ onClose, onCreate, loading }) => {
             onChange={handleChange}
             required
             disabled={loading}
+            autoFocus
           />
         </label>
+
         <label>
-          Description:
-          <textarea
-            name="description"
-            value={formData.description}
+          State:
+          <select
+            name="stateId"
+            value={formData.stateId}
             onChange={handleChange}
             required
             disabled={loading}
-          />
+          >
+            <option value="">Select a state</option>
+            {states.map((state) => (
+              <option key={state.id} value={state.id}>
+                {state.name}
+              </option>
+            ))}
+          </select>
         </label>
+
         <div className="modal-actions">
           <button type="submit" className="save-btn" disabled={loading}>
-            {loading ? "Creating..." : "Create"}
+            {loading ? "Saving..." : "Save"}
           </button>
           <button
             type="button"
@@ -63,4 +85,4 @@ const CreatePermissionModal = ({ onClose, onCreate, loading }) => {
   );
 };
 
-export default CreatePermissionModal;
+export default EditCityModal;

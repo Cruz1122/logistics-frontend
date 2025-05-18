@@ -4,39 +4,63 @@ import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import CreateRolPermissionModal from "./crud/create";
 import EditRolPermissionModal from "./crud/edit";
 import DeleteRolPermissionModal from "./crud/delete";
-import { getAllRolPermissions } from "../../../api/rolpermission";
+import {
+  getAllRolPermissions,
+  createRolPermission,
+  updateRolPermission,
+  deleteRolPermission as deleteRolPermissionApi,
+} from "../../../api/rolpermission";
+import { getAllRoles } from "../../../api/role";
+import { getAllPermissions } from "../../../api/permission";
+import { MdCheckCircle, MdCancel } from "react-icons/md";
+import { toast, ToastContainer } from "react-toastify";
 
 const ROL_PERMISSIONS_PER_PAGE = 5;
 
 const RolPermission = () => {
   const [rolPermissions, setRolPermissions] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [permissions, setPermissions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editRolPermission, setEditRolPermission] = useState(null);
   const [deleteRolPermission, setDeleteRolPermission] = useState(null);
+  const [loading, setLoading] = useState(false); // controla botón en modal
 
   useEffect(() => {
-    const fetchRolPermissions = async () => {
-      const rawRolPermissions = await getAllRolPermissions();
+    const fetchData = async () => {
+      try {
+        const rawRolPermissions = await getAllRolPermissions();
+        const rawRoles = await getAllRoles();
+        const rawPermissions = await getAllPermissions();
 
-      const mappedRolPermissions = rawRolPermissions.map((rolPermission) => ({
-        id: rolPermission.id,
-        roleName: rolPermission.role.name,
-        permissionName: rolPermission.permission.name,
-      }));
+        const mappedRolPermissions = rawRolPermissions.map((rp) => ({
+          id: rp.id,
+          roleId: rp.role.id,
+          roleName: rp.role.name,
+          permissionId: rp.permission.id,
+          permissionName: rp.permission.name,
+          crear: rp.crear,
+          listar: rp.listar,
+          editar: rp.editar,
+          eliminar: rp.eliminar,
+        }));
 
-      setRolPermissions(mappedRolPermissions);
+        setRolPermissions(mappedRolPermissions);
+        setRoles(rawRoles);
+        setPermissions(rawPermissions);
+      } catch (error) {
+        toast.error("Error loading data");
+        console.error(error);
+      }
     };
 
-    fetchRolPermissions();
+    fetchData();
   }, []);
 
-  const filteredRolPermissions = rolPermissions.filter((rolPermission) =>
-    Object.values(rolPermission)
-      .join(" ")
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+  const filteredRolPermissions = rolPermissions.filter((rp) =>
+    Object.values(rp).join(" ").toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const totalPages = Math.ceil(
@@ -54,8 +78,95 @@ const RolPermission = () => {
     }
   };
 
+  const handleCreate = async (newRolPermission) => {
+    try {
+      setLoading(true);
+      const { rolePermission } = await createRolPermission(newRolPermission);
+
+      const roleSelected = roles.find((r) => r.id === rolePermission.roleId);
+      const permissionSelected = permissions.find(
+        (p) => p.id === rolePermission.permissionId
+      );
+
+      setRolPermissions((prev) => [
+        ...prev,
+        {
+          ...rolePermission,
+          roleName: roleSelected?.name || "Unknown Role",
+          permissionName: permissionSelected?.name || "Unknown Permission",
+        },
+      ]);
+
+      setShowCreateModal(false);
+      toast.success("Rol-Permission created successfully");
+    } catch (error) {
+      console.error("Error al crear rol-permiso:", error);
+      toast.error("Error creating rol-permission");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEdit = async (updatedRolPermission) => {
+    try {
+      setLoading(true);
+      const { rolePermission } = await updateRolPermission(
+        updatedRolPermission.id,
+        updatedRolPermission
+      );
+
+      const roleSelected = roles.find((r) => r.id === rolePermission.roleId);
+      const permissionSelected = permissions.find(
+        (p) => p.id === rolePermission.permissionId
+      );
+
+      const updatedItem = {
+        id: rolePermission.id,
+        roleId: rolePermission.roleId,
+        permissionId: rolePermission.permissionId,
+        crear: rolePermission.crear,
+        listar: rolePermission.listar,
+        editar: rolePermission.editar,
+        eliminar: rolePermission.eliminar,
+        roleName: roleSelected?.name || "Unknown Role",
+        permissionName: permissionSelected?.name || "Unknown Permission",
+      };
+
+      setRolPermissions((prev) =>
+        prev.map((item) => (item.id === rolePermission.id ? updatedItem : item))
+      );
+
+      setEditRolPermission(null);
+      toast.success("Rol-Permission updated successfully");
+    } catch (error) {
+      console.error("Error al editar rol-permiso:", error);
+      toast.error("Error updating rol-permission");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true);
+      await deleteRolPermissionApi(id);
+      setRolPermissions((prev) => prev.filter((item) => item.id !== id));
+      setDeleteRolPermission(null);
+      // onClose(); // Esta función no está definida en el código original, la quito
+
+      setCurrentPage(1);
+      toast.success("Rol-Permission deleted successfully");
+    } catch (error) {
+      console.error("Error al eliminar rol-permiso:", error);
+      toast.error("Error deleting rol-permission");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="rolpermission-container">
+      <ToastContainer position="top-right" autoClose={3000} />
       <div className="rolpermission-controls">
         <div className="search-wrapper">
           <input
@@ -65,7 +176,7 @@ const RolPermission = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reiniciar a la primera página en nueva búsqueda
+              setCurrentPage(1);
             }}
           />
           <button className="search-btn">
@@ -82,29 +193,61 @@ const RolPermission = () => {
           <tr>
             <th>Role Name</th>
             <th>Permission Name</th>
+            <th>Read</th>
+            <th>Create</th>
+            <th>Edit</th>
+            <th>Delete</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedRolPermissions.map((rolPermission, index) => (
+          {paginatedRolPermissions.map((rp, index) => (
             <tr key={index} className="rolpermission-row">
-              <td>{rolPermission.roleName}</td>
-              <td>{rolPermission.permissionName}</td>
+              <td>{rp.roleName}</td>
+              <td>{rp.permissionName}</td>
+              <td>
+                {rp.listar ? (
+                  <MdCheckCircle color="#5edd60" size={24} />
+                ) : (
+                  <MdCancel color="red" size={24} />
+                )}
+              </td>
+              <td>
+                {rp.crear ? (
+                  <MdCheckCircle color="#5edd60" size={24} />
+                ) : (
+                  <MdCancel color="red" size={24} />
+                )}
+              </td>
+              <td>
+                {rp.editar ? (
+                  <MdCheckCircle color="#5edd60" size={24} />
+                ) : (
+                  <MdCancel color="red" size={24} />
+                )}
+              </td>
+              <td>
+                {rp.eliminar ? (
+                  <MdCheckCircle color="#5edd60" size={24} />
+                ) : (
+                  <MdCancel color="red" size={24} />
+                )}
+              </td>
               <td>
                 <FaEdit
                   className="edit-btn"
-                  onClick={() => setEditRolPermission(rolPermission)}
+                  onClick={() => setEditRolPermission(rp)}
                 />
                 <FaTrash
                   className="delete-btn"
-                  onClick={() => setDeleteRolPermission(rolPermission)}
+                  onClick={() => setDeleteRolPermission(rp)}
                 />
               </td>
             </tr>
           ))}
           {paginatedRolPermissions.length === 0 && (
             <tr>
-              <td colSpan="3" style={{ textAlign: "center", padding: "1rem" }}>
+              <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
                 No role-permission relationships found.
               </td>
             </tr>
@@ -112,7 +255,6 @@ const RolPermission = () => {
         </tbody>
       </table>
 
-      {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -133,20 +275,31 @@ const RolPermission = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
-        <CreateRolPermissionModal onClose={() => setShowCreateModal(false)} />
+        <CreateRolPermissionModal
+          onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreate}
+          roles={roles}
+          permissions={permissions}
+          loading={loading}
+        />
       )}
       {editRolPermission && (
         <EditRolPermissionModal
           rolPermission={editRolPermission}
           onClose={() => setEditRolPermission(null)}
+          onSave={handleEdit}
+          roles={roles}
+          permissions={permissions}
+          loading={loading}
         />
       )}
       {deleteRolPermission && (
         <DeleteRolPermissionModal
           rolPermission={deleteRolPermission}
           onClose={() => setDeleteRolPermission(null)}
+          onDelete={() => handleDelete(deleteRolPermission.id)}
+          loading={loading}
         />
       )}
     </div>

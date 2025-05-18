@@ -8,6 +8,11 @@ import {
   FaUsersCog,
   FaKey,
   FaTasks,
+  FaTags,
+  FaTruck,
+  FaCity,
+  FaMap ,
+  FaWarehouse ,
   FaQuestionCircle,
 } from "react-icons/fa";
 import "./dashboard.css";
@@ -43,11 +48,22 @@ const Dashboard = () => {
 
     // Asignar iconos según los permisos
     if (permissionName.includes("user")) return <FaUser size={40} />;
-    if (permissionName.includes("role") && !permissionName.includes("permission"))
+    if (
+      permissionName.includes("role") &&
+      !permissionName.includes("permission")
+    )
       return <FaUsersCog size={40} />;
-    if (permissionName.includes("role") && permissionName.includes("permission"))
+    if (
+      permissionName.includes("role") &&
+      permissionName.includes("permission")
+    )
       return <FaKey size={40} />;
     if (permissionName.includes("permission")) return <FaTasks size={40} />;
+    if (permissionName.includes("category")) return <FaTags size={40} />; // Icono para "categoría"
+    if (permissionName.includes("supplier")) return <FaTruck size={40} />;
+    if (permissionName.includes("state")) return <FaMap  size={40} />;
+    if (permissionName.includes("city")) return <FaCity size={40} />;
+    if (permissionName.includes("warehouse")) return <FaWarehouse size={40} />;
 
     // Ícono por defecto en caso de que no coincida con ningún permiso
     return <FaQuestionCircle size={40} />;
@@ -61,12 +77,28 @@ const Dashboard = () => {
     // Condiciones para asignar las rutas según el permiso
     if (permissionName.includes("user")) {
       route = "/usersPanel";
-    } else if (permissionName.includes("role") && !permissionName.includes("permission")) {
+    } else if (
+      permissionName.includes("role") &&
+      !permissionName.includes("permission")
+    ) {
       route = "/rolesPanel";
-    } else if (permissionName.includes("role") && permissionName.includes("permission")) {
+    } else if (
+      permissionName.includes("role") &&
+      permissionName.includes("permission")
+    ) {
       route = "/roleXpermissionPanel";
     } else if (permissionName.includes("permission")) {
       route = "/permissionsPanel";
+    } else if (permissionName.includes("category")) {
+      route = "/categoriesPanel";
+    } else if (permissionName.includes("supplier")) {
+      route = "/suppliersPanel";
+    } else if (permissionName.includes("state")) {
+      route = "/statesPanel";
+    } else if (permissionName.includes("city")) {
+      route = "/citiesPanel";
+    } else if (permissionName.includes("warehouse")) {
+      route = "/warehousesPanel";
     } else {
       route = "/defaultPanel"; // Ruta por defecto si no hay coincidencia
     }

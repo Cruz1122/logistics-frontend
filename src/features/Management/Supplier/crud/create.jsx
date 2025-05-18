@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./modal.css";
 
-const EditRoleModal = ({ role, onClose, onSave, loading }) => {
+const CreateSupplierModal = ({ onClose, onCreate, loading }) => {
   const [formData, setFormData] = useState({
-    name: role.name,
-    description: role.description,
+    name: "",
+    phone: "",
+    email: "",
   });
 
   const handleChange = (e) => {
@@ -15,15 +16,16 @@ const EditRoleModal = ({ role, onClose, onSave, loading }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData); // Esta función se define en el componente padre
+    await onCreate(formData);
   };
 
   return (
     <div className="modal">
       <form onSubmit={handleSubmit} className="modal-form">
-        <h2>Edit Role</h2>
+        <h2>Create New Supplier</h2>
+
         <label>
           Name:
           <input
@@ -32,23 +34,44 @@ const EditRoleModal = ({ role, onClose, onSave, loading }) => {
             onChange={handleChange}
             required
             disabled={loading}
+            autoFocus
           />
         </label>
+
         <label>
-          Description:
-          <textarea
-            name="description"
-            value={formData.description}
+          Phone:
+          <input
+            name="phone"
+            type="tel"
+            value={formData.phone}
             onChange={handleChange}
             required
             disabled={loading}
           />
         </label>
+
+        <label>
+          Email:
+          <input
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            disabled={loading}
+          />
+        </label>
+
         <div className="modal-actions">
           <button type="submit" className="save-btn" disabled={loading}>
-            {loading ? "Saving..." : "Save"}
+            {loading ? "Creating..." : "Create"}
           </button>
-          <button type="button" onClick={onClose} className="cancel-btn">
+          <button
+            type="button"
+            onClick={onClose}
+            className="cancel-btn"
+            disabled={loading}
+          >
             Cancel
           </button>
         </div>
@@ -57,4 +80,4 @@ const EditRoleModal = ({ role, onClose, onSave, loading }) => {
   );
 };
 
-export default EditRoleModal;
+export default CreateSupplierModal;

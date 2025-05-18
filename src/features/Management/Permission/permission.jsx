@@ -4,7 +4,15 @@ import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import CreatePermissionModal from "./crud/create";
 import EditPermissionModal from "./crud/edit";
 import DeletePermissionModal from "./crud/delete";
-import { getAllPermissions } from "../../../api/permission";
+import {
+  getAllPermissions,
+  createPermission,
+  updatePermission,
+  deletePermission as apiDeletePermission,
+} from "../../../api/permission";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PERMISSIONS_PER_PAGE = 5;
 
@@ -15,9 +23,10 @@ const Permission = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editPermission, setEditPermission] = useState(null);
   const [deletePermission, setDeletePermission] = useState(null);
+  const [loading, setLoading] = useState(false); // controla botón en modal
 
-  useEffect(() => {
-    const fetchPermissions = async () => {
+  const fetchPermissions = async () => {
+    try {
       const rawPermissions = await getAllPermissions();
 
       const mappedPermissions = rawPermissions.map((permission) => ({
@@ -27,10 +36,61 @@ const Permission = () => {
       }));
 
       setPermissions(mappedPermissions);
-    };
+    } catch (error) {
+      toast.error("Error fetching permissions");
+      console.error(error);
+    }
+  };
 
+  useEffect(() => {
     fetchPermissions();
   }, []);
+
+  const handleCreate = async (newPermissionData) => {
+    try {
+      setLoading(true);
+      await createPermission(newPermissionData);
+      await fetchPermissions();
+      setShowCreateModal(false);
+      toast.success("Permission created successfully");
+    } catch (error) {
+      toast.error("Error creating permission");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async (updatedPermissionData) => {
+    try {
+      setLoading(true);
+      await updatePermission(editPermission.id, updatedPermissionData);
+      await fetchPermissions();
+      setEditPermission(null);
+      toast.success("Permission updated successfully");
+    } catch (error) {
+      toast.error("Error updating permission");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (permissionToDelete) => {
+    try {
+      setLoading(true);
+      await apiDeletePermission(permissionToDelete.id);
+      await fetchPermissions();
+      setDeletePermission(null);
+      setCurrentPage(1); // va a página 1 después de eliminar
+      toast.success("Permission deleted successfully");
+    } catch (error) {
+      toast.error("Error deleting permission");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredPermissions = permissions.filter((permission) =>
     Object.values(permission)
@@ -39,9 +99,7 @@ const Permission = () => {
       .includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(
-    filteredPermissions.length / PERMISSIONS_PER_PAGE
-  );
+  const totalPages = Math.ceil(filteredPermissions.length / PERMISSIONS_PER_PAGE);
   const startIndex = (currentPage - 1) * PERMISSIONS_PER_PAGE;
   const paginatedPermissions = filteredPermissions.slice(
     startIndex,
@@ -56,6 +114,8 @@ const Permission = () => {
 
   return (
     <div className="permission-container">
+      <ToastContainer position="top-right" autoClose={3000} />
+
       <div className="permission-controls">
         <div className="search-wrapper">
           <input
@@ -65,7 +125,7 @@ const Permission = () => {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              setCurrentPage(1); // Reiniciar a la primera página en nueva búsqueda
+              setCurrentPage(1);
             }}
           />
           <button className="search-btn">
@@ -86,8 +146,8 @@ const Permission = () => {
           </tr>
         </thead>
         <tbody>
-          {paginatedPermissions.map((permission, index) => (
-            <tr key={index} className="permission-row">
+          {paginatedPermissions.map((permission) => (
+            <tr key={permission.id} className="permission-row">
               <td>{permission.name}</td>
               <td>{permission.description}</td>
               <td>
@@ -112,7 +172,6 @@ const Permission = () => {
         </tbody>
       </table>
 
-      {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -135,18 +194,26 @@ const Permission = () => {
 
       {/* Modales */}
       {showCreateModal && (
-        <CreatePermissionModal onClose={() => setShowCreateModal(false)} />
+        <CreatePermissionModal
+          onClose={() => setShowCreateModal(false)}
+          onCreate={handleCreate}
+          loading={loading} // Pasamos prop para deshabilitar botón
+        />
       )}
       {editPermission && (
         <EditPermissionModal
           permission={editPermission}
           onClose={() => setEditPermission(null)}
+          onSave={handleUpdate}
+          loading={loading}
         />
       )}
       {deletePermission && (
         <DeletePermissionModal
           permission={deletePermission}
           onClose={() => setDeletePermission(null)}
+          onDelete={handleDelete}
+          loading={loading}
         />
       )}
     </div>

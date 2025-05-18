@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import "./modal.css";
 
-const EditRoleModal = ({ role, onClose, onSave, loading }) => {
+const EditCategoryModal = ({ category, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
-    name: role.name,
-    description: role.description,
+    name: category.name,
   });
 
   const handleChange = (e) => {
@@ -15,15 +14,15 @@ const EditRoleModal = ({ role, onClose, onSave, loading }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData); // Esta función se define en el componente padre
+    await onSave(formData);
   };
 
   return (
     <div className="modal">
       <form onSubmit={handleSubmit} className="modal-form">
-        <h2>Edit Role</h2>
+        <h2>Edit Category</h2>
         <label>
           Name:
           <input
@@ -34,21 +33,17 @@ const EditRoleModal = ({ role, onClose, onSave, loading }) => {
             disabled={loading}
           />
         </label>
-        <label>
-          Description:
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-            disabled={loading}
-          />
-        </label>
+
         <div className="modal-actions">
           <button type="submit" className="save-btn" disabled={loading}>
             {loading ? "Saving..." : "Save"}
           </button>
-          <button type="button" onClick={onClose} className="cancel-btn">
+          <button
+            type="button"
+            onClick={onClose}
+            className="cancel-btn"
+            disabled={loading}
+          >
             Cancel
           </button>
         </div>
@@ -57,4 +52,4 @@ const EditRoleModal = ({ role, onClose, onSave, loading }) => {
   );
 };
 
-export default EditRoleModal;
+export default EditCategoryModal;
