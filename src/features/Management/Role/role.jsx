@@ -18,6 +18,7 @@ const Role = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editRole, setEditRole] = useState(null);
   const [roleToDelete, setRoleToDelete] = useState(null);
+  const [loading, setLoading] = useState(false); // controla botón en modal
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -65,6 +66,7 @@ const Role = () => {
   // Crear nuevo rol
   const handleCreateRole = async (roleData) => {
     try {
+      setLoading(true);
       const newRole = await createRole(roleData);
       setRoles((prev) => [...prev, newRole]);
       setShowCreateModal(false);
@@ -72,12 +74,15 @@ const Role = () => {
     } catch (error) {
       toast.error("Error creating role");
       console.error("Error creating role:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Editar rol existente
   const handleSaveEditRole = async (updatedData) => {
     try {
+      setLoading(true);
       const updatedRole = await updateRole(editRole.id, updatedData);
       setRoles((prev) =>
         prev.map((role) =>
@@ -89,12 +94,15 @@ const Role = () => {
     } catch (error) {
       toast.error("Error updating role");
       console.error("Error updating role:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   // Eliminar rol
   const handleDeleteRole = async (role) => {
     try {
+      setLoading(true);
       await deleteRole(role.id);
       setRoles((prev) => prev.filter((r) => r.id !== role.id));
       setRoleToDelete(null);
@@ -103,6 +111,8 @@ const Role = () => {
     } catch (error) {
       toast.error("Error deleting role");
       console.error("Error deleting role:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -190,6 +200,7 @@ const Role = () => {
         <CreateRoleModal
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreateRole}
+          loading={loading}
         />
       )}
       {editRole && (
@@ -197,6 +208,7 @@ const Role = () => {
           role={editRole}
           onClose={() => setEditRole(null)}
           onSave={handleSaveEditRole}
+          loading={loading}
         />
       )}
       {roleToDelete && (
@@ -204,6 +216,7 @@ const Role = () => {
           role={roleToDelete}
           onClose={() => setRoleToDelete(null)}
           onDelete={handleDeleteRole}
+          loading={loading}
         />
       )}
     </div>

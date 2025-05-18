@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./modal.css";
 
-const CreateRoleModal = ({ onClose, onCreate }) => {
+const CreateRoleModal = ({ onClose, onCreate, loading }) => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -32,6 +32,7 @@ const CreateRoleModal = ({ onClose, onCreate }) => {
             value={formData.name}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </label>
         <label>
@@ -41,11 +42,12 @@ const CreateRoleModal = ({ onClose, onCreate }) => {
             value={formData.description}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </label>
         <div className="modal-actions">
-          <button type="submit" className="save-btn">
-            Create
+          <button type="submit" className="save-btn" disabled={loading}>
+            {loading ? "Creating..." : "Create"}
           </button>
           <button type="button" onClick={onClose} className="cancel-btn">
             Cancel

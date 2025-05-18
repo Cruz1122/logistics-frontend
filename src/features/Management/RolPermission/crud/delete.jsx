@@ -1,10 +1,9 @@
 import React from "react";
 import "./modal.css";
 
-const DeleteRolPermissionModal = ({ rolPermission, onClose, onDelete }) => {
+const DeleteRolPermissionModal = ({ rolPermission, onClose, onDelete, loading }) => {
   const handleDelete = () => {
-    onDelete(rolPermission);
-    onClose();
+    onDelete();
   };
 
   return (
@@ -17,10 +16,10 @@ const DeleteRolPermissionModal = ({ rolPermission, onClose, onDelete }) => {
           <strong>{rolPermission.permissionName}</strong>?
         </p>
         <div className="modal-actions">
-          <button onClick={handleDelete} className="save-btn">
-            Yes, Delete
+          <button onClick={handleDelete} className="save-btn" disabled={loading}>
+            {loading ? "Deleting..." : "Yes, Delete"}
           </button>
-          <button onClick={onClose} className="cancel-btn">
+          <button onClick={onClose} className="cancel-btn" disabled={loading}>
             Cancel
           </button>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./modal.css";
 
-const EditRoleModal = ({ role, onClose, onSave }) => {
+const EditRoleModal = ({ role, onClose, onSave, loading }) => {
   const [formData, setFormData] = useState({
     name: role.name,
     description: role.description,
@@ -18,7 +18,6 @@ const EditRoleModal = ({ role, onClose, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData); // Esta función se define en el componente padre
-    onClose();
   };
 
   return (
@@ -32,6 +31,7 @@ const EditRoleModal = ({ role, onClose, onSave }) => {
             value={formData.name}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </label>
         <label>
@@ -41,11 +41,12 @@ const EditRoleModal = ({ role, onClose, onSave }) => {
             value={formData.description}
             onChange={handleChange}
             required
+            disabled={loading}
           />
         </label>
         <div className="modal-actions">
-          <button type="submit" className="save-btn">
-            Save
+          <button type="submit" className="save-btn" disabled={loading}>
+            {loading ? "Saving..." : "Save"}
           </button>
           <button type="button" onClick={onClose} className="cancel-btn">
             Cancel
