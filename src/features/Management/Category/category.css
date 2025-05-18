@@ -1,0 +1,153 @@
+/* Contenedor principal */
+.category-container {
+  padding: 20px 40px;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+}
+
+/* Controles de categorías */
+.category-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* Barra de búsqueda */
+.search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.search-input {
+  padding: 10px 16px;
+  border-radius: 25px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 380px;
+  background-color: #fefefe;
+  color: black;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.search-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: black;
+}
+
+/* Botón de creación */
+.create-btn {
+  margin-right: 10px;
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease, opacity 0.3s ease, background-position 0.5s ease;
+}
+
+.create-btn:hover {
+  transform: scale(1.05);
+  background-position: right center;
+  color: white;
+}
+
+/* Tabla de categorías */
+.category-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.category-table th,
+.category-table td {
+  padding: 12px 16px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+.category-table thead {
+  background-color: #f1f5f9;
+  color: #333;
+}
+
+.category-table tbody tr:hover {
+  background-color: #f9f9f9;
+}
+
+.category-table td {
+  padding: 10px 15px;
+}
+
+/* Botones de acción */
+.edit-btn {
+  margin-right: 10px;
+}
+
+.edit-btn:hover,
+.delete-btn:hover {
+  color: var(--primary-color);
+  cursor: pointer;
+}
+
+/* Estilos de paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.pagination button {
+  margin-right: 10px;
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  color: white;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: transform 0.2s ease, opacity 0.3s ease, background-position 0.5s ease;
+}
+
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover {
+  transform: scale(1.05);
+  background-position: right center;
+  color: white;
+}
+
+.pagination span {
+  font-weight: bold;
+}
