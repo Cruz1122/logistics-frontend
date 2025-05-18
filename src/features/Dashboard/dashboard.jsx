@@ -64,6 +64,7 @@ const Dashboard = () => {
     if (permissionName.includes("state")) return <FaMap  size={40} />;
     if (permissionName.includes("city")) return <FaCity size={40} />;
     if (permissionName.includes("warehouse")) return <FaWarehouse size={40} />;
+    if (permissionName.includes("product")) return <FaTags size={40} />; // Icono para "producto"
 
     // Ícono por defecto en caso de que no coincida con ningún permiso
     return <FaQuestionCircle size={40} />;
@@ -99,6 +100,8 @@ const Dashboard = () => {
       route = "/citiesPanel";
     } else if (permissionName.includes("warehouse")) {
       route = "/warehousesPanel";
+    } else if (permissionName.includes("product")) {
+      route = "/productsPanel";
     } else {
       route = "/defaultPanel"; // Ruta por defecto si no hay coincidencia
     }
