@@ -87,6 +87,8 @@ const Dashboard = () => {
       route = "/categoriesPanel";
     } else if (permissionName.includes("supplier")) {
       route = "/suppliersPanel";
+    } else if (permissionName.includes("state")) {
+      route = "/statesPanel";
     } else {
       route = "/defaultPanel"; // Ruta por defecto si no hay coincidencia
     }
