@@ -46,6 +46,9 @@ const ProductSupplier = lazy(() => import("../features/Management/ProductSupplie
 const ProductWarehouse = lazy(() => import("../features/Management/ProductWarehouse/productwarehouse"));
 const ProductWarehouseMovement = lazy(() => import("../features/Management/ProductWarehouseMovement/productwarehousemovement"));
 
+// Lazy load components - Orders
+const Deliveryperson = lazy(() => import("../features/Management/DeliveryPerson/deliveryperson"));
+
 export const AppRoutes = ({ isAuthenticated }) => {
   const location = useLocation(); // ✅ Hook correcto
 
@@ -181,6 +184,11 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route
         path="/productWarehouseMovementsPanel"
         element={isAuthenticated ? <ProductWarehouseMovement /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/deliveryPersonsPanel"
+        element={isAuthenticated ? <Deliveryperson /> : <Navigate to="/" />}
       />
 
       <Route path="/unauthorized" element={<Unauthorized />} />
