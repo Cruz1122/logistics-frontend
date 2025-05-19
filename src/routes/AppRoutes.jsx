@@ -187,7 +187,7 @@ export const AppRoutes = ({ isAuthenticated }) => {
       />
 
       <Route
-        path="/deliveryPersonsPanel"
+        path="/deliveriesPanel"
         element={isAuthenticated ? <Deliveryperson /> : <Navigate to="/" />}
       />
 
