@@ -153,7 +153,7 @@ const ProductWarehouse = () => {
           <input
             type="text"
             className="search-input"
-            placeholder="Search by product or warehouse..."
+            placeholder="Search"
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);

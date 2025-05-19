@@ -44,6 +44,7 @@ const Warehouse = lazy(() => import("../features/Management/Warehouse/warehouse"
 const Product = lazy(() => import("../features/Management/Product/product"));
 const ProductSupplier = lazy(() => import("../features/Management/ProductSupplier/productSupplier"));
 const ProductWarehouse = lazy(() => import("../features/Management/ProductWarehouse/productwarehouse"));
+const ProductWarehouseMovement = lazy(() => import("../features/Management/ProductWarehouseMovement/productwarehousemovement"));
 
 export const AppRoutes = ({ isAuthenticated }) => {
   const location = useLocation(); // ✅ Hook correcto
@@ -175,6 +176,11 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route
         path="/productWarehousesPanel"
         element={isAuthenticated ? <ProductWarehouse /> : <Navigate to="/" />}
+      />
+
+      <Route
+        path="/productWarehouseMovementsPanel"
+        element={isAuthenticated ? <ProductWarehouseMovement /> : <Navigate to="/" />}
       />
 
       <Route path="/unauthorized" element={<Unauthorized />} />

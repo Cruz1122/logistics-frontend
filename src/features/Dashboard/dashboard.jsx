@@ -67,6 +67,7 @@ const Dashboard = () => {
     if (permissionName.includes("product")) return <FaTags size={40} />; // Icono para "producto"
     if (permissionName.includes("product") && permissionName.includes("supplier")) return <FaTruck size={40} />; // Icono para "producto-proveedor"
     if (permissionName.includes("product") && permissionName.includes("warehouse")) return <FaWarehouse size={40} />; // Icono para "producto-almacén"
+    if (permissionName.includes("product") && permissionName.includes("movement")) return <FaTasks size={40} />; // Icono para "movimiento de producto"
 
     // Ícono por defecto en caso de que no coincida con ningún permiso
     return <FaQuestionCircle size={40} />;
@@ -94,6 +95,8 @@ const Dashboard = () => {
       route = "/productSuppliersPanel";
     } else if (permissionName.includes("product") && permissionName.includes("warehouse")) {
       route = "/productWarehousesPanel";
+    } else if (permissionName.includes("product") && permissionName.includes("movement")) {
+      route = "/productWarehouseMovementsPanel";
     } else if (permissionName.includes("permission")) {
       route = "/permissionsPanel";
     } else if (permissionName.includes("category")) {
