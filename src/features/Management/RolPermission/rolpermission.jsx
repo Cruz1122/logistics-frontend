@@ -188,16 +188,17 @@ const RolPermission = () => {
         </button>
       </div>
 
-      <table className="rolpermission-table">
-        <thead>
-          <tr>
-            <th>Role Name</th>
-            <th>Permission Name</th>
-            <th>Read</th>
-            <th>Create</th>
-            <th>Edit</th>
-            <th>Delete</th>
-            <th>Actions</th>
+      <div className="table-wrapper">
+        <table className="rolpermission-table">
+          <thead>
+            <tr>
+              <th>Role Name</th>
+              <th>Permission Name</th>
+              <th>Read</th>
+              <th>Create</th>
+              <th>Edit</th>
+              <th>Delete</th>
+              <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -254,6 +255,7 @@ const RolPermission = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

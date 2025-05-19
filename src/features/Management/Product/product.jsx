@@ -153,6 +153,7 @@ const Product = () => {
         </button>
       </div>
 
+      <div className="table-wrapper">
       <table className="product-table">
         <thead>
           <tr>
@@ -218,6 +219,7 @@ const Product = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

@@ -135,16 +135,17 @@ const State = () => {
         </button>
       </div>
 
-      <table className="state-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedStates.map((state) => (
-            <tr key={state.id} className="state-row">
+      <div className="table-wrapper">
+        <table className="state-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedStates.map((state) => (
+              <tr key={state.id} className="state-row">
               <td>{state.name}</td>
               <td>
                 <FaEdit
@@ -167,6 +168,7 @@ const State = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

@@ -133,16 +133,17 @@ const Category = () => {
         </button>
       </div>
 
-      <table className="category-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedCategories.map((category) => (
-            <tr key={category.id} className="category-row">
+      <div className="table-wrapper">
+        <table className="category-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedCategories.map((category) => (
+              <tr key={category.id} className="category-row">
               <td>{category.name}</td>
               <td>
                 <FaEdit
@@ -165,6 +166,7 @@ const Category = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

@@ -114,6 +114,7 @@ const User = () => {
         </button>
       </div>
 
+      <div className="table-wrapper">
       <table className="user-table">
         <thead>
           <tr>
@@ -160,6 +161,7 @@ const User = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

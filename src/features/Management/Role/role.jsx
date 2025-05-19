@@ -141,16 +141,17 @@ const Role = () => {
         </button>
       </div>
 
-      <table className="role-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedRoles.map((role, index) => (
+      <div className="table-wrapper">
+        <table className="role-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedRoles.map((role, index) => (
             <tr key={index} className="role-row">
               <td>{role.name}</td>
               <td>{role.description}</td>
@@ -175,6 +176,7 @@ const Role = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

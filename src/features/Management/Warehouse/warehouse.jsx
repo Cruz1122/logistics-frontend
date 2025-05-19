@@ -166,6 +166,7 @@ const Warehouse = () => {
         </button>
       </div>
 
+      <div className="table-wrapper">
       <table className="warehouse-table">
         <thead>
           <tr>
@@ -212,6 +213,7 @@ const Warehouse = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

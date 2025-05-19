@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaArrowUp, FaShippingFast } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import Footer from "../../components/layout/footer/footer";
 import { useSelector } from "react-redux"; // 👈 Importamos useSelector
 import "./home.css";
 
@@ -42,30 +41,27 @@ const Home = () => {
         </button>
 
         <div className="card-container">
-          <div className="info-card">
-            <h2>Create an account</h2>
-
-            <AiOutlineUserAdd className="icon" />
-
-            <p>Join us to manage your logistics needs.</p>
-
-            <Link to="/signup" className="main-button">
-              Sign Up <FaArrowRight className="arrow-icon" />
-            </Link>
-          </div>
+          {/* Mostrar solo si NO está autenticado */}
+          {!isAuthenticated && (
+            <div className="info-card">
+              <h2>Create an account</h2>
+              <AiOutlineUserAdd className="icon" />
+              <p>Join us to manage your logistics needs.</p>
+              <Link to="/signup" className="main-button">
+                Sign Up <FaArrowRight className="arrow-icon" />
+              </Link>
+            </div>
+          )}
 
           <div className="info-card">
             <h2>Track your shipments</h2>
-
             <FaShippingFast className="icon" />
-
             <p>Check the status of your deliveries here.</p>
-
             <input type="text" placeholder="Type your tracking code" />
-
             <button className="main-button">Track</button>
           </div>
         </div>
+
         <div className="about-section-container">
           <Link to="/about" className="main-button">
             About Us
@@ -74,8 +70,7 @@ const Home = () => {
       </section>
 
       {/* Footer Section */}
-      <section ref={aboutSectionRef} className="footer-section">
-      </section>
+      <section ref={aboutSectionRef} className="footer-section"></section>
     </div>
   );
 };

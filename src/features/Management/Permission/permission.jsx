@@ -136,7 +136,7 @@ const Permission = () => {
           CREATE +
         </button>
       </div>
-
+      <div className="table-wrapper">
       <table className="permission-table">
         <thead>
           <tr>
@@ -171,6 +171,7 @@ const Permission = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

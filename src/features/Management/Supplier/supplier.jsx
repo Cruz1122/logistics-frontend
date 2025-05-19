@@ -136,16 +136,17 @@ const Supplier = () => {
         </button>
       </div>
 
-      <table className="supplier-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="table-wrapper">
+        <table className="supplier-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
           {paginatedSuppliers.map((supplier) => (
             <tr key={supplier.id} className="supplier-row">
               <td>{supplier.name}</td>
@@ -172,6 +173,7 @@ const Supplier = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">

@@ -159,16 +159,17 @@ const City = () => {
         </button>
       </div>
 
-      <table className="city-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>State</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedCities.map((city) => (
+      <div className="table-wrapper">
+        <table className="city-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>State</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {paginatedCities.map((city) => (
             <tr key={city.id} className="city-row">
               <td>{city.name}</td>
               <td>{city.stateName}</td>
@@ -193,6 +194,7 @@ const City = () => {
           )}
         </tbody>
       </table>
+      </div>
 
       {totalPages > 1 && (
         <div className="pagination">
