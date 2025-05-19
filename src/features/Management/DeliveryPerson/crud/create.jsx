@@ -23,7 +23,13 @@ const CreatePersonDeliveryModal = ({ onClose, onCreate, loading, users }) => {
       alert("Please select a user.");
       return;
     }
-    await onCreate(formData);
+    const dataToSend = {
+      ...formData,
+      latitude: parseFloat(formData.latitude),
+      longitude: parseFloat(formData.longitude),
+    };
+
+    await onCreate(dataToSend);
   };
 
   return (
@@ -51,7 +57,6 @@ const CreatePersonDeliveryModal = ({ onClose, onCreate, loading, users }) => {
             step="0.000001"
             value={formData.latitude}
             onChange={handleChange}
-            required
             disabled={loading}
           />
         </label>
@@ -64,7 +69,6 @@ const CreatePersonDeliveryModal = ({ onClose, onCreate, loading, users }) => {
             step="0.000001"
             value={formData.longitude}
             onChange={handleChange}
-            required
             disabled={loading}
           />
         </label>

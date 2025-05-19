@@ -37,7 +37,12 @@ const CreateOrderModal = ({ onClose, onCreate, loading }) => {
       return;
     }
 
-    await onCreate(formData);
+    const dataToSend = {
+      ...formData,
+      totalAmount: parseFloat(formData.totalAmount),
+    };
+
+    await onCreate(dataToSend);
   };
 
   return (
