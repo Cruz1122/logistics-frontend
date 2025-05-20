@@ -33,6 +33,20 @@ export const getUserEmail = async () => {
     return null;
   }
 };
+
+export const getUserRolId = () => {
+  const token = localStorage.getItem("token");
+
+  if (!token) return null;
+
+  try {
+    const decoded = jwtDecode(token);
+    return decoded.roleId || null; 
+  } catch (err) {
+    console.error("Token inválido:", err);
+    return null;
+  }
+};
   
 export const signUpRequest = async (userData) => {
   try {

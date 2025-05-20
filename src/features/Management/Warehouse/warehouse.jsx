@@ -14,10 +14,11 @@ import {
 } from "../../../api/warehouse";
 
 import { getAllCities } from "../../../api/city";
-import { getUserByID } from "../../../api/user";
+import { getUserByID, getUserIdFromToken } from "../../../api/user";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 
 const WAREHOUSES_PER_PAGE = 5;
 
@@ -30,6 +31,8 @@ const Warehouse = () => {
   const [editWarehouse, setEditWarehouse] = useState(null);
   const [deleteWarehouse, setDeleteWarehouse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const roleId = useSelector((state) => state.auth.rolId);
+
 
   const fetchCities = async () => {
     try {
@@ -41,11 +44,23 @@ const Warehouse = () => {
     }
   };
 
-  const fetchWarehouses = async () => {
+  const fetchWarehouses = async (roleId) => {
     try {
+      const MANAGER_ROLE_ID = "bab8aee4-0d03-4fc8-94a3-2118b3b4ea69";
+      const userId = getUserIdFromToken();
+
+      console.log("Role ID:", roleId);
+      console.log("User ID:", userId);
+
       const rawWarehouses = await getAllWarehouses();
+
+      const filteredRawWarehouses =
+        roleId === MANAGER_ROLE_ID && userId
+          ? rawWarehouses.filter((wh) => wh.managerId === userId)
+          : rawWarehouses;
+
       const mappedWarehouses = await Promise.all(
-        rawWarehouses.map(async (wh) => {
+        filteredRawWarehouses.map(async (wh) => {
           const city = cities.find((c) => c.id === wh.cityId);
           let managerName = "Unknown";
           try {
@@ -62,6 +77,7 @@ const Warehouse = () => {
           };
         })
       );
+
       setWarehouses(mappedWarehouses);
     } catch (error) {
       toast.error("Error fetching warehouses");
@@ -74,7 +90,7 @@ const Warehouse = () => {
 
   useEffect(() => {
     if (cities.length > 0) {
-      fetchWarehouses();
+      fetchWarehouses(roleId);
     }
   }, [cities]);
 
@@ -82,7 +98,7 @@ const Warehouse = () => {
     try {
       setLoading(true);
       await createWarehouse(newWarehouseData);
-      await fetchWarehouses();
+      await fetchWarehouses(roleId);
       setShowCreateModal(false);
       toast.success("Warehouse created");
     } catch (error) {
@@ -110,7 +126,7 @@ const Warehouse = () => {
     try {
       setLoading(true);
       await apiDeleteWarehouse(warehouseToDelete);
-      await fetchWarehouses();
+      await fetchWarehouses(roleId);
       setDeleteWarehouse(null);
       setCurrentPage(1);
       toast.success("Warehouse deleted");
@@ -158,61 +174,63 @@ const Warehouse = () => {
             <FaSearch />
           </button>
         </div>
-        <button
-          className="create-btn"
-          onClick={() => setShowCreateModal(true)}
-        >
+        <button className="create-btn" onClick={() => setShowCreateModal(true)}>
           CREATE +
         </button>
       </div>
 
       <div className="table-wrapper">
-      <table className="warehouse-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>City</th>
-            <th>Manager</th>
-            <th>Address</th>
-            <th>Postal Code</th>
-            <th>Capacity m<sup>2</sup></th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedWarehouses.map((wh) => (
-            <tr key={wh.id}>
-              <td>{wh.id}</td>
-              <td>{wh.name}</td>
-              <td>{wh.cityName}</td>
-              <td>{wh.managerName}</td>
-              <td>{wh.address}</td>
-              <td>{wh.postalCode}</td>
-              <td>{wh.capacityM2}</td>
-              <td>{wh.status}</td>
-              <td>
-                <FaEdit
-                  onClick={() => setEditWarehouse(wh)}
-                  className="edit-btn"
-                />
-                <FaTrash
-                  onClick={() => setDeleteWarehouse(wh)}
-                  className="delete-btn"
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedWarehouses.length === 0 && (
+        <table className="warehouse-table">
+          <thead>
             <tr>
-              <td colSpan="9" style={{ textAlign: "center", padding: "1rem" }}>
-                No warehouses found.
-              </td>
+              <th>ID</th>
+              <th>Name</th>
+              <th>City</th>
+              <th>Manager</th>
+              <th>Address</th>
+              <th>Postal Code</th>
+              <th>
+                Capacity m<sup>2</sup>
+              </th>
+              <th>Status</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedWarehouses.map((wh) => (
+              <tr key={wh.id}>
+                <td>{wh.id}</td>
+                <td>{wh.name}</td>
+                <td>{wh.cityName}</td>
+                <td>{wh.managerName}</td>
+                <td>{wh.address}</td>
+                <td>{wh.postalCode}</td>
+                <td>{wh.capacityM2}</td>
+                <td>{wh.status}</td>
+                <td>
+                  <FaEdit
+                    onClick={() => setEditWarehouse(wh)}
+                    className="edit-btn"
+                  />
+                  <FaTrash
+                    onClick={() => setDeleteWarehouse(wh)}
+                    className="delete-btn"
+                  />
+                </td>
+              </tr>
+            ))}
+            {paginatedWarehouses.length === 0 && (
+              <tr>
+                <td
+                  colSpan="9"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No warehouses found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (

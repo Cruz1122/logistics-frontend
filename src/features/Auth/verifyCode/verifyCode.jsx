@@ -4,8 +4,9 @@ import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyCodeRequest } from "../../../api/auth";
-import { setAuthenticated, setUser, setLoading } from "../../../redux/authSlice";  // Asegúrate de importar setUser
+import { setAuthenticated, setUser, setLoading } from "../../../redux/authSlice";
 import { useDispatch } from "react-redux";
+import { getUserRolId } from "../../../api/auth"; // Importa tu función para obtener rolId
 
 const VerifyCode = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const VerifyCode = () => {
   const dispatch = useDispatch();
 
   const email = location.state?.email;
-  const method = location.state?.method || "email"; // por defecto email
+  const method = location.state?.method || "email";
   const [code, setCode] = useState("");
   const [loading, setLoadingPage] = useState(false);
 
@@ -38,19 +39,30 @@ const VerifyCode = () => {
       const response = await verifyCodeRequest({ email, code });
 
       if (response.token) {
-        // Guardamos el token en el estado y en localStorage
-        dispatch(setUser({ token: response.token})); // Aquí usas setUser para guardar el token
-        dispatch(setAuthenticated(true));  // Establece el estado de autenticación a true
+        // Obtiene rolId usando la función importada
+        const rolId = await getUserRolId();
+        console.log("[VerifyCode] rolId:", rolId);
+        
+
+        if (!rolId) {
+          toast.error("Error obteniendo rol de usuario");
+          dispatch(setAuthenticated(false));
+          dispatch(setUser({ token: null }));
+          return;
+        }
+
+        // Guarda token y rolId en estado global y localStorage
+        dispatch(setUser({ token: response.token, rolId }));
+        dispatch(setAuthenticated(true));
         toast.success("Verification successful!");
+        navigate("/");
       } else {
         toast.error(response.message || "Login failed");
-        dispatch(setAuthenticated(false)); // Asegura reset del auth
+        dispatch(setAuthenticated(false));
       }
-
-      navigate("/"); // Redirige al usuario a la página principal después de la verificación exitosa
     } catch (err) {
       toast.error(err.error || "Verification failed");
-      dispatch(setAuthenticated(false)); // Asegura reset del auth
+      dispatch(setAuthenticated(false));
     } finally {
       setLoadingPage(false);
       dispatch(setLoading(false));
