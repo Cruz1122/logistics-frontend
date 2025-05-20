@@ -6,7 +6,7 @@ import storage from "redux-persist/lib/storage"; // Para persistir en localStora
 const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["isAuthenticated", "token"], // Persistimos isAuthenticated y token
+  whitelist: ["isAuthenticated", "token", "rolId"], // Persistimos isAuthenticated, token y rolId
 };
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
