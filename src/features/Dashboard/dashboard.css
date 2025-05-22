@@ -19,6 +19,22 @@
   max-width: 300px;  /* Limita el ancho máximo */
   min-width: 250px;  /* Para evitar que se hagan demasiado pequeñas */
   box-sizing: border-box;
+  height: 300px; /* Puedes ajustar según tu necesidad */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dashboard-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a202c;
+  word-break: break-word;
+  height: 40px; /* altura fija para el título */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Medianos: 2 columnas */
@@ -63,19 +79,16 @@
   color: var(--primary-color, #4f46e5);
 }
 
-.dashboard-card h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #1a202c;
-  word-break: break-word;
-}
-
 .dashboard-card p {
   font-size: 0.9rem;
   color: #4a5568;
   margin-bottom: 16px;
   word-break: break-word;
+  height: 60px; /* altura fija para 2 o 3 líneas */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* número de líneas visibles */
+  -webkit-box-orient: vertical;
 }
 
 .card-button {
@@ -91,6 +104,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-top: auto; /* Empuja el botón hacia abajo */
 }
 
 .card-button:hover {
