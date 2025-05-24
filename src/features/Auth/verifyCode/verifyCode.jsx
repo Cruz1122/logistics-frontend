@@ -4,9 +4,14 @@ import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { verifyCodeRequest } from "../../../api/auth";
-import { setAuthenticated, setUser, setLoading } from "../../../redux/authSlice";
+import {
+  setAuthenticated,
+  setUser,
+  setLoading,
+} from "../../../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { getUserRolId } from "../../../api/auth"; // Importa tu función para obtener rolId
+import { getUserIdFromToken, getUserPermissions } from "../../../api/user"; // Importa tu función para obtener permisos
 
 const VerifyCode = () => {
   const navigate = useNavigate();
@@ -41,18 +46,21 @@ const VerifyCode = () => {
       if (response.token) {
         // Obtiene rolId usando la función importada
         const rolId = await getUserRolId();
-        console.log("[VerifyCode] rolId:", rolId);
-        
+        const userId = getUserIdFromToken();
+        const permissions = await getUserPermissions(userId); // <--- Aquí
 
-        if (!rolId) {
-          toast.error("Error obteniendo rol de usuario");
+        console.log("[VerifyCode] rolId:", rolId);
+        console.log("[VerifyCode] permissions:", permissions);
+
+        if (!rolId || !permissions) {
+          toast.error("Error obteniendo rol de usuario o permisos");
           dispatch(setAuthenticated(false));
           dispatch(setUser({ token: null }));
           return;
         }
 
         // Guarda token y rolId en estado global y localStorage
-        dispatch(setUser({ token: response.token, rolId }));
+        dispatch(setUser({ token: response.token, rolId, permissions }));
         dispatch(setAuthenticated(true));
         toast.success("Verification successful!");
         navigate("/");
