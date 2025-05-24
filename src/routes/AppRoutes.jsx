@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { lazy } from "react";
+import PropTypes from "prop-types";
 
 // Lazy load components - Auth
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
@@ -21,6 +22,9 @@ const ServerError = lazy(() =>
 );
 const Unauthorized = lazy(() =>
   import("../components/errors/unauthorized/unauthorized")
+);
+const Inactive = lazy(() =>
+  import("../components/errors/inactive/inactive")
 );
 const User = lazy(() => import("../features/Management/User/user"));
 const Permission = lazy(() =>
@@ -49,64 +53,115 @@ const ProductWarehouseMovement = lazy(() => import("../features/Management/Produ
 // Lazy load components - Orders
 const Deliveryperson = lazy(() => import("../features/Management/DeliveryPerson/deliveryperson"));
 const Order = lazy(() => import("../features/Management/Order/order"));
+const ProtectedRoute = ({ isAuthenticated, children }) => {
+  return isAuthenticated ? children : <Navigate to="/" />;
+};
+
+ProtectedRoute.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+};
+
+const PublicRoute = ({ isAuthenticated, children }) => {
+  return !isAuthenticated ? children : <Navigate to="/" />;
+};
+
+const FlowRoute = ({ children }) => {
+  const location = useLocation();
+  return location.state?.fromFlow === true ? children : <Navigate to="/unauthorized" />;
+};
 
 export const AppRoutes = ({ isAuthenticated }) => {
-  const location = useLocation(); // ✅ Hook correcto
-
-  const checkFlow = (state) => {
-    return state?.fromFlow === true;
-  };
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />
 
       <Route
         path="/dashboard"
-        element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Dashboard />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/userProfile"
-        element={isAuthenticated ? <UserProfile /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <UserProfile />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/reset-password"
-        element={isAuthenticated ? <ResetPassword /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ResetPassword />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/usersPanel"
-        element={isAuthenticated ? <User /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <User />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/permissionsPanel"
-        element={isAuthenticated ? <Permission /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Permission />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/rolesPanel"
-        element={isAuthenticated ? <Role /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Role />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/roleXpermissionPanel"
-        element={isAuthenticated ? <RolPermission /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <RolPermission />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/signin"
-        element={!isAuthenticated ? <SignIn /> : <Navigate to="/" />}
+        element={
+          <PublicRoute isAuthenticated={isAuthenticated}>
+            <SignIn />
+          </PublicRoute>
+        }
       />
       <Route
         path="/signup"
-        element={!isAuthenticated ? <SignUp /> : <Navigate to="/" />}
+        element={
+          <PublicRoute isAuthenticated={isAuthenticated}>
+            <SignUp />
+          </PublicRoute>
+        }
       />
       <Route
         path="/forgot"
-        element={!isAuthenticated ? <Forgot /> : <Navigate to="/" />}
+        element={
+          <PublicRoute isAuthenticated={isAuthenticated}>
+            <Forgot />
+          </PublicRoute>
+        }
       />
 
       <Route path="/about" element={<About />} />
@@ -114,92 +169,131 @@ export const AppRoutes = ({ isAuthenticated }) => {
       <Route
         path="/verify-email"
         element={
-          checkFlow(location.state) ? (
+          <FlowRoute>
             <VerifyEmail />
-          ) : (
-            <Navigate to="/unauthorized" />
-          )
+          </FlowRoute>
         }
       />
       <Route
         path="/verify-code"
         element={
-          checkFlow(location.state) ? (
+          <FlowRoute>
             <VerifyCode />
-          ) : (
-            <Navigate to="/unauthorized" />
-          )
+          </FlowRoute>
         }
       />
       <Route
         path="/forgot-verify-code"
         element={
-          checkFlow(location.state) ? (
+          <FlowRoute>
             <ForgotVerifyCode />
-          ) : (
-            <Navigate to="/unauthorized" />
-          )
+          </FlowRoute>
         }
       />
 
       <Route
         path="/categoriesPanel"
-        element={isAuthenticated ? <Category /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Category />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/suppliersPanel"
-        element={isAuthenticated ? <Supplier /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Supplier />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/statesPanel"
-        element={isAuthenticated ? <State /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <State />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/citiesPanel"
-        element={isAuthenticated ? <City /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <City />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/warehousesPanel"
-        element={isAuthenticated ? <Warehouse /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Warehouse />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/productsPanel"
-        element={isAuthenticated ? <Product /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Product />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/productSuppliersPanel"
-        element={isAuthenticated ? <ProductSupplier /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ProductSupplier />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/productWarehousesPanel"
-        element={isAuthenticated ? <ProductWarehouse /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ProductWarehouse />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/productWarehouseMovementsPanel"
-        element={isAuthenticated ? <ProductWarehouseMovement /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <ProductWarehouseMovement />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/deliveriesPanel"
-        element={isAuthenticated ? <Deliveryperson /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Deliveryperson />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/ordersPanel"
-        element={isAuthenticated ? <Order /> : <Navigate to="/" />}
+        element={
+          <ProtectedRoute isAuthenticated={isAuthenticated}>
+            <Order />
+          </ProtectedRoute>
+        }
       />
 
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/server-error" element={<ServerError />} />
       <Route path="/not-found" element={<NotFound />} />
+      <Route path="/inactive" element={<Inactive />} />
 
       <Route path="*" element={<Navigate to="/not-found" />} />
     </Routes>

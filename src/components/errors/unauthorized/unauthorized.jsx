@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./unauthorized.css"; // opcional
 import unauthorizedIcon from "../../../assets/icons/unauthorized.svg";
 
-function NotFound() {
+function Unauthorized() {
   return (
     <div className="unauthorized-container">
       <img
@@ -20,4 +20,4 @@ function NotFound() {
   );
 }
 
-export default NotFound;
+export default Unauthorized;
