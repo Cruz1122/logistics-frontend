@@ -2,44 +2,37 @@ import React, { useState, useEffect } from "react";
 import "./productwarehousemovement.css";
 import { FaSearch } from "react-icons/fa";
 
-import {
-  getAllProductWarehouseMovements,
-} from "../../../api/productwarehousemovement";
+import { getAllProductWarehouseMovements } from "../../../api/productwarehousemovement";
 
 import { getAllProductWarehouses } from "../../../api/productwarehouse";
 import { getAllUsers } from "../../../api/user";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const ITEMS_PER_PAGE = 5;
 
 const ProductWarehouseMovement = () => {
   const [movements, setMovements] = useState([]);
-  const [productWarehouses, setProductWarehouses] = useState([]);
-  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
-  const fetchInitialData = async () => {
+  // Fetch all data and map in one shot
+  const fetchAllData = async () => {
+    setLoading(true);
     try {
-      const [pw, usrs] = await Promise.all([
+      const [productWarehouses, users, rawMovements] = await Promise.all([
         getAllProductWarehouses(),
         getAllUsers(),
+        getAllProductWarehouseMovements(),
       ]);
-      setProductWarehouses(pw);
-      setUsers(usrs);
-    } catch (error) {
-      toast.error("Error fetching initial data");
-    }
-  };
-
-  const fetchMovements = async () => {
-    try {
-      const rawMovements = await getAllProductWarehouseMovements();
 
       const mappedMovements = rawMovements.map((mov) => {
-        const pw = productWarehouses.find((p) => p.id === mov.productWarehouseId);
+        const pw = productWarehouses.find(
+          (p) => p.id === mov.productWarehouseId
+        );
         const productName = pw?.product?.name || "Unknown Product";
         const warehouseName = pw?.warehouse?.name || "Unknown Warehouse";
         const user = users.find((u) => u.id === mov.performedById);
@@ -55,34 +48,43 @@ const ProductWarehouseMovement = () => {
 
       setMovements(mappedMovements);
     } catch (error) {
-      toast.error("Error fetching movements");
+      console.error("Error fetching data:", error);
+      toast.error("Error fetching data");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchInitialData();
+    fetchAllData();
   }, []);
 
-  useEffect(() => {
-    if (productWarehouses.length > 0 && users.length > 0) {
-      fetchMovements();
-    }
-  }, [productWarehouses, users]);
-
   const filteredMovements = movements.filter((mov) =>
-    [mov.productName, mov.warehouseName, mov.movementType, mov.performedByName, mov.notes]
-      .some((field) => field?.toLowerCase().includes(searchTerm.toLowerCase()))
+    [
+      mov.productName,
+      mov.warehouseName,
+      mov.movementType,
+      mov.performedByName,
+      mov.notes,
+    ].some((field) => field?.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const totalPages = Math.ceil(filteredMovements.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedMovements = filteredMovements.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const paginatedMovements = filteredMovements.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="product-warehouse-movement-container">
@@ -121,21 +123,25 @@ const ProductWarehouseMovement = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedMovements.map((mov) => (
-              <tr key={mov.id}>
-                <td>{mov.productName}</td>
-                <td>{mov.warehouseName}</td>
-                <td>{mov.movementType}</td>
-                <td>{mov.quantityMoved}</td>
-                <td>{mov.stockAfter}</td>
-                <td>{new Date(mov.timestamp).toLocaleString()}</td>
-                <td>{mov.performedByName}</td>
-                <td>{mov.notes}</td>
-              </tr>
-            ))}
-            {paginatedMovements.length === 0 && (
+            {paginatedMovements.length > 0 ? (
+              paginatedMovements.map((mov) => (
+                <tr key={mov.id}>
+                  <td>{mov.productName}</td>
+                  <td>{mov.warehouseName}</td>
+                  <td>{mov.movementType}</td>
+                  <td>{mov.quantityMoved}</td>
+                  <td>{mov.stockAfter}</td>
+                  <td>{new Date(mov.timestamp).toLocaleString()}</td>
+                  <td>{mov.performedByName}</td>
+                  <td>{mov.notes}</td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
+                <td
+                  colSpan="8"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
                   No product warehouse movements found.
                 </td>
               </tr>

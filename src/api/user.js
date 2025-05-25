@@ -74,7 +74,6 @@ export const getUserPermissions = async (userId) => {
   }
 };
 
-// ✅ Función corregida para actualizar usuario por PUT
 export const updateUser = async (userId, updatedData) => {
   try {
     const token = localStorage.getItem("token");

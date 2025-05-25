@@ -16,10 +16,40 @@ import {
 } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
 import "./dashboard.css";
+import { FullScreenLoader } from "../../App";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const permissions = useSelector((state) => state.auth.permissions); // <- Ajusta esto según tu slice
+
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const userId = getUserIdFromToken();
+      if (!userId) {
+        toast.error("Sesión expirada o inválida. Inicia sesión de nuevo.");
+        navigate("/signin");
+        return;
+      }
+      const data = await getUserPermissions(userId);
+      if (data && Array.isArray(data)) {
+        // Filtrar para omitir permisos de Account Management
+        const filtered = data.filter(
+          (perm) =>
+            !perm.name.toLowerCase().includes("account management") &&
+            !perm.description.toLowerCase().includes("account management")
+        );
+        setPermissions(filtered);
+      } else {
+        toast.error("No se pudieron cargar los permisos del usuario");
+      }
+    };
+
+    fetchPermissions();
+  }, [navigate]);
+
+  if (permissions.length === 0) {
+    return <FullScreenLoader />;
+  }
 
   const getIconForPermission = (name) => {
     const permissionName = name.toLowerCase();
@@ -41,7 +71,6 @@ const Dashboard = () => {
     if (permissionName.includes("state")) return <FaMap size={40} />;
     if (permissionName.includes("city")) return <FaCity size={40} />;
     if (permissionName.includes("warehouse")) return <FaWarehouse size={40} />;
-    if (permissionName.includes("product")) return <FaTags size={40} />;
     if (
       permissionName.includes("product") &&
       permissionName.includes("supplier")
@@ -59,11 +88,19 @@ const Dashboard = () => {
       return <FaTasks size={40} />;
     if (permissionName.includes("delivery")) return <FaTruck size={40} />;
     if (permissionName.includes("order")) return <FaTasks size={40} />;
+    if (permissionName.includes("product")) return <FaTags size={40} />;
+
     return <FaQuestionCircle size={40} />;
   };
 
   const handleButtonClick = (permName) => {
     const permissionName = permName.toLowerCase();
+
+    // Omitimos rutas relacionadas a Account Management
+    if (permissionName.includes("account management")) {
+      toast.info("Gestión de cuentas no disponible aquí");
+      return;
+    }
 
     let route = "";
 
@@ -126,6 +163,13 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <ToastContainer />
+
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Management Panel</h1>
+        <p className="dashboard-subtitle" style={{ fontSize: "1.5rem" }}>
+          Select an option to manage system resources.
+        </p>
+      </div>
       <div className="cards-grid">
         {permissions && permissions.length > 0 ? (
           permissions.map((perm) => (

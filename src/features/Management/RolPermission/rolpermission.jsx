@@ -14,6 +14,7 @@ import { getAllRoles } from "../../../api/role";
 import { getAllPermissions } from "../../../api/permission";
 import { MdCheckCircle, MdCancel } from "react-icons/md";
 import { toast, ToastContainer } from "react-toastify";
+import { FullScreenLoader } from "../../../App";
 
 const ROL_PERMISSIONS_PER_PAGE = 5;
 
@@ -26,14 +27,15 @@ const RolPermission = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editRolPermission, setEditRolPermission] = useState(null);
   const [deleteRolPermission, setDeleteRolPermission] = useState(null);
-  const [loading, setLoading] = useState(false); // controla botón en modal
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rawRolPermissions = await getAllRolPermissions();
-        const rawRoles = await getAllRoles();
-        const rawPermissions = await getAllPermissions();
+        setLoading(true);
+        const [rawRolPermissions, rawRoles, rawPermissions] = await Promise.all(
+          [getAllRolPermissions(), getAllRoles(), getAllPermissions()]
+        );
 
         const mappedRolPermissions = rawRolPermissions.map((rp) => ({
           id: rp.id,
@@ -53,6 +55,8 @@ const RolPermission = () => {
       } catch (error) {
         toast.error("Error loading data");
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -100,7 +104,7 @@ const RolPermission = () => {
       setShowCreateModal(false);
       toast.success("Rol-Permission created successfully");
     } catch (error) {
-      console.error("Error al crear rol-permiso:", error);
+      console.error("Error creating rol-permission:", error);
       toast.error("Error creating rol-permission");
     } finally {
       setLoading(false);
@@ -139,7 +143,7 @@ const RolPermission = () => {
       setEditRolPermission(null);
       toast.success("Rol-Permission updated successfully");
     } catch (error) {
-      console.error("Error al editar rol-permiso:", error);
+      console.error("Error updating rol-permission:", error);
       toast.error("Error updating rol-permission");
     } finally {
       setLoading(false);
@@ -152,17 +156,19 @@ const RolPermission = () => {
       await deleteRolPermissionApi(id);
       setRolPermissions((prev) => prev.filter((item) => item.id !== id));
       setDeleteRolPermission(null);
-      // onClose(); // Esta función no está definida en el código original, la quito
-
       setCurrentPage(1);
       toast.success("Rol-Permission deleted successfully");
     } catch (error) {
-      console.error("Error al eliminar rol-permiso:", error);
+      console.error("Error deleting rol-permission:", error);
       toast.error("Error deleting rol-permission");
     } finally {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="rolpermission-container">
@@ -199,62 +205,66 @@ const RolPermission = () => {
               <th>Edit</th>
               <th>Delete</th>
               <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedRolPermissions.map((rp, index) => (
-            <tr key={index} className="rolpermission-row">
-              <td>{rp.roleName}</td>
-              <td>{rp.permissionName}</td>
-              <td>
-                {rp.listar ? (
-                  <MdCheckCircle color="#5edd60" size={24} />
-                ) : (
-                  <MdCancel color="red" size={24} />
-                )}
-              </td>
-              <td>
-                {rp.crear ? (
-                  <MdCheckCircle color="#5edd60" size={24} />
-                ) : (
-                  <MdCancel color="red" size={24} />
-                )}
-              </td>
-              <td>
-                {rp.editar ? (
-                  <MdCheckCircle color="#5edd60" size={24} />
-                ) : (
-                  <MdCancel color="red" size={24} />
-                )}
-              </td>
-              <td>
-                {rp.eliminar ? (
-                  <MdCheckCircle color="#5edd60" size={24} />
-                ) : (
-                  <MdCancel color="red" size={24} />
-                )}
-              </td>
-              <td>
-                <FaEdit
-                  className="edit-btn"
-                  onClick={() => setEditRolPermission(rp)}
-                />
-                <FaTrash
-                  className="delete-btn"
-                  onClick={() => setDeleteRolPermission(rp)}
-                />
-              </td>
             </tr>
-          ))}
-          {paginatedRolPermissions.length === 0 && (
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center", padding: "1rem" }}>
-                No role-permission relationships found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedRolPermissions.length > 0 ? (
+              paginatedRolPermissions.map((rp, index) => (
+                <tr key={index} className="rolpermission-row">
+                  <td>{rp.roleName}</td>
+                  <td>{rp.permissionName}</td>
+                  <td>
+                    {rp.listar ? (
+                      <MdCheckCircle color="#5edd60" size={24} />
+                    ) : (
+                      <MdCancel color="red" size={24} />
+                    )}
+                  </td>
+                  <td>
+                    {rp.crear ? (
+                      <MdCheckCircle color="#5edd60" size={24} />
+                    ) : (
+                      <MdCancel color="red" size={24} />
+                    )}
+                  </td>
+                  <td>
+                    {rp.editar ? (
+                      <MdCheckCircle color="#5edd60" size={24} />
+                    ) : (
+                      <MdCancel color="red" size={24} />
+                    )}
+                  </td>
+                  <td>
+                    {rp.eliminar ? (
+                      <MdCheckCircle color="#5edd60" size={24} />
+                    ) : (
+                      <MdCancel color="red" size={24} />
+                    )}
+                  </td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditRolPermission(rp)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setDeleteRolPermission(rp)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No role-permission relationships found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (

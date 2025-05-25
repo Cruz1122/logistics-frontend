@@ -9,18 +9,32 @@ import { AppRoutes } from "./routes/AppRoutes";
 import { useLocationTracking } from "./hooks/useLocationTracking";
 
 
-const FullScreenLoader = () => (
-  <div
-    style={{
-      height: "82.4vh",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <div className="spinner"></div>
-  </div>
-);
+export const FullScreenLoader = () => {
+  return (
+    <div className="loader">
+      <div className="box box-1">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+      <div className="box box-2">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+      <div className="box box-3">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+      <div className="box box-4">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   const dispatch = useDispatch();
@@ -71,8 +85,7 @@ function App() {
         <Suspense fallback={<FullScreenLoader />}>
           {/* Solo se monta cuando loading === false */}
           <AppRoutes isAuthenticated={isAuthenticated} />
-        </Suspense>
-      </main>
+            </Suspense>
       <Footer className={isHome ? "footer-home" : ""} />
     </div>
   );

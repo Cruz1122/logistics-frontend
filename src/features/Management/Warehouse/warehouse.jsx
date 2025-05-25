@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./warehouse.css"; // Asegúrate de crear o adaptar este archivo
+import "./warehouse.css";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
 import CreateWarehouseModal from "./crud/create";
@@ -19,12 +19,14 @@ import { getUserByID, getUserIdFromToken } from "../../../api/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
+import { FullScreenLoader } from "../../../App";
 
 const WAREHOUSES_PER_PAGE = 5;
 
 const Warehouse = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [cities, setCities] = useState([]);
+  const [usersMap, setUsersMap] = useState(new Map());
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -33,72 +35,131 @@ const Warehouse = () => {
   const [loading, setLoading] = useState(false);
   const roleId = useSelector((state) => state.auth.rolId);
 
+  // Cargar ciudades, almacenes y usuarios relacionados EN PARALELO y cachear usuarios
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Cargar ciudades y almacenes
+        const [citiesRes, warehousesRes] = await Promise.all([
+          getAllCities(),
+          getAllWarehouses(),
+        ]);
+        const sortedCities = citiesRes.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        setCities(sortedCities);
 
-  const fetchCities = async () => {
-    try {
-      const res = await getAllCities();
-      const sortedCities = res.sort((a, b) => a.name.localeCompare(b.name));
-      setCities(sortedCities);
-    } catch (error) {
-      toast.error("Error fetching cities");
-    }
-  };
+        // Filtrar almacenes si es manager
+        const MANAGER_ROLE_ID = "bab8aee4-0d03-4fc8-94a3-2118b3b4ea69";
+        const userId = getUserIdFromToken();
 
-  const fetchWarehouses = async (roleId) => {
-    try {
-      const MANAGER_ROLE_ID = "bab8aee4-0d03-4fc8-94a3-2118b3b4ea69";
-      const userId = getUserIdFromToken();
+        const filteredWarehouses =
+          roleId === MANAGER_ROLE_ID && userId
+            ? warehousesRes.filter((wh) => wh.managerId === userId)
+            : warehousesRes;
 
-      console.log("Role ID:", roleId);
-      console.log("User ID:", userId);
+        // Extraer IDs únicos de managers para cargar usuarios solo una vez
+        const uniqueManagerIds = [
+          ...new Set(
+            filteredWarehouses.map((w) => w.managerId).filter(Boolean)
+          ),
+        ];
 
-      const rawWarehouses = await getAllWarehouses();
+        // Cargar usuarios en paralelo
+        const usersArray = await Promise.all(
+          uniqueManagerIds.map((id) => getUserByID(id).catch(() => null))
+        );
 
-      const filteredRawWarehouses =
-        roleId === MANAGER_ROLE_ID && userId
-          ? rawWarehouses.filter((wh) => wh.managerId === userId)
-          : rawWarehouses;
+        // Crear un mapa de usuarios por ID
+        const usersMapTemp = new Map();
+        usersArray.forEach((user) => {
+          if (user) usersMapTemp.set(user.id, user);
+        });
+        setUsersMap(usersMapTemp);
 
-      const mappedWarehouses = await Promise.all(
-        filteredRawWarehouses.map(async (wh) => {
-          const city = cities.find((c) => c.id === wh.cityId);
-          let managerName = "Unknown";
-          try {
-            const user = await getUserByID(wh.managerId);
-            managerName = `${user.name} ${user.lastName}`;
-          } catch {
-            managerName = "Unknown";
-          }
-
+        // Mapear almacenes con nombres de ciudad y manager
+        const mappedWarehouses = filteredWarehouses.map((wh) => {
+          const city = sortedCities.find((c) => c.id === wh.cityId);
+          const manager = usersMapTemp.get(wh.managerId);
           return {
             ...wh,
             cityName: city ? city.name : "Unknown",
-            managerName,
+            managerName: manager
+              ? `${manager.name} ${manager.lastName}`
+              : "Unknown",
           };
-        })
+        });
+
+        setWarehouses(mappedWarehouses);
+      } catch (error) {
+        toast.error("Error loading data");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [roleId]);
+
+  // Refrescar almacenes y usuarios sin recargar ciudades
+  const fetchWarehouses = async () => {
+    try {
+      setLoading(true);
+      const MANAGER_ROLE_ID = "bab8aee4-0d03-4fc8-94a3-2118b3b4ea69";
+      const userId = getUserIdFromToken();
+
+      const warehousesRes = await getAllWarehouses();
+
+      const filteredWarehouses =
+        roleId === MANAGER_ROLE_ID && userId
+          ? warehousesRes.filter((wh) => wh.managerId === userId)
+          : warehousesRes;
+
+      // Obtener IDs únicos de managers
+      const uniqueManagerIds = [
+        ...new Set(filteredWarehouses.map((w) => w.managerId).filter(Boolean)),
+      ];
+
+      // Cargar usuarios solo si no están en el mapa actual
+      const missingUserIds = uniqueManagerIds.filter((id) => !usersMap.has(id));
+      const newUsers = await Promise.all(
+        missingUserIds.map((id) => getUserByID(id).catch(() => null))
       );
+      const newUsersMap = new Map(usersMap);
+      newUsers.forEach((user) => {
+        if (user) newUsersMap.set(user.id, user);
+      });
+      setUsersMap(newUsersMap);
+
+      // Mapear almacenes con nombres
+      const mappedWarehouses = filteredWarehouses.map((wh) => {
+        const city = cities.find((c) => c.id === wh.cityId);
+        const manager = newUsersMap.get(wh.managerId);
+        return {
+          ...wh,
+          cityName: city ? city.name : "Unknown",
+          managerName: manager
+            ? `${manager.name} ${manager.lastName}`
+            : "Unknown",
+        };
+      });
 
       setWarehouses(mappedWarehouses);
     } catch (error) {
       toast.error("Error fetching warehouses");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchCities();
-  }, []);
-
-  useEffect(() => {
-    if (cities.length > 0) {
-      fetchWarehouses(roleId);
-    }
-  }, [cities]);
 
   const handleCreate = async (newWarehouseData) => {
     try {
       setLoading(true);
       await createWarehouse(newWarehouseData);
-      await fetchWarehouses(roleId);
+      await fetchWarehouses();
       setShowCreateModal(false);
       toast.success("Warehouse created");
     } catch (error) {
@@ -126,7 +187,7 @@ const Warehouse = () => {
     try {
       setLoading(true);
       await apiDeleteWarehouse(warehouseToDelete);
-      await fetchWarehouses(roleId);
+      await fetchWarehouses();
       setDeleteWarehouse(null);
       setCurrentPage(1);
       toast.success("Warehouse deleted");
@@ -153,6 +214,10 @@ const Warehouse = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="warehouse-container">
@@ -197,29 +262,30 @@ const Warehouse = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedWarehouses.map((wh) => (
-              <tr key={wh.id}>
-                <td>{wh.id}</td>
-                <td>{wh.name}</td>
-                <td>{wh.cityName}</td>
-                <td>{wh.managerName}</td>
-                <td>{wh.address}</td>
-                <td>{wh.postalCode}</td>
-                <td>{wh.capacityM2}</td>
-                <td>{wh.status}</td>
-                <td>
-                  <FaEdit
-                    onClick={() => setEditWarehouse(wh)}
-                    className="edit-btn"
-                  />
-                  <FaTrash
-                    onClick={() => setDeleteWarehouse(wh)}
-                    className="delete-btn"
-                  />
-                </td>
-              </tr>
-            ))}
-            {paginatedWarehouses.length === 0 && (
+            {paginatedWarehouses.length > 0 ? (
+              paginatedWarehouses.map((wh) => (
+                <tr key={wh.id}>
+                  <td>{wh.id}</td>
+                  <td>{wh.name}</td>
+                  <td>{wh.cityName}</td>
+                  <td>{wh.managerName}</td>
+                  <td>{wh.address}</td>
+                  <td>{wh.postalCode}</td>
+                  <td>{wh.capacityM2}</td>
+                  <td>{wh.status}</td>
+                  <td>
+                    <FaEdit
+                      onClick={() => setEditWarehouse(wh)}
+                      className="edit-btn"
+                    />
+                    <FaTrash
+                      onClick={() => setDeleteWarehouse(wh)}
+                      className="delete-btn"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td
                   colSpan="9"
@@ -253,14 +319,12 @@ const Warehouse = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateWarehouseModal
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreate}
           loading={loading}
           cities={cities}
-          // Le pasamos cities para seleccionar cityId
         />
       )}
       {editWarehouse && (

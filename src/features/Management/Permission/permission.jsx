@@ -13,6 +13,7 @@ import {
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const PERMISSIONS_PER_PAGE = 5;
 
@@ -23,22 +24,23 @@ const Permission = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editPermission, setEditPermission] = useState(null);
   const [deletePermission, setDeletePermission] = useState(null);
-  const [loading, setLoading] = useState(false); // controla botón en modal
+  const [loading, setLoading] = useState(false);
 
   const fetchPermissions = async () => {
     try {
+      setLoading(true);
       const rawPermissions = await getAllPermissions();
-
       const mappedPermissions = rawPermissions.map((permission) => ({
         id: permission.id,
         name: permission.name,
         description: permission.description,
       }));
-
       setPermissions(mappedPermissions);
     } catch (error) {
       toast.error("Error fetching permissions");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,7 +84,7 @@ const Permission = () => {
       await apiDeletePermission(permissionToDelete.id);
       await fetchPermissions();
       setDeletePermission(null);
-      setCurrentPage(1); // va a página 1 después de eliminar
+      setCurrentPage(1);
       toast.success("Permission deleted successfully");
     } catch (error) {
       toast.error("Error deleting permission");
@@ -99,7 +101,9 @@ const Permission = () => {
       .includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredPermissions.length / PERMISSIONS_PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredPermissions.length / PERMISSIONS_PER_PAGE
+  );
   const startIndex = (currentPage - 1) * PERMISSIONS_PER_PAGE;
   const paginatedPermissions = filteredPermissions.slice(
     startIndex,
@@ -111,6 +115,10 @@ const Permission = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="permission-container">
@@ -137,40 +145,44 @@ const Permission = () => {
         </button>
       </div>
       <div className="table-wrapper">
-      <table className="permission-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedPermissions.map((permission) => (
-            <tr key={permission.id} className="permission-row">
-              <td>{permission.name}</td>
-              <td>{permission.description}</td>
-              <td>
-                <FaEdit
-                  className="edit-btn"
-                  onClick={() => setEditPermission(permission)}
-                />
-                <FaTrash
-                  className="delete-btn"
-                  onClick={() => setDeletePermission(permission)}
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedPermissions.length === 0 && (
+        <table className="permission-table">
+          <thead>
             <tr>
-              <td colSpan="3" style={{ textAlign: "center", padding: "1rem" }}>
-                No permissions found.
-              </td>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedPermissions.length > 0 ? (
+              paginatedPermissions.map((permission) => (
+                <tr key={permission.id} className="permission-row">
+                  <td>{permission.name}</td>
+                  <td>{permission.description}</td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditPermission(permission)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setDeletePermission(permission)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="3"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No permissions found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -193,12 +205,11 @@ const Permission = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreatePermissionModal
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreate}
-          loading={loading} // Pasamos prop para deshabilitar botón
+          loading={loading}
         />
       )}
       {editPermission && (

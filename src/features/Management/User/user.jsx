@@ -18,6 +18,7 @@ import {
   CloseCircleOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { FullScreenLoader } from "../../../App";
 
 const USERS_PER_PAGE = 5;
 
@@ -36,9 +37,11 @@ const User = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       const rawUsers = await getAllUsers();
       const mappedUsers = rawUsers.map((user) => ({
         id: user.id,
@@ -57,23 +60,28 @@ const User = () => {
     } catch (err) {
       console.error("Error fetching users:", err);
       toast.error("Error fetching users");
-    }
-  };
-
-  const handleDelete = async (user) => {
-    try {
-      await deleteUserApi(user.id);
-      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
-      toast.success("User deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleDelete = async (user) => {
+    try {
+      setLoading(true);
+      await deleteUserApi(user.id);
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
+      toast.success("User deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Failed to delete user");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredUsers = users.filter((user) =>
     Object.values(user)
@@ -94,6 +102,10 @@ const User = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="user-container">
@@ -209,7 +221,6 @@ const User = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateUserModal
           isOpen={showCreateModal}

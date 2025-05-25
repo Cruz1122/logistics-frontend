@@ -18,6 +18,7 @@ import { getAllWarehouses } from "../../../api/warehouse";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -32,28 +33,58 @@ const ProductWarehouse = () => {
   const [deleteRelation, setDeleteRelation] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await getAllProducts();
-      const sorted = res.sort((a, b) => a.name.localeCompare(b.name));
-      setProducts(sorted);
-    } catch (error) {
-      toast.error("Error fetching products");
-    }
-  };
+  // Carga inicial combinada
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true);
 
-  const fetchWarehouses = async () => {
-    try {
-      const res = await getAllWarehouses();
-      const sorted = res.sort((a, b) => a.name.localeCompare(b.name));
-      setWarehouses(sorted);
-    } catch (error) {
-      toast.error("Error fetching warehouses");
-    }
-  };
+        // Carga productos y almacenes en paralelo
+        const [productsRes, warehousesRes] = await Promise.all([
+          getAllProducts(),
+          getAllWarehouses(),
+        ]);
+
+        const sortedProducts = productsRes.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        const sortedWarehouses = warehousesRes.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        setProducts(sortedProducts);
+        setWarehouses(sortedWarehouses);
+
+        // Luego carga relaciones y mapea nombres
+        const rawRelations = await getAllProductWarehouses();
+        const mappedRelations = rawRelations.map((rel) => {
+          const product = sortedProducts.find((p) => p.id === rel.productId);
+          const warehouse = sortedWarehouses.find(
+            (w) => w.id === rel.warehouseId
+          );
+
+          return {
+            ...rel,
+            productName: product ? product.name : "Unknown",
+            warehouseName: warehouse ? warehouse.name : "Unknown",
+          };
+        });
+
+        setRelations(mappedRelations);
+      } catch (error) {
+        console.error("Error loading initial data:", error);
+        toast.error("Error loading initial data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   const fetchRelations = async () => {
     try {
+      setLoading(true);
       const rawRelations = await getAllProductWarehouses();
       const mappedRelations = rawRelations.map((rel) => {
         const product = products.find((p) => p.id === rel.productId);
@@ -67,20 +98,12 @@ const ProductWarehouse = () => {
       });
       setRelations(mappedRelations);
     } catch (error) {
+      console.error("Error fetching product-warehouse relations:", error);
       toast.error("Error fetching product-warehouse relations");
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchProducts();
-    fetchWarehouses();
-  }, []);
-
-  useEffect(() => {
-    if (products.length > 0 && warehouses.length > 0) {
-      fetchRelations();
-    }
-  }, [products, warehouses]);
 
   const handleCreate = async (newData) => {
     try {
@@ -90,6 +113,7 @@ const ProductWarehouse = () => {
       setShowCreateModal(false);
       toast.success("Relation created");
     } catch (error) {
+      console.error("Error creating relation:", error);
       toast.error("Error creating relation");
     } finally {
       setLoading(false);
@@ -104,6 +128,7 @@ const ProductWarehouse = () => {
       setEditRelation(null);
       toast.success("Relation updated");
     } catch (error) {
+      console.error("Error updating relation:", error);
       toast.error("Error updating relation");
     } finally {
       setLoading(false);
@@ -119,6 +144,7 @@ const ProductWarehouse = () => {
       setCurrentPage(1);
       toast.success("Relation deleted");
     } catch (error) {
+      console.error("Error deleting relation:", error);
       toast.error("Error deleting relation");
     } finally {
       setLoading(false);
@@ -144,6 +170,10 @@ const ProductWarehouse = () => {
     }
   };
 
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="product-warehouse-container">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -164,10 +194,7 @@ const ProductWarehouse = () => {
             <FaSearch />
           </button>
         </div>
-        <button
-          className="create-btn"
-          onClick={() => setShowCreateModal(true)}
-        >
+        <button className="create-btn" onClick={() => setShowCreateModal(true)}>
           CREATE +
         </button>
       </div>
@@ -183,40 +210,44 @@ const ProductWarehouse = () => {
               <th>Last Restock</th>
               <th>Expiration</th>
               <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedRelations.map((rel) => (
-            <tr key={rel.id}>
-              <td>{rel.productName}</td>
-              <td>{rel.warehouseName}</td>
-              <td>{rel.stockQuantity}</td>
-              <td>{rel.reorderLevel}</td>
-              <td>{rel.lastRestock}</td>
-              <td>{rel.expirationDate}</td>
-              <td>{rel.status}</td>
-              <td>
-                <FaEdit
-                  onClick={() => setEditRelation(rel)}
-                  className="edit-btn"
-                />
-                <FaTrash
-                  onClick={() => setDeleteRelation(rel)}
-                  className="delete-btn"
-                />
-              </td>
+              <th>Actions</th>
             </tr>
-          ))}
-          {paginatedRelations.length === 0 && (
-            <tr>
-              <td colSpan="8" style={{ textAlign: "center", padding: "1rem" }}>
-                No product-warehouse data found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedRelations.length > 0 ? (
+              paginatedRelations.map((rel) => (
+                <tr key={rel.id}>
+                  <td>{rel.productName}</td>
+                  <td>{rel.warehouseName}</td>
+                  <td>{rel.stockQuantity}</td>
+                  <td>{rel.reorderLevel}</td>
+                  <td>{rel.lastRestock}</td>
+                  <td>{rel.expirationDate}</td>
+                  <td>{rel.status}</td>
+                  <td>
+                    <FaEdit
+                      onClick={() => setEditRelation(rel)}
+                      className="edit-btn"
+                    />
+                    <FaTrash
+                      onClick={() => setDeleteRelation(rel)}
+                      className="delete-btn"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="8"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No product-warehouse data found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
