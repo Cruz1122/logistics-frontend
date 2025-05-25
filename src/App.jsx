@@ -9,32 +9,6 @@ import { AppRoutes } from "./routes/AppRoutes";
 import { useLocationTracking } from "./hooks/useLocationTracking";
 
 
-export const FullScreenLoader = () => {
-  return (
-    <div className="loader">
-      <div className="box box-1">
-        <div className="side-left"></div>
-        <div className="side-right"></div>
-        <div className="side-top"></div>
-      </div>
-      <div className="box box-2">
-        <div className="side-left"></div>
-        <div className="side-right"></div>
-        <div className="side-top"></div>
-      </div>
-      <div className="box box-3">
-        <div className="side-left"></div>
-        <div className="side-right"></div>
-        <div className="side-top"></div>
-      </div>
-      <div className="box box-4">
-        <div className="side-left"></div>
-        <div className="side-right"></div>
-        <div className="side-top"></div>
-      </div>
-    </div>
-  );
-};
 
 function App() {
   const dispatch = useDispatch();
@@ -82,13 +56,39 @@ function App() {
     <div className="app-container">
       <Navbar />
       <main className="container">
-        <Suspense fallback={<FullScreenLoader />}>
-          {/* Solo se monta cuando loading === false */}
-          <AppRoutes isAuthenticated={isAuthenticated} />
-            </Suspense>
+        {/* Solo se monta cuando loading === false */}
+        <AppRoutes isAuthenticated={isAuthenticated} />
+      </main>
       <Footer className={isHome ? "footer-home" : ""} />
     </div>
   );
 }
+
+export const FullScreenLoader = () => {
+  return (
+    <div className="loader">
+      <div className="box box-1">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+      <div className="box box-2">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+      <div className="box box-3">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+      <div className="box box-4">
+        <div className="side-left"></div>
+        <div className="side-right"></div>
+        <div className="side-top"></div>
+      </div>
+    </div>
+  );
+};
 
 export default App;

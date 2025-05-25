@@ -138,6 +138,7 @@ footer {
   scale: 3;
   height: 50px;
   width: 40px;
+  position: relative;
 }
 
 .box {
