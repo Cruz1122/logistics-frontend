@@ -76,9 +76,7 @@ function App() {
     <div className="app-container">
       <Navbar />
       <main className="container">
-        <Suspense fallback={<FullScreenLoader />}>
           <AppRoutes isAuthenticated={isAuthenticated} />
-        </Suspense>
       </main>
       <Footer className={isHome ? "footer-home" : ""} />
     </div>
