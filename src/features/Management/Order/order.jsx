@@ -17,6 +17,7 @@ import { getAllPersonDelivery } from "../../../api/deliveryperson.js";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const ORDERS_PER_PAGE = 5;
 
@@ -30,41 +31,69 @@ const Orders = () => {
   const [deleteOrder, setDeleteOrder] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Carga inicial combinada: personas de entrega y órdenes
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true);
+        const [deliveryPersons, ordersRes] = await Promise.all([
+          getAllPersonDelivery(),
+          getAllOrders(),
+        ]);
+        setPersonsDelivery(deliveryPersons);
+
+        const mappedOrders = ordersRes.map((order) => {
+          const person = deliveryPersons.find((p) => p.id === order.deliveryId);
+
+          // Formatear fecha estimada para visualización
+          const formattedEstimatedDelivery = new Date(
+            order.estimatedDeliveryTime
+          )
+            .toISOString()
+            .slice(0, 10); // YYYY-MM-DD
+
+          return {
+            ...order,
+            deliveryPersonName: person ? person.name : "Unknown delivery",
+            estimatedDeliveryTime: formattedEstimatedDelivery,
+          };
+        });
+
+        setOrders(mappedOrders);
+      } catch (error) {
+        toast.error("Error fetching orders or delivery persons");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialData();
+  }, []);
+
+  // Refrescar sólo las órdenes usando personas ya cargadas
   const fetchOrders = async () => {
     try {
-      const deliveryPersons = await getAllPersonDelivery();
-      setPersonsDelivery(deliveryPersons);
-
-      const data = await getAllOrders();
-
-      const mapped = data.map((order) => {
-        const person = deliveryPersons.find((p) => p.id === order.deliveryId);
-
+      setLoading(true);
+      const ordersRes = await getAllOrders();
+      const mappedOrders = ordersRes.map((order) => {
+        const person = personsDelivery.find((p) => p.id === order.deliveryId);
         const formattedEstimatedDelivery = new Date(order.estimatedDeliveryTime)
           .toISOString()
-          .slice(0, 10); // YYYY-MM-DD
-
+          .slice(0, 10);
         return {
           ...order,
           deliveryPersonName: person ? person.name : "Unknown delivery",
           estimatedDeliveryTime: formattedEstimatedDelivery,
         };
       });
-
-      setOrders(mapped);
+      setOrders(mappedOrders);
     } catch (error) {
-      toast.error("Error fetching orders or delivery persons");
+      toast.error("Error fetching orders");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const init = async () => {
-      setLoading(true);
-      await fetchOrders();
-      setLoading(false);
-    };
-    init();
-  }, []);
 
   const handleCreate = async (data) => {
     try {
@@ -128,6 +157,10 @@ const Orders = () => {
     }
   };
 
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="personDelivery-container">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -169,31 +202,37 @@ const Orders = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedOrders.map((o) => (
-              <tr key={o.id}>
-                <td>{o.id}</td>
-                <td>{o.customerId}</td>
-                <td>{o.deliveryPersonName}</td>
-                <td>{o.status}</td>
-                <td>{o.deliveryAddress}</td>
-                <td>{new Date(o.creationDate).toLocaleDateString()}</td>
-                <td>{new Date(o.estimatedDeliveryTime).toLocaleDateString()}</td>
-                <td>${o.totalAmount.toFixed(2)}</td>
-                <td>
-                  <FaEdit
-                    onClick={() => setEditOrder(o)}
-                    className="edit-btn"
-                  />
-                  <FaTrash
-                    onClick={() => setDeleteOrder(o)}
-                    className="delete-btn"
-                  />
-                </td>
-              </tr>
-            ))}
-            {paginatedOrders.length === 0 && (
+            {paginatedOrders.length > 0 ? (
+              paginatedOrders.map((o) => (
+                <tr key={o.id}>
+                  <td>{o.id}</td>
+                  <td>{o.customerId}</td>
+                  <td>{o.deliveryPersonName}</td>
+                  <td>{o.status}</td>
+                  <td>{o.deliveryAddress}</td>
+                  <td>{new Date(o.creationDate).toLocaleDateString()}</td>
+                  <td>
+                    {new Date(o.estimatedDeliveryTime).toLocaleDateString()}
+                  </td>
+                  <td>${o.totalAmount.toFixed(2)}</td>
+                  <td>
+                    <FaEdit
+                      onClick={() => setEditOrder(o)}
+                      className="edit-btn"
+                    />
+                    <FaTrash
+                      onClick={() => setDeleteOrder(o)}
+                      className="delete-btn"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="9" style={{ textAlign: "center", padding: "1rem" }}>
+                <td
+                  colSpan="9"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
                   No orders found.
                 </td>
               </tr>

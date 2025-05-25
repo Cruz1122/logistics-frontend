@@ -13,6 +13,7 @@ import {
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const CATEGORIES_PER_PAGE = 5;
 
@@ -27,6 +28,7 @@ const Category = () => {
 
   const fetchCategories = async () => {
     try {
+      setLoading(true);
       const rawCategories = await getAllCategories();
 
       const mappedCategories = rawCategories.map((category) => ({
@@ -38,6 +40,8 @@ const Category = () => {
     } catch (error) {
       toast.error("Error fetching categories");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,6 +112,10 @@ const Category = () => {
     }
   };
 
+  if (loading && categories.length === 0) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="category-container">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -142,30 +150,34 @@ const Category = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedCategories.map((category) => (
-              <tr key={category.id} className="category-row">
-              <td>{category.name}</td>
-              <td>
-                <FaEdit
-                  className="edit-btn"
-                  onClick={() => setEditCategory(category)}
-                />
-                <FaTrash
-                  className="delete-btn"
-                  onClick={() => setDeleteCategory(category)}
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedCategories.length === 0 && (
-            <tr>
-              <td colSpan="2" style={{ textAlign: "center", padding: "1rem" }}>
-                No categories found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            {paginatedCategories.length > 0 ? (
+              paginatedCategories.map((category) => (
+                <tr key={category.id} className="category-row">
+                  <td>{category.name}</td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditCategory(category)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setDeleteCategory(category)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="2"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No categories found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -188,7 +200,6 @@ const Category = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateCategoryModal
           onClose={() => setShowCreateModal(false)}

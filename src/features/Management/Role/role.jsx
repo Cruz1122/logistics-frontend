@@ -4,10 +4,16 @@ import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 import CreateRoleModal from "./crud/create";
 import EditRoleModal from "./crud/edit";
 import DeleteRoleModal from "./crud/delete";
-import { getAllRoles, createRole, updateRole, deleteRole } from "../../../api/role";
+import {
+  getAllRoles,
+  createRole,
+  updateRole,
+  deleteRole,
+} from "../../../api/role";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const ROLES_PER_PAGE = 5;
 
@@ -18,28 +24,31 @@ const Role = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editRole, setEditRole] = useState(null);
   const [roleToDelete, setRoleToDelete] = useState(null);
-  const [loading, setLoading] = useState(false); // controla botón en modal
+  const [loading, setLoading] = useState(false);
+
+  const fetchRoles = async () => {
+    try {
+      setLoading(true);
+      const rawRoles = await getAllRoles();
+
+      const mappedRoles = rawRoles.map((role) => ({
+        id: role.id,
+        name: role.name,
+        description: role.description,
+        createdAt: role.createdAt,
+        updatedAt: role.updatedAt,
+      }));
+
+      setRoles(mappedRoles);
+    } catch (error) {
+      toast.error("Error fetching roles");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const rawRoles = await getAllRoles();
-
-        const mappedRoles = rawRoles.map((role) => ({
-          id: role.id,
-          name: role.name,
-          description: role.description,
-          createdAt: role.createdAt,
-          updatedAt: role.updatedAt,
-        }));
-
-        setRoles(mappedRoles);
-      } catch (error) {
-        toast.error("Error fetching roles");
-        console.error(error);
-      }
-    };
-
     fetchRoles();
   }, []);
 
@@ -63,7 +72,6 @@ const Role = () => {
     }
   };
 
-  // Crear nuevo rol
   const handleCreateRole = async (roleData) => {
     try {
       setLoading(true);
@@ -79,15 +87,12 @@ const Role = () => {
     }
   };
 
-  // Editar rol existente
   const handleSaveEditRole = async (updatedData) => {
     try {
       setLoading(true);
       const updatedRole = await updateRole(editRole.id, updatedData);
       setRoles((prev) =>
-        prev.map((role) =>
-          role.id === updatedRole.id ? updatedRole : role
-        )
+        prev.map((role) => (role.id === updatedRole.id ? updatedRole : role))
       );
       setEditRole(null);
       toast.success("Role updated successfully");
@@ -99,7 +104,6 @@ const Role = () => {
     }
   };
 
-  // Eliminar rol
   const handleDeleteRole = async (role) => {
     try {
       setLoading(true);
@@ -115,6 +119,10 @@ const Role = () => {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="role-container">
@@ -151,31 +159,35 @@ const Role = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedRoles.map((role, index) => (
-            <tr key={index} className="role-row">
-              <td>{role.name}</td>
-              <td>{role.description}</td>
-              <td>
-                <FaEdit
-                  className="edit-btn"
-                  onClick={() => setEditRole(role)}
-                />
-                <FaTrash
-                  className="delete-btn"
-                  onClick={() => setRoleToDelete(role)}
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedRoles.length === 0 && (
-            <tr>
-              <td colSpan="3" style={{ textAlign: "center", padding: "1rem" }}>
-                No roles found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            {paginatedRoles.length > 0 ? (
+              paginatedRoles.map((role) => (
+                <tr key={role.id} className="role-row">
+                  <td>{role.name}</td>
+                  <td>{role.description}</td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditRole(role)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setRoleToDelete(role)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="3"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No roles found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (

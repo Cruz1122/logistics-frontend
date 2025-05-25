@@ -11,11 +11,12 @@ import {
   FaTags,
   FaTruck,
   FaCity,
-  FaMap ,
-  FaWarehouse ,
+  FaMap,
+  FaWarehouse,
   FaQuestionCircle,
 } from "react-icons/fa";
 import "./dashboard.css";
+import { FullScreenLoader } from "../../App";
 
 const Dashboard = () => {
   const [permissions, setPermissions] = useState([]);
@@ -24,17 +25,20 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchPermissions = async () => {
       const userId = getUserIdFromToken();
-      console.log(`userId: ${userId}`);
-
       if (!userId) {
         toast.error("Sesión expirada o inválida. Inicia sesión de nuevo.");
         navigate("/signin");
         return;
       }
-
       const data = await getUserPermissions(userId);
       if (data && Array.isArray(data)) {
-        setPermissions(data);
+        // Filtrar para omitir permisos de Account Management
+        const filtered = data.filter(
+          (perm) =>
+            !perm.name.toLowerCase().includes("account management") &&
+            !perm.description.toLowerCase().includes("account management")
+        );
+        setPermissions(filtered);
       } else {
         toast.error("No se pudieron cargar los permisos del usuario");
       }
@@ -43,10 +47,13 @@ const Dashboard = () => {
     fetchPermissions();
   }, [navigate]);
 
-  const getIconForPermission = (name) => {
-    const permissionName = name.toLowerCase(); // Convertir el nombre a minúsculas para la comparación
+  if (permissions.length === 0) {
+    return <FullScreenLoader />;
+  }
 
-    // Asignar iconos según los permisos
+  const getIconForPermission = (name) => {
+    const permissionName = name.toLowerCase();
+
     if (permissionName.includes("user")) return <FaUser size={40} />;
     if (
       permissionName.includes("role") &&
@@ -59,27 +66,44 @@ const Dashboard = () => {
     )
       return <FaKey size={40} />;
     if (permissionName.includes("permission")) return <FaTasks size={40} />;
-    if (permissionName.includes("category")) return <FaTags size={40} />; // Icono para "categoría"
+    if (permissionName.includes("category")) return <FaTags size={40} />;
     if (permissionName.includes("supplier")) return <FaTruck size={40} />;
-    if (permissionName.includes("state")) return <FaMap  size={40} />;
+    if (permissionName.includes("state")) return <FaMap size={40} />;
     if (permissionName.includes("city")) return <FaCity size={40} />;
     if (permissionName.includes("warehouse")) return <FaWarehouse size={40} />;
-    if (permissionName.includes("product")) return <FaTags size={40} />; // Icono para "producto"
-    if (permissionName.includes("product") && permissionName.includes("supplier")) return <FaTruck size={40} />; // Icono para "producto-proveedor"
-    if (permissionName.includes("product") && permissionName.includes("warehouse")) return <FaWarehouse size={40} />; // Icono para "producto-almacén"
-    if (permissionName.includes("product") && permissionName.includes("movement")) return <FaTasks size={40} />; // Icono para "movimiento de producto"
-    if (permissionName.includes("delivery")) return <FaTruck size={40} />; // Icono para "entrega"
-    if (permissionName.includes("order")) return <FaTasks size={40} />; // Icono para "orden"
-    // Ícono por defecto en caso de que no coincida con ningún permiso
+    if (
+      permissionName.includes("product") &&
+      permissionName.includes("supplier")
+    )
+      return <FaTruck size={40} />;
+    if (
+      permissionName.includes("product") &&
+      permissionName.includes("warehouse")
+    )
+      return <FaWarehouse size={40} />;
+    if (
+      permissionName.includes("product") &&
+      permissionName.includes("movement")
+    )
+      return <FaTasks size={40} />;
+    if (permissionName.includes("delivery")) return <FaTruck size={40} />;
+    if (permissionName.includes("order")) return <FaTasks size={40} />;
+    if (permissionName.includes("product")) return <FaTags size={40} />;
+
     return <FaQuestionCircle size={40} />;
   };
 
   const handleButtonClick = (permName) => {
-    const permissionName = permName.toLowerCase(); // Convertir a minúsculas para comparar
+    const permissionName = permName.toLowerCase();
+
+    // Omitimos rutas relacionadas a Account Management
+    if (permissionName.includes("account management")) {
+      toast.info("Gestión de cuentas no disponible aquí");
+      return;
+    }
 
     let route = "";
 
-    // Condiciones para asignar las rutas según el permiso
     if (permissionName.includes("user")) {
       route = "/usersPanel";
     } else if (
@@ -92,11 +116,20 @@ const Dashboard = () => {
       permissionName.includes("permission")
     ) {
       route = "/roleXpermissionPanel";
-    } else if (permissionName.includes("product") && permissionName.includes("supplier")) {
+    } else if (
+      permissionName.includes("product") &&
+      permissionName.includes("supplier")
+    ) {
       route = "/productSuppliersPanel";
-    } else if (permissionName.includes("product") && permissionName.includes("warehouse")) {
+    } else if (
+      permissionName.includes("product") &&
+      permissionName.includes("warehouse")
+    ) {
       route = "/productWarehousesPanel";
-    } else if (permissionName.includes("product") && permissionName.includes("movement")) {
+    } else if (
+      permissionName.includes("product") &&
+      permissionName.includes("movement")
+    ) {
       route = "/productWarehouseMovementsPanel";
     } else if (permissionName.includes("permission")) {
       route = "/permissionsPanel";
@@ -117,19 +150,26 @@ const Dashboard = () => {
     } else if (permissionName.includes("order")) {
       route = "/ordersPanel";
     } else {
-      route = "/defaultPanel"; // Ruta por defecto si no hay coincidencia
+      route = "/defaultPanel";
     }
 
     if (route) {
       navigate(route);
     } else {
-      toast.info(`No hay ruta configurada para "${permName}"`); // Mensaje si no se encuentra ruta
+      toast.info(`No hay ruta configurada para "${permName}"`);
     }
   };
 
   return (
     <div className="dashboard-container">
       <ToastContainer />
+
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">Management Panel</h1>
+        <p className="dashboard-subtitle" style={{ fontSize: "1.5rem" }}>
+          Select an option to manage system resources.
+        </p>
+      </div>
       <div className="cards-grid">
         {permissions.map((perm) => (
           <div className="dashboard-card" key={perm.permissionId}>

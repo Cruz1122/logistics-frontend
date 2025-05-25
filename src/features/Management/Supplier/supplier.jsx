@@ -14,6 +14,7 @@ import {
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const SUPPLIERS_PER_PAGE = 5;
 
@@ -28,6 +29,7 @@ const Supplier = () => {
 
   const fetchSuppliers = async () => {
     try {
+      setLoading(true);
       const rawSuppliers = await getAllSuppliers();
 
       const mappedSuppliers = rawSuppliers.map((supplier) => ({
@@ -41,6 +43,8 @@ const Supplier = () => {
     } catch (error) {
       toast.error("Error fetching suppliers");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,6 +115,10 @@ const Supplier = () => {
     }
   };
 
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="supplier-container">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -147,32 +155,36 @@ const Supplier = () => {
             </tr>
           </thead>
           <tbody>
-          {paginatedSuppliers.map((supplier) => (
-            <tr key={supplier.id} className="supplier-row">
-              <td>{supplier.name}</td>
-              <td>{supplier.phone}</td>
-              <td>{supplier.email}</td>
-              <td>
-                <FaEdit
-                  className="edit-btn"
-                  onClick={() => setEditSupplier(supplier)}
-                />
-                <FaTrash
-                  className="delete-btn"
-                  onClick={() => setDeleteSupplier(supplier)}
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedSuppliers.length === 0 && (
-            <tr>
-              <td colSpan="4" style={{ textAlign: "center", padding: "1rem" }}>
-                No suppliers found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            {paginatedSuppliers.length > 0 ? (
+              paginatedSuppliers.map((supplier) => (
+                <tr key={supplier.id} className="supplier-row">
+                  <td>{supplier.name}</td>
+                  <td>{supplier.phone}</td>
+                  <td>{supplier.email}</td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditSupplier(supplier)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setDeleteSupplier(supplier)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="4"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No suppliers found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -195,7 +207,6 @@ const Supplier = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateSupplierModal
           onClose={() => setShowCreateModal(false)}

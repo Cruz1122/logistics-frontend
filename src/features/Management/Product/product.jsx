@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./product.css"; // Asegúrate de crear o adaptar este archivo
+import "./product.css";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
 import CreateProductModal from "./crud/create";
@@ -18,7 +18,7 @@ import { getAllCategories } from "../../../api/category";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdCheckCircle, MdCancel } from "react-icons/md";
-
+import { FullScreenLoader } from "../../../App";
 
 const PRODUCTS_PER_PAGE = 5;
 
@@ -32,41 +32,62 @@ const Product = () => {
   const [deleteProduct, setDeleteProduct] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await getAllCategories();
-      const sorted = res.sort((a, b) => a.name.localeCompare(b.name));
-      setCategories(sorted);
-    } catch (error) {
-      toast.error("Error fetching categories");
-    }
-  };
+  // Carga inicial combinada
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true);
+        const [categoriesRes, productsRes] = await Promise.all([
+          getAllCategories(),
+          getAllProducts(),
+        ]);
 
+        const sortedCategories = categoriesRes.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        setCategories(sortedCategories);
+
+        const mappedProducts = productsRes.map((product) => {
+          const category = sortedCategories.find(
+            (c) => c.id === product.categoryId
+          );
+          return {
+            ...product,
+            categoryName: category ? category.name : "Unknown",
+          };
+        });
+
+        setProducts(mappedProducts);
+      } catch (error) {
+        toast.error("Error loading initial data");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialData();
+  }, []);
+
+  // Refrescar productos usando categorías ya cargadas
   const fetchProducts = async () => {
     try {
-      const rawProducts = await getAllProducts();
-      const mapped = rawProducts.map((product) => {
+      setLoading(true);
+      const productsRes = await getAllProducts();
+      const mappedProducts = productsRes.map((product) => {
         const category = categories.find((c) => c.id === product.categoryId);
         return {
           ...product,
           categoryName: category ? category.name : "Unknown",
         };
       });
-      setProducts(mapped);
+      setProducts(mappedProducts);
     } catch (error) {
       toast.error("Error fetching products");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    if (categories.length > 0) {
-      fetchProducts();
-    }
-  }, [categories]);
 
   const handleCreate = async (data) => {
     try {
@@ -77,6 +98,7 @@ const Product = () => {
       toast.success("Product created");
     } catch (error) {
       toast.error("Error creating product");
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -91,6 +113,7 @@ const Product = () => {
       toast.success("Product updated");
     } catch (error) {
       toast.error("Error updating product");
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -106,6 +129,7 @@ const Product = () => {
       toast.success("Product deleted");
     } catch (error) {
       toast.error("Error deleting product");
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -127,6 +151,10 @@ const Product = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="product-container">
@@ -154,71 +182,75 @@ const Product = () => {
       </div>
 
       <div className="table-wrapper">
-      <table className="product-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Description</th>
-            <th>SKU</th>
-            <th>Barcode</th>
-            <th>Price</th>
-            <th>Weight (kg)</th>
-            <th>Dimensions</th>
-            <th>Fragile</th>
-            <th>Cooling</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedProducts.map((p) => (
-            <tr key={p.id}>
-              <td>{p.id}</td>
-              <td>{p.name}</td>
-              <td>{p.categoryName}</td>
-              <td>{p.description}</td>
-              <td>{p.sku}</td>
-              <td>{p.barcode}</td>
-              <td>{p.unitPrice}</td>
-              <td>{p.weightKg}</td>
-              <td>{p.dimensions}</td>
-              <td>
-                {p.isFragile ? (
-                  <MdCheckCircle size={20} color="#5edd60" />
-                ) : (
-                  <MdCancel size={20} color="red" />
-                )}
-              </td>
-              <td>
-                {p.needsCooling ? (
-                  <MdCheckCircle size={20} color="#5edd60" />
-                ) : (
-                  <MdCancel size={20} color="red" />
-                )}
-              </td>
-
-              <td>
-                <FaEdit
-                  onClick={() => setEditProduct(p)}
-                  className="edit-btn"
-                />
-                <FaTrash
-                  onClick={() => setDeleteProduct(p)}
-                  className="delete-btn"
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedProducts.length === 0 && (
+        <table className="product-table">
+          <thead>
             <tr>
-              <td colSpan="12" style={{ textAlign: "center", padding: "1rem" }}>
-                No products found.
-              </td>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>SKU</th>
+              <th>Barcode</th>
+              <th>Price</th>
+              <th>Weight (kg)</th>
+              <th>Dimensions</th>
+              <th>Fragile</th>
+              <th>Cooling</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedProducts.length > 0 ? (
+              paginatedProducts.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.id}</td>
+                  <td>{p.name}</td>
+                  <td>{p.categoryName}</td>
+                  <td>{p.description}</td>
+                  <td>{p.sku}</td>
+                  <td>{p.barcode}</td>
+                  <td>{p.unitPrice}</td>
+                  <td>{p.weightKg}</td>
+                  <td>{p.dimensions}</td>
+                  <td>
+                    {p.isFragile ? (
+                      <MdCheckCircle size={20} color="#5edd60" />
+                    ) : (
+                      <MdCancel size={20} color="red" />
+                    )}
+                  </td>
+                  <td>
+                    {p.needsCooling ? (
+                      <MdCheckCircle size={20} color="#5edd60" />
+                    ) : (
+                      <MdCancel size={20} color="red" />
+                    )}
+                  </td>
+
+                  <td>
+                    <FaEdit
+                      onClick={() => setEditProduct(p)}
+                      className="edit-btn"
+                    />
+                    <FaTrash
+                      onClick={() => setDeleteProduct(p)}
+                      className="delete-btn"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="12"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No products found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -241,7 +273,6 @@ const Product = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateProductModal
           onClose={() => setShowCreateModal(false)}

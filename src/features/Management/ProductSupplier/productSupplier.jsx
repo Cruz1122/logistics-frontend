@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./productSupplier.css"; // adapta el CSS si quieres
+import "./productSupplier.css";
 import { FaEdit, FaTrash, FaSearch } from "react-icons/fa";
 
 import CreateProductSupplierModal from "./crud/create";
@@ -18,6 +18,7 @@ import { getAllSuppliers } from "../../../api/supplier";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -32,35 +33,63 @@ const ProductSupplier = () => {
   const [deleteRelation, setDeleteRelation] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchProducts = async () => {
-    try {
-      const res = await getAllProducts();
-      const sorted = res.sort((a, b) => a.name.localeCompare(b.name));
-      setProducts(sorted);
-    } catch (error) {
-      toast.error("Error fetching products");
-    }
-  };
+  // Carga inicial combinada de productos y proveedores
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true);
 
-  const fetchSuppliers = async () => {
-    try {
-      const res = await getAllSuppliers();
-      const sorted = res.sort((a, b) => a.name.localeCompare(b.name));
-      setSuppliers(sorted);
-    } catch (error) {
-      toast.error("Error fetching suppliers");
-    }
-  };
+        const [productsRes, suppliersRes] = await Promise.all([
+          getAllProducts(),
+          getAllSuppliers(),
+        ]);
 
+        const sortedProducts = productsRes.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        const sortedSuppliers = suppliersRes.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        setProducts(sortedProducts);
+        setSuppliers(sortedSuppliers);
+
+        // Cargar relaciones y mapear con nombres actualizados
+        const rawRelations = await getAllProductSuppliers();
+
+        const mappedRelations = rawRelations.map((rel) => {
+          const product = sortedProducts.find((p) => p.id === rel.productId);
+          const supplier = sortedSuppliers.find((s) => s.id === rel.supplierId);
+
+          return {
+            ...rel,
+            productName: product ? product.name : "Unknown",
+            supplierName: supplier ? supplier.name : "Unknown",
+          };
+        });
+
+        setRelations(mappedRelations);
+      } catch (error) {
+        toast.error("Error loading initial data");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+  // Refrescar solo relaciones usando productos y proveedores ya cargados
   const fetchRelations = async () => {
     try {
+      setLoading(true);
       const rawRelations = await getAllProductSuppliers();
       const mappedRelations = rawRelations.map((rel) => {
         const product = products.find((p) => p.id === rel.productId);
         const supplier = suppliers.find((s) => s.id === rel.supplierId);
 
         return {
-          id: rel.id,
           ...rel,
           productName: product ? product.name : "Unknown",
           supplierName: supplier ? supplier.name : "Unknown",
@@ -69,19 +98,11 @@ const ProductSupplier = () => {
       setRelations(mappedRelations);
     } catch (error) {
       toast.error("Error fetching product-supplier relations");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchProducts();
-    fetchSuppliers();
-  }, []);
-
-  useEffect(() => {
-    if (products.length > 0 && suppliers.length > 0) {
-      fetchRelations();
-    }
-  }, [products, suppliers]);
 
   const handleCreate = async (newRelationData) => {
     try {
@@ -126,7 +147,6 @@ const ProductSupplier = () => {
     }
   };
 
-  // Búsqueda por nombre de producto o proveedor
   const filteredRelations = relations.filter(
     (rel) =>
       rel.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -145,6 +165,10 @@ const ProductSupplier = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="product-supplier-container">
@@ -166,53 +190,54 @@ const ProductSupplier = () => {
             <FaSearch />
           </button>
         </div>
-        <button
-          className="create-btn"
-          onClick={() => setShowCreateModal(true)}
-        >
+        <button className="create-btn" onClick={() => setShowCreateModal(true)}>
           CREATE +
         </button>
       </div>
 
       <div className="table-wrapper">
-      <table className="relation-table">
-        <thead>
-          <tr>
-            <th>Product ID</th>
-            <th>Product</th>
-            <th>Supplier ID</th>
-            <th>Supplier</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedRelations.map((rel) => (
-            <tr key={`${rel.productId}-${rel.supplierId}`}>
-              <td>{rel.productId}</td>
-              <td>{rel.productName}</td>
-              <td>{rel.supplierId}</td>
-              <td>{rel.supplierName}</td>
-              <td>
-                <FaEdit
-                  onClick={() => setEditRelation(rel)}
-                  className="edit-btn"
-                />
-                <FaTrash
-                  onClick={() => setDeleteRelation(rel)}
-                  className="delete-btn"
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedRelations.length === 0 && (
+        <table className="relation-table">
+          <thead>
             <tr>
-              <td colSpan="5" style={{ textAlign: "center", padding: "1rem" }}>
-                No relations found.
-              </td>
+              <th>Product ID</th>
+              <th>Product</th>
+              <th>Supplier ID</th>
+              <th>Supplier</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedRelations.length > 0 ? (
+              paginatedRelations.map((rel) => (
+                <tr key={`${rel.productId}-${rel.supplierId}`}>
+                  <td>{rel.productId}</td>
+                  <td>{rel.productName}</td>
+                  <td>{rel.supplierId}</td>
+                  <td>{rel.supplierName}</td>
+                  <td>
+                    <FaEdit
+                      onClick={() => setEditRelation(rel)}
+                      className="edit-btn"
+                    />
+                    <FaTrash
+                      onClick={() => setDeleteRelation(rel)}
+                      className="delete-btn"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="5"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No relations found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -235,7 +260,6 @@ const ProductSupplier = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateProductSupplierModal
           onClose={() => setShowCreateModal(false)}

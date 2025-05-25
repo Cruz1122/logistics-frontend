@@ -13,16 +13,17 @@ import {
   deletePersonDelivery as apiDeletePersonDelivery,
 } from "../../../api/deliveryperson.js";
 
-import { getAllUsers } from "../../../api/user"; // <-- Importa la función para traer usuarios
+import { getAllUsers } from "../../../api/user";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const PERSONS_PER_PAGE = 5;
 
 const PersonDelivery = () => {
   const [persons, setPersons] = useState([]);
-  const [users, setUsers] = useState([]); // <-- estado para usuarios
+  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -30,44 +31,59 @@ const PersonDelivery = () => {
   const [deletePerson, setDeletePerson] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchUsers = async () => {
-    try {
-      const res = await getAllUsers();
-      setUsers(res);
-    } catch (error) {
-      toast.error("Error fetching users");
-    }
-  };
+  // Carga inicial combinada: usuarios y personas
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true);
+        const [usersRes, personsRes] = await Promise.all([
+          getAllUsers(),
+          getAllPersonDelivery(),
+        ]);
+        setUsers(usersRes);
 
+        // Mapear persons agregando nombre completo del usuario
+        const mappedPersons = personsRes.map((person) => {
+          const user = usersRes.find((u) => u.id === person.idUser);
+          return {
+            ...person,
+            userFullName: user
+              ? `${user.name} ${user.lastName}`
+              : "Unknown user",
+          };
+        });
+        setPersons(mappedPersons);
+      } catch (error) {
+        console.error("Error loading initial data:", error);
+        toast.error("Error loading initial data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+  // Función para refrescar persons, mapeando usuarios ya cargados en estado
   const fetchPersons = async () => {
     try {
-      const data = await getAllPersonDelivery();
-
-      // Aquí mapeamos para añadir el fullName del usuario
-      const mapped = data.map((person) => {
+      setLoading(true);
+      const personsRes = await getAllPersonDelivery();
+      const mappedPersons = personsRes.map((person) => {
         const user = users.find((u) => u.id === person.idUser);
         return {
           ...person,
           userFullName: user ? `${user.name} ${user.lastName}` : "Unknown user",
         };
       });
-
-      setPersons(mapped);
+      setPersons(mappedPersons);
     } catch (error) {
       toast.error("Error fetching delivery persons");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  // Cuando cambian los usuarios, recargamos personas para mapear con nombres
-  useEffect(() => {
-    if (users.length > 0) {
-      fetchPersons();
-    }
-  }, [users]);
 
   const handleCreate = async (data) => {
     try {
@@ -129,6 +145,10 @@ const PersonDelivery = () => {
     }
   };
 
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="personDelivery-container">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -162,33 +182,37 @@ const PersonDelivery = () => {
               <th>Name</th>
               <th>Latitude</th>
               <th>Longitude</th>
-              <th>User Full Name</th> {/* <-- Aquí mostramos el nombre completo */}
+              <th>User Full Name</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedPersons.map((p) => (
-              <tr key={p.id}>
-                <td>{p.id}</td>
-                <td>{p.name}</td>
-                <td>{p.latitude}</td>
-                <td>{p.longitude}</td>
-                <td>{p.userFullName}</td>
-                <td>
-                  <FaEdit
-                    onClick={() => setEditPerson(p)}
-                    className="edit-btn"
-                  />
-                  <FaTrash
-                    onClick={() => setDeletePerson(p)}
-                    className="delete-btn"
-                  />
-                </td>
-              </tr>
-            ))}
-            {paginatedPersons.length === 0 && (
+            {paginatedPersons.length > 0 ? (
+              paginatedPersons.map((p) => (
+                <tr key={p.id}>
+                  <td>{p.id}</td>
+                  <td>{p.name}</td>
+                  <td>{p.latitude}</td>
+                  <td>{p.longitude}</td>
+                  <td>{p.userFullName}</td>
+                  <td>
+                    <FaEdit
+                      onClick={() => setEditPerson(p)}
+                      className="edit-btn"
+                    />
+                    <FaTrash
+                      onClick={() => setDeletePerson(p)}
+                      className="delete-btn"
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", padding: "1rem" }}>
+                <td
+                  colSpan="6"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
                   No persons found.
                 </td>
               </tr>
@@ -217,13 +241,12 @@ const PersonDelivery = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreatePersonDeliveryModal
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreate}
           loading={loading}
-          users={users} // si necesitas usuarios en el modal para asignar
+          users={users}
         />
       )}
       {editPerson && (
@@ -232,7 +255,7 @@ const PersonDelivery = () => {
           onClose={() => setEditPerson(null)}
           onSave={handleUpdate}
           loading={loading}
-          users={users} // si necesitas usuarios en el modal para asignar
+          users={users}
         />
       )}
       {deletePerson && (

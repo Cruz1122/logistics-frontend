@@ -15,6 +15,7 @@ import {
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const STATES_PER_PAGE = 5;
 
@@ -29,6 +30,7 @@ const State = () => {
 
   const fetchStates = async () => {
     try {
+      setLoading(true);
       const rawStates = await getAllStates();
 
       const mappedStates = rawStates.map((state) => ({
@@ -40,6 +42,8 @@ const State = () => {
     } catch (error) {
       toast.error("Error fetching states");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,6 +114,10 @@ const State = () => {
     }
   };
 
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="state-container">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -144,30 +152,34 @@ const State = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedStates.map((state) => (
-              <tr key={state.id} className="state-row">
-              <td>{state.name}</td>
-              <td>
-                <FaEdit
-                  className="edit-btn"
-                  onClick={() => setEditState(state)}
-                />
-                <FaTrash
-                  className="delete-btn"
-                  onClick={() => setDeleteState(state)}
-                />
-              </td>
-            </tr>
-          ))}
-          {paginatedStates.length === 0 && (
-            <tr>
-              <td colSpan="2" style={{ textAlign: "center", padding: "1rem" }}>
-                No states found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            {paginatedStates.length > 0 ? (
+              paginatedStates.map((state) => (
+                <tr key={state.id} className="state-row">
+                  <td>{state.name}</td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditState(state)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setDeleteState(state)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="2"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No states found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -190,7 +202,6 @@ const State = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateStateModal
           onClose={() => setShowCreateModal(false)}

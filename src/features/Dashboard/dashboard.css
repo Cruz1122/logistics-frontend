@@ -5,6 +5,11 @@
   box-sizing: border-box;
 }
 
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
 .cards-grid {
   display: flex;
   flex-wrap: wrap;            /* Permite bajar filas */

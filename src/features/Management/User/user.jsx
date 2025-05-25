@@ -13,6 +13,7 @@ import {
 } from "../../../api/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { FullScreenLoader } from "../../../App";
 
 const USERS_PER_PAGE = 5;
 
@@ -31,9 +32,11 @@ const User = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       const rawUsers = await getAllUsers();
       const mappedUsers = rawUsers.map((user) => ({
         id: user.id,
@@ -51,23 +54,28 @@ const User = () => {
     } catch (err) {
       console.error("Error fetching users:", err);
       toast.error("Error fetching users");
-    }
-  };
-
-  const handleDelete = async (user) => {
-    try {
-      await deleteUserApi(user.id);
-      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
-      toast.success("User deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      toast.error("Failed to delete user");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const handleDelete = async (user) => {
+    try {
+      setLoading(true);
+      await deleteUserApi(user.id);
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== user.id));
+      toast.success("User deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Failed to delete user");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filteredUsers = users.filter((user) =>
     Object.values(user)
@@ -88,6 +96,10 @@ const User = () => {
       setCurrentPage(newPage);
     }
   };
+
+  if (loading) {
+    return <FullScreenLoader />;
+  }
 
   return (
     <div className="user-container">
@@ -115,52 +127,56 @@ const User = () => {
       </div>
 
       <div className="table-wrapper">
-      <table className="user-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Role</th>
-            <th>Verified</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {paginatedUsers.map((user, index) => (
-            <tr key={index} className="user-row">
-              <td>{`${user.name} ${user.lastName}`}</td>
-              <td>{user.email}</td>
-              <td>{user.phone}</td>
-              <td>{user.role}</td>
-              <td>
-                {user.verified ? (
-                  <MdCheckCircle size={24} color="#5edd60" />
-                ) : (
-                  <MdCancel size={24} color="red" />
-                )}
-              </td>
-              <td>
-                  <FaEdit
-                    className="edit-btn"
-                    onClick={() => setEditUser(user)}
-                  />
-                  <FaTrash
-                    className="delete-btn"
-                    onClick={() => setUserToDelete(user)}
-                  />
-              </td>
-            </tr>
-          ))}
-          {paginatedUsers.length === 0 && (
+        <table className="user-table">
+          <thead>
             <tr>
-              <td colSpan="6" style={{ textAlign: "center", padding: "1rem" }}>
-                No users found.
-              </td>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Role</th>
+              <th>Verified</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {paginatedUsers.length > 0 ? (
+              paginatedUsers.map((user, index) => (
+                <tr key={user.id} className="user-row">
+                  <td>{`${user.name} ${user.lastName}`}</td>
+                  <td>{user.email}</td>
+                  <td>{user.phone}</td>
+                  <td>{user.role}</td>
+                  <td>
+                    {user.verified ? (
+                      <MdCheckCircle size={24} color="#5edd60" />
+                    ) : (
+                      <MdCancel size={24} color="red" />
+                    )}
+                  </td>
+                  <td>
+                    <FaEdit
+                      className="edit-btn"
+                      onClick={() => setEditUser(user)}
+                    />
+                    <FaTrash
+                      className="delete-btn"
+                      onClick={() => setUserToDelete(user)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan="6"
+                  style={{ textAlign: "center", padding: "1rem" }}
+                >
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {totalPages > 1 && (
@@ -183,7 +199,6 @@ const User = () => {
         </div>
       )}
 
-      {/* Modales */}
       {showCreateModal && (
         <CreateUserModal
           isOpen={showCreateModal}
