@@ -42,6 +42,7 @@ function App() {
     "/not-found",
     "/server-error",
     "/unauthorized",
+    "/inactive",
   ];
 
   useEffect(() => {

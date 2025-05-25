@@ -11,7 +11,11 @@ import {
 } from "../../../redux/authSlice";
 import { useDispatch } from "react-redux";
 import { getUserRolId } from "../../../api/auth"; // Importa tu función para obtener rolId
-import { getUserIdFromToken, getUserPermissions } from "../../../api/user"; // Importa tu función para obtener permisos
+import {
+  getUserIdFromToken,
+  getUserPermissions,
+  getUserStatus,
+} from "../../../api/user"; // Importa tu función para obtener permisos
 
 const VerifyCode = () => {
   const navigate = useNavigate();
@@ -41,6 +45,7 @@ const VerifyCode = () => {
 
     try {
       setLoadingPage(true);
+
       const response = await verifyCodeRequest({ email, code });
 
       if (response.token) {
@@ -62,6 +67,12 @@ const VerifyCode = () => {
         // Guarda token y rolId en estado global y localStorage
         dispatch(setUser({ token: response.token, rolId, permissions }));
         dispatch(setAuthenticated(true));
+        const isActive = await getUserStatus();
+        if (!isActive) {
+          toast.error("User is inactive");
+          navigate("/inactive");
+          return;
+        }
         toast.success("Verification successful!");
         navigate("/");
       } else {
