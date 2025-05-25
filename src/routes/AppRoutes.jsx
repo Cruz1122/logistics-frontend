@@ -2,6 +2,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { lazy } from "react";
 import PropTypes from "prop-types";
+import { FullScreenLoader } from "../App";
 
 // Lazy load components - Auth
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
@@ -104,7 +105,7 @@ export const AppRoutes = () => {
 
   if (isAuthenticated) {
      if (!permissionsLoaded) {
-      return <div className="fullscreen-loader">Cargando...</div>;
+      return <FullScreenLoader/>;
       } 
   }
   const hasPermission = (permName) => {

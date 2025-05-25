@@ -17,10 +17,17 @@ import {
 import "react-toastify/dist/ReactToastify.css";
 import "./dashboard.css";
 import { FullScreenLoader } from "../../App";
+import Unauthorized from "../../components/errors/unauthorized/unauthorized";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const permissions = useSelector((state) => state.auth.permissions);
+
+  // Filtra permisos para omitir los relacionados con "Account Management"
+  const filteredPermissions = permissions?.filter(
+    (perm) =>
+      !perm.name.toLowerCase().includes("account")
+  );
 
   const getIconForPermission = (name) => {
     const permissionName = name.toLowerCase();
@@ -125,19 +132,29 @@ const Dashboard = () => {
     }
   };
 
+  if (!permissions) {
+    return <FullScreenLoader />;
+  }
+
+  if (filteredPermissions.length <= 1 && filteredPermissions[0].name === "User Management") {
+    return (
+      <Unauthorized />
+    );
+  }
+
   return (
     <div className="dashboard-container">
       <ToastContainer />
 
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Panel de Gestión</h1>
+        <h1 className="dashboard-title">Management Panel</h1>
         <p className="dashboard-subtitle" style={{ fontSize: "1.5rem" }}>
-          Selecciona una opción para administrar los recursos del sistema.
+          Select an option to manage system resources.
         </p>
       </div>
       <div className="cards-grid">
-        {permissions && permissions.length > 0 ? (
-          permissions.map((perm) => (
+        {filteredPermissions && filteredPermissions.length > 0 ? (
+          filteredPermissions.map((perm) => (
             <div className="dashboard-card" key={perm.permissionId}>
               <div className="card-icon">{getIconForPermission(perm.name)}</div>
               <h3>{perm.name}</h3>
@@ -146,12 +163,12 @@ const Dashboard = () => {
                 className="card-button"
                 onClick={() => handleButtonClick(perm.name)}
               >
-                Administrar
+                Manage
               </button>
             </div>
           ))
         ) : (
-          <p>No tienes permisos asignados.</p>
+          <p>You have no assigned permissions.</p>
         )}
       </div>
     </div>

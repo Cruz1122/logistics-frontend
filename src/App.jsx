@@ -47,11 +47,6 @@ function App() {
 
   const isHome = location.pathname === "/";
 
-  // 👇 Aquí se detiene todo si aún está cargando
-  if (loading) {
-    return <FullScreenLoader />;
-  }
-
   return (
     <div className="app-container">
       <Navbar />
