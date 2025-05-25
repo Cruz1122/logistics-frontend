@@ -13,6 +13,11 @@ import {
 } from "../../../api/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { FullScreenLoader } from "../../../App";
 
 const USERS_PER_PAGE = 5;
@@ -47,6 +52,7 @@ const User = () => {
         role: user.role?.name || "N/A",
         roleId: user.roleId,
         verified: !!user.emailVerified,
+        isActive: user.isActive,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       }));
@@ -135,37 +141,53 @@ const User = () => {
               <th>Phone</th>
               <th>Role</th>
               <th>Verified</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedUsers.length > 0 ? (
-              paginatedUsers.map((user, index) => (
-                <tr key={user.id} className="user-row">
-                  <td>{`${user.name} ${user.lastName}`}</td>
-                  <td>{user.email}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.role}</td>
-                  <td>
-                    {user.verified ? (
-                      <MdCheckCircle size={24} color="#5edd60" />
-                    ) : (
-                      <MdCancel size={24} color="red" />
-                    )}
-                  </td>
-                  <td>
-                    <FaEdit
-                      className="edit-btn"
-                      onClick={() => setEditUser(user)}
-                    />
-                    <FaTrash
-                      className="delete-btn"
-                      onClick={() => setUserToDelete(user)}
-                    />
-                  </td>
-                </tr>
-              ))
-            ) : (
+            {paginatedUsers.map((user, index) => (
+              <tr key={index} className="user-row">
+                <td>{`${user.name} ${user.lastName}`}</td>
+                <td>
+                  <UserOutlined /> {user.email}
+                </td>
+                <td>{user.phone}</td>
+                <td>{user.role}</td>
+                <td>
+                  {user.verified ? (
+                    <MdCheckCircle size={24} color="#5edd60" />
+                  ) : (
+                    <MdCancel size={24} color="red" />
+                  )}
+                </td>
+                <td>
+                  {user.isActive ? (
+                    <span className="badge-status active">
+                      <CheckCircleOutlined className="icon" />
+                      Activo
+                    </span>
+                  ) : (
+                    <span className="badge-status inactive">
+                      <CloseCircleOutlined className="icon" />
+                      Inactivo
+                    </span>
+                  )}
+                </td>
+
+                <td>
+                  <FaEdit
+                    className="edit-btn"
+                    onClick={() => setEditUser(user)}
+                  />
+                  <FaTrash
+                    className="delete-btn"
+                    onClick={() => setUserToDelete(user)}
+                  />
+                </td>
+              </tr>
+            ))}
+            {paginatedUsers.length === 0 && (
               <tr>
                 <td
                   colSpan="6"

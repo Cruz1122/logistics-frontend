@@ -158,6 +158,34 @@
   margin: 0 10px;
 }
 
+.badge-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid;
+}
+
+.badge-status .icon {
+  font-size: 16px;
+}
+
+.badge-status.active {
+  color: #28a745; /* verde */
+  background-color: #e6f9ec;
+  border-color: #28a745;
+}
+
+.badge-status.inactive {
+  color: #dc3545; /* rojo */
+  background-color: #fcebea;
+  border-color: #dc3545;
+}
+
+
 /* Responsive styles para móviles */
 @media (max-width: 768px) {
   .user-controls {

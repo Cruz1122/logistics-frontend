@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import { getUserPermissions, getUserIdFromToken } from "../../api/user";
-import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
 import {
   FaUser,
   FaUsersCog,
@@ -15,12 +14,13 @@ import {
   FaWarehouse,
   FaQuestionCircle,
 } from "react-icons/fa";
+import "react-toastify/dist/ReactToastify.css";
 import "./dashboard.css";
 import { FullScreenLoader } from "../../App";
 
 const Dashboard = () => {
-  const [permissions, setPermissions] = useState([]);
   const navigate = useNavigate();
+  const permissions = useSelector((state) => state.auth.permissions); // <- Ajusta esto según tu slice
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -171,19 +171,23 @@ const Dashboard = () => {
         </p>
       </div>
       <div className="cards-grid">
-        {permissions.map((perm) => (
-          <div className="dashboard-card" key={perm.permissionId}>
-            <div className="card-icon">{getIconForPermission(perm.name)}</div>
-            <h3>{perm.name}</h3>
-            <p>{perm.description}</p>
-            <button
-              className="card-button"
-              onClick={() => handleButtonClick(perm.name)}
-            >
-              Manage
-            </button>
-          </div>
-        ))}
+        {permissions && permissions.length > 0 ? (
+          permissions.map((perm) => (
+            <div className="dashboard-card" key={perm.permissionId}>
+              <div className="card-icon">{getIconForPermission(perm.name)}</div>
+              <h3>{perm.name}</h3>
+              <p>{perm.description}</p>
+              <button
+                className="card-button"
+                onClick={() => handleButtonClick(perm.name)}
+              >
+                Manage
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No tienes permisos asignados.</p>
+        )}
       </div>
     </div>
   );

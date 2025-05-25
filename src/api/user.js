@@ -21,6 +21,25 @@ export const getUserIdFromToken = () => {
   }
 };
 
+export const getUserStatus = async () => {
+  const userId = getUserIdFromToken();
+  try {
+    const token = localStorage.getItem("token");
+    console.log("UserID: ", userId);
+
+    const response = await axios.get(`${API_URL}/auth/users/status/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.isActive; // Cambiado a isActive
+  } catch (error) {
+    console.error("Error en getUserStatus:", error.response?.data || error.message);
+    return false;
+  }
+};
+
 export const getAllUsers = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -66,6 +85,7 @@ export const updateUser = async (userId, updatedData) => {
         lastName: updatedData.lastName,
         phone: updatedData.phone,
         roleId: updatedData.roleId,
+        isActive: updatedData.isActive,
       },
       {
         headers: {
@@ -139,6 +159,23 @@ export const getUserByID = async (userId) => {
     return response.data;
   } catch (error) {
     console.error("Error al obtener usuario:", error.response?.data || error.message);
+    throw error;
+  }
+}
+
+export const getDeliveryId = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(`${API_URL}/orders/delivery-persons/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el ID de entrega:", error.response?.data || error.message);
     throw error;
   }
 }

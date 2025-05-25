@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { lazy } from "react";
 import PropTypes from "prop-types";
 
@@ -23,9 +24,7 @@ const ServerError = lazy(() =>
 const Unauthorized = lazy(() =>
   import("../components/errors/unauthorized/unauthorized")
 );
-const Inactive = lazy(() =>
-  import("../components/errors/inactive/inactive")
-);
+const Inactive = lazy(() => import("../components/errors/inactive/inactive"));
 const User = lazy(() => import("../features/Management/User/user"));
 const Permission = lazy(() =>
   import("../features/Management/Permission/permission")
@@ -44,14 +43,26 @@ const Category = lazy(() => import("../features/Management/Category/category"));
 const Supplier = lazy(() => import("../features/Management/Supplier/supplier"));
 const State = lazy(() => import("../features/Management/State/state"));
 const City = lazy(() => import("../features/Management/City/city"));
-const Warehouse = lazy(() => import("../features/Management/Warehouse/warehouse"));
+const Warehouse = lazy(() =>
+  import("../features/Management/Warehouse/warehouse")
+);
 const Product = lazy(() => import("../features/Management/Product/product"));
-const ProductSupplier = lazy(() => import("../features/Management/ProductSupplier/productSupplier"));
-const ProductWarehouse = lazy(() => import("../features/Management/ProductWarehouse/productwarehouse"));
-const ProductWarehouseMovement = lazy(() => import("../features/Management/ProductWarehouseMovement/productwarehousemovement"));
+const ProductSupplier = lazy(() =>
+  import("../features/Management/ProductSupplier/productSupplier")
+);
+const ProductWarehouse = lazy(() =>
+  import("../features/Management/ProductWarehouse/productwarehouse")
+);
+const ProductWarehouseMovement = lazy(() =>
+  import(
+    "../features/Management/ProductWarehouseMovement/productwarehousemovement"
+  )
+);
 
 // Lazy load components - Orders
-const Deliveryperson = lazy(() => import("../features/Management/DeliveryPerson/deliveryperson"));
+const Deliveryperson = lazy(() =>
+  import("../features/Management/DeliveryPerson/deliveryperson")
+);
 const Order = lazy(() => import("../features/Management/Order/order"));
 const ProtectedRoute = ({ isAuthenticated, children }) => {
   return isAuthenticated ? children : <Navigate to="/" />;
@@ -68,14 +79,48 @@ const PublicRoute = ({ isAuthenticated, children }) => {
 
 const FlowRoute = ({ children }) => {
   const location = useLocation();
-  return location.state?.fromFlow === true ? children : <Navigate to="/unauthorized" />;
+  return location.state?.fromFlow === true ? (
+    children
+  ) : (
+    <Navigate to="/unauthorized" />
+  );
 };
 
-export const AppRoutes = ({ isAuthenticated }) => {
+export const AppRoutes = () => {
+  const location = useLocation();
+
+  const { isAuthenticated, permissions, loading } = useSelector(
+    (state) => state.auth
+  );
+  console.log("[AppRoutes] Loading:", loading);
+
+  // Verificar si permisos están cargados (podría ser vacío pero aún así se puede decidir)
+  // Si tus permisos pueden estar vacíos válidamente (ejemplo: usuario sin permisos),
+  // podrías usar otra bandera de estado en redux que indique "permisos cargados"
+  const permissionsLoaded =
+    Array.isArray(permissions) && permissions.length > 0;
+  console.log("[AppRoutes] permisos:", permissions);
+  console.log("[AppRoutes] permisos cargados:", permissionsLoaded);
+
+  if (isAuthenticated) {
+     if (!permissionsLoaded) {
+      return <div className="fullscreen-loader">Cargando...</div>;
+      } 
+  }
+  const hasPermission = (permName) => {
+    return permissions.some((p) => p.name === permName);
+  };
+
+  const checkFlow = (state) => {
+    return state?.fromFlow === true;
+  };
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
 
+      {/* Paneles protegidos generales */}
       <Route
         path="/dashboard"
         element={
@@ -84,7 +129,6 @@ export const AppRoutes = ({ isAuthenticated }) => {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/userProfile"
         element={
@@ -93,7 +137,6 @@ export const AppRoutes = ({ isAuthenticated }) => {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/reset-password"
         element={
@@ -103,42 +146,163 @@ export const AppRoutes = ({ isAuthenticated }) => {
         }
       />
 
+      {/* Gestión de usuarios */}
       <Route
         path="/usersPanel"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          isAuthenticated && hasPermission("User Management") ? (
             <User />
-          </ProtectedRoute>
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
         }
       />
-
       <Route
         path="/permissionsPanel"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          isAuthenticated && hasPermission("Permissions Management") ? (
             <Permission />
-          </ProtectedRoute>
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
         }
       />
-
       <Route
         path="/rolesPanel"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          isAuthenticated && hasPermission("Role Management") ? (
             <Role />
-          </ProtectedRoute>
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
         }
       />
-
       <Route
         path="/roleXpermissionPanel"
         element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
+          isAuthenticated && hasPermission("Role-Permission Management") ? (
             <RolPermission />
-          </ProtectedRoute>
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
         }
       />
 
+      {/* Gestión de inventario */}
+      <Route
+        path="/categoriesPanel"
+        element={
+          isAuthenticated && hasPermission("Category Management") ? (
+            <Category />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/suppliersPanel"
+        element={
+          isAuthenticated && hasPermission("Supplier Management") ? (
+            <Supplier />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/statesPanel"
+        element={
+          isAuthenticated && hasPermission("State Management") ? (
+            <State />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/citiesPanel"
+        element={
+          isAuthenticated && hasPermission("City Management") ? (
+            <City />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/warehousesPanel"
+        element={
+          isAuthenticated && hasPermission("Warehouse Management") ? (
+            <Warehouse />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/productsPanel"
+        element={
+          isAuthenticated && hasPermission("Product Management") ? (
+            <Product />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/productSuppliersPanel"
+        element={
+          isAuthenticated && hasPermission("Product-Supplier Management") ? (
+            <ProductSupplier />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/productWarehousesPanel"
+        element={
+          isAuthenticated && hasPermission("Product-Warehouse Management") ? (
+            <ProductWarehouse />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/productWarehouseMovementsPanel"
+        element={
+          isAuthenticated && hasPermission("Product-Movements Management") ? (
+            <ProductWarehouseMovement />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+
+      {/* Órdenes y entregas */}
+      <Route
+        path="/deliveriesPanel"
+        element={
+          isAuthenticated && hasPermission("Delivery-Person Management") ? (
+            <Deliveryperson />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+      <Route
+        path="/ordersPanel"
+        element={
+          isAuthenticated && hasPermission("Order Management") ? (
+            <Order />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+
+      {/* Rutas públicas y de flujo */}
       <Route
         path="/signin"
         element={
@@ -163,9 +327,6 @@ export const AppRoutes = ({ isAuthenticated }) => {
           </PublicRoute>
         }
       />
-
-      <Route path="/about" element={<About />} />
-
       <Route
         path="/verify-email"
         element={
@@ -191,110 +352,11 @@ export const AppRoutes = ({ isAuthenticated }) => {
         }
       />
 
-      <Route
-        path="/categoriesPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Category />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/suppliersPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Supplier />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/statesPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <State />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/citiesPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <City />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/warehousesPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Warehouse />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/productsPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Product />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/productSuppliersPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <ProductSupplier />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/productWarehousesPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <ProductWarehouse />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/productWarehouseMovementsPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <ProductWarehouseMovement />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/deliveriesPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Deliveryperson />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/ordersPanel"
-        element={
-          <ProtectedRoute isAuthenticated={isAuthenticated}>
-            <Order />
-          </ProtectedRoute>
-        }
-      />
-
+      {/* Errores */}
       <Route path="/unauthorized" element={<Unauthorized />} />
       <Route path="/server-error" element={<ServerError />} />
       <Route path="/not-found" element={<NotFound />} />
       <Route path="/inactive" element={<Inactive />} />
-
       <Route path="*" element={<Navigate to="/not-found" />} />
     </Routes>
   );

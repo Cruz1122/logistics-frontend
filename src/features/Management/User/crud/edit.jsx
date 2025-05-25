@@ -20,6 +20,7 @@ const EditUserModal = ({ user, onClose, onSave }) => {
     role: user.role, // Verifica que user.role sea el valor esperado
     roleId: user.roleId,
     verified: user.verified, // ya viene como booleano
+    isActive: user.isActive, // ← Agrega esto en ambos
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   });
@@ -34,6 +35,8 @@ const EditUserModal = ({ user, onClose, onSave }) => {
       role: user.role, // Aquí asignamos correctamente el valor del rol
       roleId: user.roleId,
       verified: !!user.verified, // asegura que sea booleano
+      isActive: user.isActive, // ← Agrega esto en ambos
+
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     });
@@ -67,9 +70,7 @@ const EditUserModal = ({ user, onClose, onSave }) => {
   return (
     <div className="modal">
       <form onSubmit={handleSubmit} className="modal-form">
-        <h2>
-          Edit User
-        </h2>
+        <h2>Edit User</h2>
 
         <div className="form-field">
           <label>ID</label>
@@ -115,6 +116,19 @@ const EditUserModal = ({ user, onClose, onSave }) => {
         <div className="form-field">
           <label>Phone</label>
           <input name="phone" value={formData.phone} onChange={handleChange} />
+        </div>
+
+        <div className="form-field">
+          <label>
+            Status:
+            <input
+              type="checkbox"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleChange}
+            />
+            {formData.isActive ? " Active" : " Inactive"}
+          </label>
         </div>
 
         <div className="form-group">

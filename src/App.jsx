@@ -3,9 +3,11 @@ import { Suspense, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/layout/navbar/navbar";
 import Footer from "./components/layout/footer/footer";
-import { AppRoutes } from "./routes/AppRoutes";
 import { initializeUser, logoutUser, setAuthenticated } from "./redux/authSlice";
 import "./App.css";
+import { AppRoutes } from "./routes/AppRoutes";
+import { useLocationTracking } from "./hooks/useLocationTracking";
+
 
 export const FullScreenLoader = () => {
   return (
@@ -36,9 +38,10 @@ export const FullScreenLoader = () => {
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state) => state.auth);
-
+  const { isAuthenticated, loading } = useSelector((state) => state.auth);
   const location = useLocation();
+
+  useLocationTracking(); // rastrea la ubicación del repartidor
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -50,8 +53,6 @@ function App() {
       dispatch(logoutUser());
     }
   }, [dispatch]);
-
-  console.log("[App] Estado de autenticación:", isAuthenticated);
 
   const backgroundLocations = [
     "/",
@@ -72,12 +73,19 @@ function App() {
 
   const isHome = location.pathname === "/";
 
+  // 👇 Aquí se detiene todo si aún está cargando
+  if (loading) {
+    return <FullScreenLoader />;
+  }
+
   return (
     <div className="app-container">
       <Navbar />
       <main className="container">
+        <Suspense fallback={<FullScreenLoader />}>
+          {/* Solo se monta cuando loading === false */}
           <AppRoutes isAuthenticated={isAuthenticated} />
-      </main>
+            </Suspense>
       <Footer className={isHome ? "footer-home" : ""} />
     </div>
   );

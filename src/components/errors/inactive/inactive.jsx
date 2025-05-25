@@ -2,8 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./inactive.css"; // opcional
 import inactiveIcon from "../../../assets/icons/inactive.svg";
+import { logoutUser } from "../../../redux/authSlice";
+import { useDispatch } from "react-redux";
 
 function Inactive() {
+  const dispatch = useDispatch();
+  dispatch(logoutUser());
+
   return (
     <div className="inactive-container">
       <img
