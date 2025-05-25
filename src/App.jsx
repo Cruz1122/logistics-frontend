@@ -6,6 +6,8 @@ import Footer from "./components/layout/footer/footer";
 import { initializeUser, logoutUser, setAuthenticated } from "./redux/authSlice";
 import "./App.css";
 import { AppRoutes } from "./routes/AppRoutes";
+import { useLocationTracking } from "./hooks/useLocationTracking";
+
 
 const FullScreenLoader = () => (
   <div
@@ -24,6 +26,8 @@ function App() {
   const dispatch = useDispatch();
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
   const location = useLocation();
+
+  useLocationTracking(); // rastrea la ubicación del repartidor
 
   useEffect(() => {
     const token = localStorage.getItem("token");

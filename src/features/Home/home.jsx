@@ -1,14 +1,39 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight, FaArrowUp, FaShippingFast } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { useSelector } from "react-redux"; // 👈 Importamos useSelector
+import { useSelector } from "react-redux";
 import "./home.css";
+import { getInfoOrder, trackOrder } from "../../api/locationService";
 
 const Home = () => {
-  const { isAuthenticated } = useSelector((state) => state.auth); // 👈 Obtenemos el estado de autenticación
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
+
+  // Estado para guardar el código ingresado
+  const [trackingCode, setTrackingCode] = useState("");
+
+  const handleTrackClick = async () => {
+    if (trackingCode.trim() === "") {
+      alert("Por favor ingresa un código de rastreo");
+      return;
+    }
+
+    try {
+      const deliveryId = await getInfoOrder(trackingCode);
+
+      if (deliveryId) {
+        console.log("Delivery ID:", deliveryId); 
+        trackOrder(deliveryId); // Llama a la función para rastrear la orden
+        } else {
+        alert("Código de rastreo no válido o no encontrado.");
+      }
+    } catch (error) {
+      console.error("Error al obtener la orden:", error);
+      alert("Ocurrió un error al rastrear el pedido.");
+    }
+  };
 
   const scrollToAbout = () => {
     aboutSectionRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -20,7 +45,6 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      {/* Hero Section */}
       <section ref={heroSectionRef} className="hero-section">
         <div className="home-container">
           <h1>Welcome To LogicSmart360</h1>
@@ -41,7 +65,6 @@ const Home = () => {
         </button>
 
         <div className="card-container">
-          {/* Mostrar solo si NO está autenticado */}
           {!isAuthenticated && (
             <div className="info-card">
               <h2>Create an account</h2>
@@ -57,8 +80,15 @@ const Home = () => {
             <h2>Track your shipments</h2>
             <FaShippingFast className="icon" />
             <p>Check the status of your deliveries here.</p>
-            <input type="text" placeholder="Type your tracking code" />
-            <button className="main-button">Track</button>
+            <input
+              type="text"
+              placeholder="Type your tracking code"
+              value={trackingCode}
+              onChange={(e) => setTrackingCode(e.target.value)}
+            />
+            <button className="main-button" onClick={handleTrackClick}>
+              Track
+            </button>
           </div>
         </div>
 
@@ -69,7 +99,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer Section */}
       <section ref={aboutSectionRef} className="footer-section"></section>
     </div>
   );

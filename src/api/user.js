@@ -163,3 +163,20 @@ export const getUserByID = async (userId) => {
     throw error;
   }
 }
+
+export const getDeliveryId = async (userId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(`${API_URL}/orders/delivery-persons/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el ID de entrega:", error.response?.data || error.message);
+    throw error;
+  }
+}

@@ -89,3 +89,24 @@ export const deleteRole = async (id) => {
     throw error;
   }
 };
+
+// Obtener un rol por su nombre
+export const getRoleByName = async (name) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(`${API_URL}/auth/roles/name/${name}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.id;
+  } catch (error) {
+    console.error(
+      "Error en getRoleByName:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
