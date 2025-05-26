@@ -1,15 +1,16 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaArrowRight, FaArrowUp, FaShippingFast } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import "./home.css";
-import { getInfoOrder, trackOrder } from "../../api/locationService";
+import { getInfoOrder, getCoordsByAddress } from "../../api/locationService";
 
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const aboutSectionRef = useRef(null);
   const heroSectionRef = useRef(null);
+  const navigate = useNavigate();
 
   // Estado para guardar el código ingresado
   const [trackingCode, setTrackingCode] = useState("");
@@ -21,12 +22,21 @@ const Home = () => {
     }
 
     try {
-      const deliveryId = await getInfoOrder(trackingCode);
+      const order = await getInfoOrder(trackingCode);
 
-      if (deliveryId) {
-        console.log("Delivery ID:", deliveryId); 
-        trackOrder(deliveryId); // Llama a la función para rastrear la orden
-        } else {
+      const deliveryId = order?.deliveryPerson?.id;
+
+      if (!deliveryId) {
+        alert("No se encontró un repartidor para este código de rastreo.");
+        return;
+      }
+      const address = order?.deliveryAddress;
+
+      const addressCoordinates = await getCoordsByAddress(address);
+
+      if (order) {
+        navigate(`/track/${deliveryId}`, { state: { fromFlow: true, addressCoordinates } }); // Navega al mapa
+      } else {
         alert("Código de rastreo no válido o no encontrado.");
       }
     } catch (error) {

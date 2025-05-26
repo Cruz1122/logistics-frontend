@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { lazy } from "react";
 import PropTypes from "prop-types";
 import { FullScreenLoader } from "../App";
+import MapView from "../components/maps/MapView";
 
 // Lazy load components - Auth
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
@@ -104,9 +105,9 @@ export const AppRoutes = () => {
   console.log("[AppRoutes] permisos cargados:", permissionsLoaded);
 
   if (isAuthenticated) {
-     if (!permissionsLoaded) {
-      return <FullScreenLoader/>;
-      } 
+    if (!permissionsLoaded) {
+      return <FullScreenLoader />;
+    }
   }
   const hasPermission = (permName) => {
     return permissions.some((p) => p.name === permName);
@@ -349,6 +350,14 @@ export const AppRoutes = () => {
         element={
           <FlowRoute>
             <ForgotVerifyCode />
+          </FlowRoute>
+        }
+      />
+      <Route
+        path="/track/:deliveryId"
+        element={
+          <FlowRoute>
+            <MapView />
           </FlowRoute>
         }
       />
