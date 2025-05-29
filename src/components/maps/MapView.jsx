@@ -6,7 +6,6 @@ import {
   GoogleMap,
   DirectionsService,
   DirectionsRenderer,
-  Marker,
 } from "@react-google-maps/api";
 
 import { Card, Typography, Row, Col, Space } from "antd";
@@ -48,7 +47,6 @@ const MapView = () => {
     disableDoubleClickZoom: false,
     streetViewControl: false,
     fullscreenControl: false,
-    // No ponemos mapTypeControl aquí para evitar error inicial
   });
 
   const mapRef = useRef(null);
