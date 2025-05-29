@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { lazy } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser, setAuthenticated } from "../redux/authSlice";
+import { lazy, useEffect } from "react";
 import PropTypes from "prop-types";
 import { FullScreenLoader } from "../App";
 import MapView from "../components/maps/MapView";
@@ -90,6 +91,7 @@ const FlowRoute = ({ children }) => {
 
 export const AppRoutes = () => {
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const { isAuthenticated, permissions, loading } = useSelector(
     (state) => state.auth
@@ -103,15 +105,20 @@ export const AppRoutes = () => {
     Array.isArray(permissions) && permissions.length > 0;
   console.log("[AppRoutes] permisos:", permissions);
   console.log("[AppRoutes] permisos cargados:", permissionsLoaded);
-
-  if (isAuthenticated) {
-    if (!permissionsLoaded) {
-      return <FullScreenLoader />;
+  useEffect(() => {
+    if (!loading &&  (!permissionsLoaded || permissions.length === 0)) {
+      // Aquí forzamos el logout
+      dispatch(setAuthenticated(false));
+      dispatch(logoutUser());
     }
-  }
-  const hasPermission = (permName) => {
-    return permissions.some((p) => p.name === permName);
-  };
+  }, [loading, permissionsLoaded, permissions, dispatch]);
+
+    if (isAuthenticated && !permissionsLoaded) {
+        return <FullScreenLoader />;
+    }
+    const hasPermission = (permName) => {
+      return permissions.some((p) => p.name === permName);
+    };
 
   const checkFlow = (state) => {
     return state?.fromFlow === true;

@@ -4,7 +4,7 @@ import { FaArrowRight, FaArrowUp, FaShippingFast } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import "./home.css";
-import { getInfoOrder, getCoordsByAddress } from "../../api/locationService";
+import { getInfoOrder, getCoordsByAddress, getLatestLocation } from "../../api/locationService";
 
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -33,9 +33,15 @@ const Home = () => {
       const address = order?.deliveryAddress;
 
       const addressCoordinates = await getCoordsByAddress(address);
+      if (!addressCoordinates) {
+        alert("No se pudieron obtener las coordenadas de la dirección.");
+        return;
+      }
+
+      const latestLocation = await getLatestLocation(deliveryId);
 
       if (order) {
-        navigate(`/track/${deliveryId}`, { state: { fromFlow: true, addressCoordinates } }); // Navega al mapa
+        navigate(`/track/${deliveryId}`, { state: { fromFlow: true, addressCoordinates, latestLocation } }); // Navega al mapa
       } else {
         alert("Código de rastreo no válido o no encontrado.");
       }

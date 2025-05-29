@@ -50,7 +50,7 @@ const SignIn = () => {
   };
 
   const handleForgotPassword = () => {
-    navigate("/forgot-password");
+    navigate("/forgot");
   };
 
   const closeModal = () => {

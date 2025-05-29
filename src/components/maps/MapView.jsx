@@ -15,7 +15,9 @@ import {
   ClockCircleOutlined,
   SwapOutlined,
   CarOutlined,
+  InfoCircleOutlined,
 } from "@ant-design/icons";
+import { FullScreenLoader } from "../../App";
 
 const { Title, Text } = Typography;
 
@@ -33,8 +35,9 @@ const MapView = () => {
   const { deliveryId } = useParams();
   const location = useLocation();
   const addressCoordinates = location.state?.addressCoordinates;
+  const latestLocation = location.state?.latestLocation;
 
-  const [markerPosition, setMarkerPosition] = useState(null);
+  const [markerPosition, setMarkerPosition] = useState(latestLocation || defaultCenter);
   const [directions, setDirections] = useState(null);
   const [routeInfo, setRouteInfo] = useState(null);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -55,7 +58,10 @@ const MapView = () => {
   useEffect(() => {
     if (!deliveryId) return;
 
-    const socketClient = io("http://localhost:4002");
+    const socketClient = io(import.meta.env.VITE_GATEWAY_URL, {
+      path: "/geo/socket.io",
+      transports: ["websocket"],
+    });
     socketRef.current = socketClient;
 
     socketClient.on("connect", () => {
@@ -65,6 +71,14 @@ const MapView = () => {
     socketClient.on("locationUpdate", (data) => {
       const [lng, lat] = data.location.coordinates;
       setMarkerPosition({ lat, lng });
+    });
+
+    socketClient.on("disconnect", () => {
+      console.log("Desconectado del WebSocket");
+    });
+
+    socketClient.on("connect_error", (error) => {
+      console.error("Error de conexión WebSocket:", error);
     });
 
     return () => {
@@ -121,89 +135,116 @@ const MapView = () => {
   };
 
   if (!markerPosition || !addressCoordinates)
-    return <div>Cargando mapa...</div>;
+    return <FullScreenLoader message="Cargando mapa..." />;
 
   return (
-      <div style={{ position: "relative", width: "100%", height: "82.4vh" }}>
-        <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            zoom={13}
-            onLoad={onLoad}
-            options={mapOptions}
-          >
-            <DirectionsService
-              options={{
-                origin: markerPosition,
-                destination: addressCoordinates,
-                travelMode: "DRIVING",
-              }}
-              callback={directionsCallback}
-            />
-            {directions && (
-              <DirectionsRenderer
-                options={{ directions, preserveViewport: true }}
-              />
-            )}
-          </GoogleMap>
-        </LoadScript>
-
-        {routeInfo && (
-          <Card
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              width: 320,
-              zIndex: 10,
-              boxShadow: "0 4px 12px rgb(0 0 0 / 0.3)",
-              borderRadius: "8px",
-              backgroundColor: "white",
-              opacity: 0.95,
+    <div style={{ position: "relative", width: "100%", height: "82.4vh" }}>
+      <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          zoom={13}
+          onLoad={onLoad}
+          options={mapOptions}
+        >
+          <DirectionsService
+            options={{
+              origin: markerPosition,
+              destination: addressCoordinates,
+              travelMode: "DRIVING",
             }}
-            title={
+            callback={directionsCallback}
+          />
+          {directions && (
+            <DirectionsRenderer
+              options={{ directions, preserveViewport: true }}
+            />
+          )}
+        </GoogleMap>
+      </LoadScript>
+
+      {routeInfo && (
+        <Card
+          style={{
+            position: "absolute",
+            top: 10,
+            left: 10,
+            width: 320,
+            zIndex: 10,
+            boxShadow: "0 4px 12px rgb(0 0 0 / 0.3)",
+            borderRadius: "8px",
+            backgroundColor: "white",
+            opacity: 0.95,
+          }}
+          title={
+            <Space>
+              <InfoCircleOutlined />
               <Title level={4} style={{ margin: 0 }}>
-                Información de la ruta
+                Route Information
               </Title>
-            }
-          >
-            <Row gutter={[16, 12]}>
-              <Col span={24}>
-                <Space>
-                  <CarOutlined style={{ color: "#1890ff", fontSize: 20 }} />
-                  <Text strong>Distancia:</Text>
-                  <Text>{routeInfo.distance}</Text>
-                </Space>
-              </Col>
-              <Col span={24}>
-                <Space>
-                  <ClockCircleOutlined
-                    style={{ color: "#52c41a", fontSize: 20 }}
-                  />
-                  <Text strong>Tiempo estimado:</Text>
-                  <Text>{routeInfo.duration}</Text>
-                </Space>
-              </Col>
-              <Col span={24}>
-                <Space>
-                  <EnvironmentOutlined
-                    style={{ color: "#fa541c", fontSize: 20 }}
-                  />
-                  <Text strong>Origen:</Text>
-                  <Text>{routeInfo.origin}</Text>
-                </Space>
-              </Col>
-              <Col span={24}>
-                <Space>
-                  <SwapOutlined style={{ color: "#722ed1", fontSize: 20 }} />
-                  <Text strong>Destino:</Text>
-                  <Text>{routeInfo.destination}</Text>
-                </Space>
-              </Col>
-            </Row>
-          </Card>
-        )}
-      </div>
+            </Space>
+          }
+        >
+          <Row gutter={[16, 12]}>
+            <Col span={24}>
+              <Space>
+                <CarOutlined style={{ color: "#1890ff", fontSize: 20 }} />
+                <Text strong>Distance:</Text>
+                <Text>{routeInfo.distance}</Text>
+              </Space>
+            </Col>
+            <Col span={24}>
+              <Space>
+                <ClockCircleOutlined
+                  style={{ color: "#52c41a", fontSize: 20 }}
+                />
+                <Text strong>Estimated Time:</Text>
+                <Text>{routeInfo.duration}</Text>
+              </Space>
+            </Col>
+            <Col span={24}>
+              <Space>
+                <EnvironmentOutlined
+                  style={{ color: "#fa541c", fontSize: 20 }}
+                />
+                <Text strong>Delivery:</Text>
+                <Text
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: 130,
+                    display: "inline-block",
+                    verticalAlign: "bottom",
+                  }}
+                  title={routeInfo.origin}
+                >
+                  {routeInfo.origin}
+                </Text>
+              </Space>
+            </Col>
+            <Col span={24}>
+              <Space>
+                <SwapOutlined style={{ color: "#722ed1", fontSize: 20 }} />
+                <Text strong>Destination:</Text>
+                <Text
+                  style={{
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: 130,
+                    display: "inline-block",
+                    verticalAlign: "bottom",
+                  }}
+                  title={routeInfo.destination}
+                >
+                  {routeInfo.destination}
+                </Text>
+              </Space>
+            </Col>
+          </Row>
+        </Card>
+      )}
+    </div>
   );
 };
 

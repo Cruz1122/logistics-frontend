@@ -67,3 +67,32 @@ export const getCoordsByAddress = async (address) => {
     throw error;
   }
 };
+
+export const getLatestLocation = async (deliveryPersonId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.get(
+      `${API_URL}/geo/locations/latest?deliveryPersonId=${deliveryPersonId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const { location } = response.data || {};
+    if (
+      location &&
+      Array.isArray(location.coordinates) &&
+      location.coordinates.length === 2
+    ) {
+      return {
+      lat: location.coordinates[1],
+      lng: location.coordinates[0],
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error al obtener la última ubicación:", error);
+    throw error;
+  }
+};

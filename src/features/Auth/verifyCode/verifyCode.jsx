@@ -54,16 +54,16 @@ const VerifyCode = () => {
         const userId = getUserIdFromToken();
         const permissions = await getUserPermissions(userId); // <--- Aquí
 
-        console.log("[VerifyCode] rolId:", rolId);
-        console.log("[VerifyCode] permissions:", permissions);
-
         if (!rolId || !permissions) {
           toast.error("Error obteniendo rol de usuario o permisos");
           dispatch(setAuthenticated(false));
           dispatch(setUser({ token: null }));
+          console.log("[VerifyCode] Error: rolId or permissions not found");
           return;
         }
 
+        console.log("[VerifyCode] rolId:", rolId);
+        console.log("[VerifyCode] permissions:", permissions);
         // Guarda token y rolId en estado global y localStorage
         dispatch(setUser({ token: response.token, rolId, permissions }));
         dispatch(setAuthenticated(true));
