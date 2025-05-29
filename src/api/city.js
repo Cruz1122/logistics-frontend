@@ -60,3 +60,17 @@ export const deleteCity = async (id) => {
     throw error;
   }
 };
+
+//traer city por id
+export const getCityById = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(`${API_URL}/inventory/city/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error en getCityById:", error.response?.data || error.message);
+    throw error;
+  }
+};

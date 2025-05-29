@@ -71,6 +71,11 @@ const ProtectedRoute = ({ isAuthenticated, children }) => {
   return isAuthenticated ? children : <Navigate to="/" />;
 };
 
+// Lazy load for deliveryManagement
+export const DeliveryManagement = lazy(() =>
+  import("../features/Management/DeliveryManagement/deliveryManagement")
+);
+
 ProtectedRoute.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   children: PropTypes.node.isRequired,
@@ -300,6 +305,18 @@ export const AppRoutes = () => {
           )
         }
       />
+
+      <Route
+        path="/deliveryManagement"
+        element={
+          isAuthenticated && hasPermission("Delivery-Person Management") ? (
+            <DeliveryManagement />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />
+
       <Route
         path="/ordersPanel"
         element={

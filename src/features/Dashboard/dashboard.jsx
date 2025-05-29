@@ -79,6 +79,11 @@ const Dashboard = () => {
     if (permissionName.includes("user")) {
       route = "/usersPanel";
     } else if (
+      permissionName.includes("delivery") &&
+      permissionName.includes("staff")
+    ) {
+      route = "/deliveryManagement";
+    } else if (
       permissionName.includes("role") &&
       !permissionName.includes("permission")
     ) {
