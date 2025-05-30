@@ -30,6 +30,10 @@ const defaultCenter = {
   lng: -74.05,
 };
 
+console.log("Google Maps API Key:", import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
+const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+console.log("Google Maps API Key:", API_KEY);
+
 const MapView = () => {
   const { deliveryId } = useParams();
   const location = useLocation();
@@ -133,7 +137,7 @@ const MapView = () => {
   };
 
   if (!markerPosition || !addressCoordinates)
-    return <FullScreenLoader message="Cargando mapa..." />;
+    return <FullScreenLoader/>;
 
   return (
     <div style={{ position: "relative", width: "100%", height: "82.4vh" }}>

@@ -3,14 +3,13 @@ import "./verifyCode.css";
 import formImage from "../../../assets/backgrounds/form.webp";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
-import { verifyCodeRequest } from "../../../api/auth";
 import {
   setAuthenticated,
   setUser,
   setLoading,
 } from "../../../redux/authSlice";
 import { useDispatch } from "react-redux";
-import { getUserRolId } from "../../../api/auth"; // Importa tu función para obtener rolId
+import { getUserRolId, verifyCodeRequest } from "../../../api/auth"; // Importa tu función para obtener rolId
 import {
   getUserIdFromToken,
   getUserPermissions,
