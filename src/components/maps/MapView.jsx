@@ -30,9 +30,8 @@ const defaultCenter = {
   lng: -74.05,
 };
 
-console.log("Google Maps API Key:", import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
-console.log("Google Maps API Key:", API_KEY);
+const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL || "https://logistics-backend-n3be.onrender.com";
 
 const MapView = () => {
   const { deliveryId } = useParams();
@@ -60,7 +59,7 @@ const MapView = () => {
   useEffect(() => {
     if (!deliveryId) return;
 
-    const socketClient = io(import.meta.env.VITE_GATEWAY_URL, {
+    const socketClient = io(GATEWAY_URL, {
       path: "/geo/socket.io",
       transports: ["websocket"],
     });
@@ -141,7 +140,9 @@ const MapView = () => {
 
   return (
     <div style={{ position: "relative", width: "100%", height: "82.4vh" }}>
-      <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+      <LoadScript
+        googleMapsApiKey={API_KEY || "AIzaSyA65nxTFUM6swOxNgmyX0djD2b0iY9OYl0"}
+      >
         <GoogleMap
           mapContainerStyle={containerStyle}
           zoom={13}
