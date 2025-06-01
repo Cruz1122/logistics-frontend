@@ -141,7 +141,7 @@ const MapView = () => {
   return (
     <div style={{ position: "relative", width: "100%", height: "82.4vh" }}>
       <LoadScript
-        googleMapsApiKey={API_KEY || "AIzaSyA65nxTFUM6swOxNgmyX0djD2b0iY9OYl0"}
+        googleMapsApiKey={API_KEY || "AIzaSyCh8r-3KBav3cRI6gRWWqrgAaHw1Qsg-nE"}
       >
         <GoogleMap
           mapContainerStyle={containerStyle}
