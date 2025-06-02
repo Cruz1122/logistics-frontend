@@ -110,17 +110,12 @@ export const AppRoutes = () => {
     Array.isArray(permissions) && permissions.length > 0;
   console.log("[AppRoutes] permisos:", permissions);
   console.log("[AppRoutes] permisos cargados:", permissionsLoaded);
-  useEffect(() => {
-    if (!loading &&  (!permissionsLoaded || permissions.length === 0)) {
-      // Aquí forzamos el logout
-      dispatch(setAuthenticated(false));
-      dispatch(logoutUser());
-    }
-  }, [loading, permissionsLoaded, permissions, dispatch]);
 
-    if (isAuthenticated && !permissionsLoaded) {
-        return <FullScreenLoader />;
-    }
+  if (isAuthenticated) {
+     if (!permissionsLoaded) {
+      return <FullScreenLoader/>;
+      } 
+  }
     const hasPermission = (permName) => {
       return permissions.some((p) => p.name === permName);
     };
