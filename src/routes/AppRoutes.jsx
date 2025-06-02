@@ -5,6 +5,7 @@ import { lazy, useEffect } from "react";
 import PropTypes from "prop-types";
 import { FullScreenLoader } from "../App";
 import MapView from "../components/maps/TrackingMap";
+import GlobalMap from "../components/maps/GlobalMap";
 
 // Lazy load components - Auth
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
@@ -377,6 +378,14 @@ export const AppRoutes = () => {
         element={
           <FlowRoute>
             <MapView />
+          </FlowRoute>
+        }
+      />
+      <Route
+        path="/global-map/:deliveryId"
+        element={
+          <FlowRoute>
+            <GlobalMap />
           </FlowRoute>
         }
       />
