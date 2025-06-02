@@ -25,8 +25,7 @@ const Dashboard = () => {
 
   // Filtra permisos para omitir los relacionados con "Account Management"
   const filteredPermissions = permissions?.filter(
-    (perm) =>
-      !perm.name.toLowerCase().includes("account")
+    (perm) => !perm.name.toLowerCase().includes("account")
   );
 
   const getIconForPermission = (name) => {
@@ -43,6 +42,8 @@ const Dashboard = () => {
       permissionName.includes("permission")
     )
       return <FaKey size={40} />;
+    if (permissionName.includes("order") && permissionName.includes("product"))
+      return <FaTasks size={40} />;
     if (permissionName.includes("permission")) return <FaTasks size={40} />;
     if (permissionName.includes("category")) return <FaTags size={40} />;
     if (permissionName.includes("supplier")) return <FaTruck size={40} />;
@@ -108,6 +109,11 @@ const Dashboard = () => {
       permissionName.includes("movement")
     ) {
       route = "/productWarehouseMovementsPanel";
+    } else if (
+      permissionName.includes("order") &&
+      permissionName.includes("product")
+    ) {
+      route = "/orderProductsPanel";
     } else if (permissionName.includes("permission")) {
       route = "/permissionsPanel";
     } else if (permissionName.includes("category")) {
@@ -141,10 +147,11 @@ const Dashboard = () => {
     return <FullScreenLoader />;
   }
 
-  if (filteredPermissions.length <= 1 && filteredPermissions[0].name === "User Management") {
-    return (
-      <Unauthorized />
-    );
+  if (
+    filteredPermissions.length <= 1 &&
+    filteredPermissions[0].name === "User Management"
+  ) {
+    return <Unauthorized />;
   }
 
   return (

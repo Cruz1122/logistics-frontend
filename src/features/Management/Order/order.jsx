@@ -204,6 +204,7 @@ const Orders = () => {
               <th>Delivery Person</th>
               <th>Status</th>
               <th>Delivery Address</th>
+              <th>Tracking Code</th>
               <th>Creation Date</th>
               <th>Estimated Delivery</th>
               <th>Total Amount</th>
@@ -220,6 +221,7 @@ const Orders = () => {
                   <td>{o.deliveryPersonName}</td>
                   <td>{o.status}</td>
                   <td>{o.deliveryAddress}</td>
+                  <td>{o.trackingCode}</td>
                   <td>{new Date(o.creationDate).toLocaleDateString()}</td>
                   <td>{new Date(o.estimatedDeliveryTime).toLocaleDateString()}</td>
                   <td>${o.totalAmount.toFixed(2)}</td>

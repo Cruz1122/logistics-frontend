@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { FullScreenLoader } from "../App";
 import MapView from "../components/maps/TrackingMap";
 import GlobalMap from "../components/maps/GlobalMap";
+import OrderProduct from "../features/Management/OrderProduct/orderProduct";
 
 // Lazy load components - Auth
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
@@ -312,6 +313,17 @@ export const AppRoutes = () => {
           )
         }
       />
+
+      <Route
+        path="/orderProductsPanel"
+        element={
+          isAuthenticated && hasPermission("Order-Product Management") ? (
+            <OrderProduct />
+          ) : (
+            <Navigate to="/unauthorized" />
+          )
+        }
+      />    
 
       <Route
         path="/ordersPanel"
