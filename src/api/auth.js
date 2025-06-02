@@ -57,6 +57,15 @@ export const signUpRequest = async (userData) => {
   }
 };
 
+export const resendTwoFA = async (email, method) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/auth/resend-two-factor`, { email, method });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || { error: "Unknown error" };
+  }
+};
+
 export const signInRequest = async (loginData) => {
   try {
     const response = await axios.post(`${API_URL}/auth/auth/signin`, loginData);

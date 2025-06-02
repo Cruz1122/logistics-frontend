@@ -104,6 +104,16 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.resend-button {
+  background: linear-gradient(to right, #6b7280, #4b5563); /* Gris oscuro */
+}
+
+.resend-button:hover {
+  background: linear-gradient(to right, #4b5563, #374151);
+  transform: scale(1.05);
+}
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .verify-container {

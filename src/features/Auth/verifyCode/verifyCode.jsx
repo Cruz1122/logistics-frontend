@@ -9,12 +9,16 @@ import {
   setLoading,
 } from "../../../redux/authSlice";
 import { useDispatch } from "react-redux";
-import { getUserRolId, verifyCodeRequest } from "../../../api/auth"; // Importa tu función para obtener rolId
+import {
+  getUserRolId,
+  verifyCodeRequest,
+  resendTwoFA, // <-- Importada aquí
+} from "../../../api/auth";
 import {
   getUserIdFromToken,
   getUserPermissions,
   getUserStatus,
-} from "../../../api/user"; // Importa tu función para obtener permisos
+} from "../../../api/user";
 
 const VerifyCode = () => {
   const navigate = useNavigate();
@@ -41,17 +45,14 @@ const VerifyCode = () => {
     }
 
     dispatch(setLoading(true));
-
     try {
       setLoadingPage(true);
-
       const response = await verifyCodeRequest({ email, code });
 
       if (response.token) {
-        // Obtiene rolId usando la función importada
         const rolId = await getUserRolId();
         const userId = getUserIdFromToken();
-        const permissions = await getUserPermissions(userId); // <--- Aquí
+        const permissions = await getUserPermissions(userId);
 
         if (!rolId || !permissions) {
           toast.error("Error obteniendo rol de usuario o permisos");
@@ -63,15 +64,17 @@ const VerifyCode = () => {
 
         console.log("[VerifyCode] rolId:", rolId);
         console.log("[VerifyCode] permissions:", permissions);
-        // Guarda token y rolId en estado global y localStorage
+
         dispatch(setUser({ token: response.token, rolId, permissions }));
         dispatch(setAuthenticated(true));
+
         const isActive = await getUserStatus();
         if (!isActive) {
           toast.error("User is inactive");
           navigate("/inactive");
           return;
         }
+
         toast.success("Verification successful!");
         navigate("/");
       } else {
@@ -84,6 +87,28 @@ const VerifyCode = () => {
     } finally {
       setLoadingPage(false);
       dispatch(setLoading(false));
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (!email) {
+      toast.error("Missing email for verification");
+      return;
+    }
+
+    try {
+      setLoadingPage(true);
+      const response = await resendTwoFA(email, method);
+
+      if (response.email) {
+        toast.success("Verification code resent successfully!");
+      } else {
+        toast.error(response.message || "Failed to resend code.");
+      }
+    } catch (err) {
+      toast.error("An error occurred while resending the code.");
+    } finally {
+      setLoadingPage(false);
     }
   };
 
@@ -118,6 +143,14 @@ const VerifyCode = () => {
             />
             <button type="submit" className="verify-button" disabled={loading}>
               {loading ? "Verifying..." : "Verify"}
+            </button>
+            <button
+              type="button"
+              className="verify-button resend-button"
+              onClick={handleResendCode}
+              disabled={loading}
+            >
+              {loading ? "Sending..." : "Resend Code"}
             </button>
           </form>
         </div>

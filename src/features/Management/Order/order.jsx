@@ -46,7 +46,7 @@ const Orders = () => {
           getAllUsers(),
         ]);
 
-        const GUEST_ROLE_ID = import.meta.env.VITE_GUEST_ID;
+        const GUEST_ROLE_ID = "2b406949-6340-4801-ac31-06449644a6a4";
         const guests = allUsers.filter((user) => user.roleId === GUEST_ROLE_ID);
         setGuestUsers(guests);
         setPersonsDelivery(deliveryPersons);
