@@ -6,16 +6,31 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los permisos
+/**
+ * Obtener todos los permisos.
+ * Envia: Header con token JWT.
+ * Recibe: Array de permisos con la siguiente estructura:
+ * [
+ *   {
+ *     id: string,
+ *     name: string,
+ *     description: string
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllPermissions = async () => {
   try {
     const token = localStorage.getItem("token");
 
-    const response = await axios.get(`${API_URL}/auth/permissions/permissions`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.get(
+      `${API_URL}/auth/permissions/permissions`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     return response.data;
   } catch (error) {
@@ -27,7 +42,21 @@ export const getAllPermissions = async () => {
   }
 };
 
-// Crear un nuevo permiso
+/**
+ * Crear un nuevo permiso.
+ * Envia en el body:
+ * {
+ *   name: string,
+ *   description: string
+ * }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+ *   description: string
+ * }
+ */
 export const createPermission = async (permissionData) => {
   try {
     const token = localStorage.getItem("token");
@@ -52,7 +81,22 @@ export const createPermission = async (permissionData) => {
   }
 };
 
-// Editar un permiso existente
+/**
+ * Editar un permiso existente.
+ * Envia:
+ *   id: string (en la URL),
+ *   body: {
+ *     name?: string,
+ *     description?: string
+ *   }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+ *   description: string
+ * }
+ */
 export const updatePermission = async (id, permissionData) => {
   try {
     const token = localStorage.getItem("token");
@@ -77,7 +121,16 @@ export const updatePermission = async (id, permissionData) => {
   }
 };
 
-// Eliminar un permiso
+/**
+ * Eliminar un permiso por su ID.
+ * Envia:
+ *   id: string (en la URL)
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   message: string
+ * }
+ */
 export const deletePermission = async (id) => {
   try {
     const token = localStorage.getItem("token");

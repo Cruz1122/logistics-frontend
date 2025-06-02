@@ -164,12 +164,12 @@ const User = () => {
                 <td>
                   {user.isActive ? (
                     <span className="badge-status active">
-                      <CheckCircleOutlined className="icon" />
+                      <CheckCircleOutlined className="icons" />
                       Activo
                     </span>
                   ) : (
                     <span className="badge-status inactive">
-                      <CloseCircleOutlined className="icon" />
+                      <CloseCircleOutlined className="icons" />
                       Inactivo
                     </span>
                   )}

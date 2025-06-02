@@ -6,7 +6,18 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los estados
+/**
+ * Obtener todos los estados.
+ * Envia: Header con token JWT.
+ * Recibe: Array con estructura:
+ * [
+ *   {
+ *     id: string,
+ *     name: string
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllStates = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -27,7 +38,18 @@ export const getAllStates = async () => {
   }
 };
 
-// Crear un nuevo estado
+/**
+ * Crear un nuevo estado.
+ * Envia: Header con token JWT y body con:
+ * {
+ *   name: string
+ * }
+ * Recibe: Objeto con el estado creado:
+ * {
+ *   id: string,
+ *   name: string
+ * }
+ */
 export const createState = async (stateData) => {
   try {
     const token = localStorage.getItem("token");
@@ -52,7 +74,18 @@ export const createState = async (stateData) => {
   }
 };
 
-// Editar un estado existente
+/**
+ * Editar un estado existente.
+ * Envia: Header con token JWT y body con:
+ * {
+ *   name: string
+ * }
+ * Recibe: Objeto con el estado actualizado:
+ * {
+ *   id: string,
+ *   name: string
+ * }
+ */
 export const updateState = async (id, stateData) => {
   try {
     const token = localStorage.getItem("token");
@@ -77,7 +110,11 @@ export const updateState = async (id, stateData) => {
   }
 };
 
-// Eliminar un estado
+/**
+ * Eliminar un estado.
+ * Envia: Header con token JWT.
+ * Recibe: Objeto con confirmación de eliminación.
+ */
 export const deleteState = async (id) => {
   try {
     const token = localStorage.getItem("token");

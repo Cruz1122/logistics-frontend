@@ -6,7 +6,21 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todas las personas de entrega
+/**
+ * Obtiene todas las personas de entrega.
+ * Envia: Header con token JWT.
+ * Recibe: Array de objetos persona de entrega.
+ * Ejemplo:
+ * [
+ *   {
+ *     id: "dp123",
+ *     name: "Juan Pérez",
+ *     idUser: "user123",
+ *     ... (otros campos)
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllPersonDelivery = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -27,7 +41,23 @@ export const getAllPersonDelivery = async () => {
   }
 };
 
-// Crear una nueva persona de entrega
+/**
+ * Crea una nueva persona de entrega.
+ * Envia:
+ * {
+ *   fullName: string,
+ *   phone: string,
+ *   email: string
+ * }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+ *   idUser: string,
+ *   ... (otros campos),
+ * }
+ */
 export const createPersonDelivery = async (personDeliveryData) => {
   try {
     const token = localStorage.getItem("token");
@@ -52,7 +82,24 @@ export const createPersonDelivery = async (personDeliveryData) => {
   }
 };
 
-// Editar una persona de entrega existente
+/**
+ * Actualiza una persona de entrega existente por ID.
+ * Envia:
+ *   id: string (en URL),
+ *   body: {
+ *     name?: string,
+ *     idUser?: string,
+ *     ... // otros campos opcionales
+ *   }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+ *   idUser: string,
+ *  ... // otros campos actualizados
+ * }
+ */
 export const updatePersonDelivery = async (id, personDeliveryData) => {
   try {
     const token = localStorage.getItem("token");
@@ -77,7 +124,16 @@ export const updatePersonDelivery = async (id, personDeliveryData) => {
   }
 };
 
-// Eliminar una persona de entrega
+/**
+ * Elimina una persona de entrega por ID.
+ * Envia:
+ *   id: string (en URL)
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   message: string
+ * }
+ */
 export const deletePersonDelivery = async (id) => {
   try {
     const token = localStorage.getItem("token");

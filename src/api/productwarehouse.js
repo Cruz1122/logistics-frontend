@@ -6,7 +6,12 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los ProductWarehouses
+/**
+ * Obtener todos los ProductWarehouses.
+ * Retorna un array de objetos con los campos:
+ * id, productId, warehouseId, stockQuantity, reorderLevel,
+ * lastRestock, expirationDate, status, deletedAt
+ */
 export const getAllProductWarehouses = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -20,7 +25,20 @@ export const getAllProductWarehouses = async () => {
   }
 };
 
-// Crear un ProductWarehouse
+/**
+ * Crear un nuevo ProductWarehouse.
+ * Espera un objeto con:
+ * {
+ *   productId: string,
+ *   warehouseId: string,
+ *   stockQuantity: number,
+ *   reorderLevel: number,
+ *   lastRestock: string (ISO date),
+ *   expirationDate: string (ISO date),
+ *   status: string,
+ *   deletedAt?: string | null
+ * }
+ */
 export const createProductWarehouse = async (productWarehouseData) => {
   try {
     const token = localStorage.getItem("token");
@@ -34,7 +52,10 @@ export const createProductWarehouse = async (productWarehouseData) => {
   }
 };
 
-// Actualizar un ProductWarehouse
+/**
+ * Actualizar un ProductWarehouse existente por ID.
+ * Puede enviar campos parciales para actualizar.
+ */
 export const updateProductWarehouse = async (id, productWarehouseData) => {
   try {
     const token = localStorage.getItem("token");
@@ -48,7 +69,9 @@ export const updateProductWarehouse = async (id, productWarehouseData) => {
   }
 };
 
-// Eliminar un ProductWarehouse
+/**
+ * Eliminar un ProductWarehouse por ID.
+ */
 export const deleteProductWarehouse = async (id) => {
   try {
     const token = localStorage.getItem("token");

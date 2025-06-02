@@ -5,7 +5,17 @@ const API_URL =
   "https://logistics-backend-n3be.onrender.com";
 
 console.log(`API_URL: ${API_URL}`);
-// Obtener todas las ciudades
+
+/**
+ * Obtiene todas las ciudades registradas.
+ * Envia: Header con token JWT.
+ * Recibe: Array de objetos ciudad.
+ * Ejemplo:
+ * [
+ *   { id: "abc123", name: "Medellín", stateId: "123"},
+ *   ...
+ * ]
+ */
 export const getAllCities = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -19,7 +29,21 @@ export const getAllCities = async () => {
   }
 };
 
-// Crear una ciudad
+/**
+ * Crea una nueva ciudad.
+ * Envia:
+ * {
+ *   name: string,
+ *   stateId: string
+ * }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+ *   stateId: string,
+ * }
+ */
 export const createCity = async (cityData) => {
   try {
     const token = localStorage.getItem("token");
@@ -33,7 +57,22 @@ export const createCity = async (cityData) => {
   }
 };
 
-// Actualizar una ciudad
+/**
+ * Actualiza una ciudad existente por ID.
+ * Envia:
+ *   id: string (en URL),
+ *   body: {
+ *     name: string,
+ *     stateId: string
+ *   }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+  *  stateId: string,
+ * }
+ */
 export const updateCity = async (id, cityData) => {
   try {
     const token = localStorage.getItem("token");
@@ -47,7 +86,16 @@ export const updateCity = async (id, cityData) => {
   }
 };
 
-// Eliminar una ciudad
+/**
+ * Elimina una ciudad por ID.
+ * Envia:
+ *   id: string (en URL)
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   message: string
+ * }
+ */
 export const deleteCity = async (id) => {
   try {
     const token = localStorage.getItem("token");
@@ -61,7 +109,18 @@ export const deleteCity = async (id) => {
   }
 };
 
-//traer city por id
+/**
+ * Obtiene una ciudad por su ID.
+ * Envia:
+ *   id: string (en URL)
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   name: string,
+ *   stateId: string
+ * }
+ */
 export const getCityById = async (id) => {
   try {
     const token = localStorage.getItem("token");

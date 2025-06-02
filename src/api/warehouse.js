@@ -6,7 +6,22 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los almacenes
+/**
+ * Obtener todos los almacenes.
+ * Retorna un array con objetos que tienen:
+ * {
+ *   id: string,
+ *   cityId: string,
+ *   managerId: string,
+ *   name: string,
+ *   address: string,
+ *   postalCode: string,
+ *   latitude: number,
+ *   longitude: number,
+ *   capacityM2: number,
+ *   status: string
+ * }
+ */
 export const getAllWarehouses = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -20,7 +35,22 @@ export const getAllWarehouses = async () => {
   }
 };
 
-// Crear un almacén
+/**
+ * Crear un nuevo almacén.
+ * warehouseData debe contener:
+ * {
+ *   cityId: string,
+ *   managerId: string,
+ *   name: string,
+ *   address: string,
+ *   postalCode: string,
+ *   latitude: number,
+ *   longitude: number,
+ *   capacityM2: number,
+ *   status: string
+ * }
+ * Retorna el objeto almacén creado.
+ */
 export const createWarehouse = async (warehouseData) => {
   try {
     const token = localStorage.getItem("token");
@@ -34,7 +64,12 @@ export const createWarehouse = async (warehouseData) => {
   }
 };
 
-// Actualizar un almacén
+/**
+ * Actualizar un almacén existente.
+ * id: id del almacén a actualizar.
+ * warehouseData con los campos para actualizar (los mismos que en create).
+ * Retorna el objeto almacén actualizado.
+ */
 export const updateWarehouse = async (id, warehouseData) => {
   try {
     const token = localStorage.getItem("token");
@@ -48,7 +83,10 @@ export const updateWarehouse = async (id, warehouseData) => {
   }
 };
 
-// Eliminar un almacén
+/**
+ * Eliminar un almacén por id.
+ * Retorna un objeto de confirmación.
+ */
 export const deleteWarehouse = async (id) => {
   try {
     const token = localStorage.getItem("token");

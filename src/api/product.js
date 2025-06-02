@@ -6,7 +6,27 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los productos
+/**
+ * Obtener todos los productos.
+ * Envia: Header con token JWT.
+ * Recibe: Array de productos con estructura:
+ * [
+ *   {
+ *     id: string,
+ *     categoryId: string,
+ *     name: string,
+ *     description: string,
+ *     sku: string,
+ *     barcode: string,
+ *     unitPrice: number,
+ *     weightKg: number,
+ *     dimensions: string,
+ *     isFragile: boolean,
+ *     needsCooling: boolean
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllProducts = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -20,7 +40,28 @@ export const getAllProducts = async () => {
   }
 };
 
-// Crear un producto
+/**
+ * Crear un nuevo producto.
+ * Envia en el body:
+ * {
+ *   categoryId: string,
+ *   name: string,
+ *   description: string,
+ *   sku: string,
+ *   barcode: string,
+ *   unitPrice: number,
+ *   weightKg: number,
+ *   dimensions: string,
+ *   isFragile: boolean,
+ *   needsCooling: boolean
+ * }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   ...otros campos enviados
+ * }
+ */
 export const createProduct = async (productData) => {
   try {
     const token = localStorage.getItem("token");
@@ -34,7 +75,29 @@ export const createProduct = async (productData) => {
   }
 };
 
-// Actualizar un producto
+/**
+ * Actualizar un producto existente.
+ * Envia:
+ *   id: string (en la URL),
+ *   body: {
+ *     categoryId?: string,
+ *     name?: string,
+ *     description?: string,
+ *     sku?: string,
+ *     barcode?: string,
+ *     unitPrice?: number,
+ *     weightKg?: number,
+ *     dimensions?: string,
+ *     isFragile?: boolean,
+ *     needsCooling?: boolean
+ *   }
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   id: string,
+ *   ...campos actualizados
+ * }
+ */
 export const updateProduct = async (id, productData) => {
   try {
     const token = localStorage.getItem("token");
@@ -48,7 +111,16 @@ export const updateProduct = async (id, productData) => {
   }
 };
 
-// Eliminar un producto
+/**
+ * Eliminar un producto por su ID.
+ * Envia:
+ *   id: string (en la URL)
+ * Header: Authorization con token JWT.
+ * Recibe:
+ * {
+ *   message: string
+ * }
+ */
 export const deleteProduct = async (id) => {
   try {
     const token = localStorage.getItem("token");

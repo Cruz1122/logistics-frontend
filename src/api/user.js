@@ -7,6 +7,10 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
+/**
+ * Extrae el userId del token JWT almacenado en localStorage.
+ * Retorna el userId (string) o null si no hay token o es inválido.
+ */
 export const getUserIdFromToken = () => {
   const token = localStorage.getItem("token");
 
@@ -21,6 +25,11 @@ export const getUserIdFromToken = () => {
   }
 };
 
+/**
+ * Obtiene el estado activo (isActive) del usuario por userId.
+ * Envia: header con token.
+ * Recibe: objeto con campo isActive: boolean.
+ */
 export const getUserStatus = async () => {
   const userId = getUserIdFromToken();
   try {
@@ -33,13 +42,28 @@ export const getUserStatus = async () => {
       },
     });
 
-    return response.data.isActive; // Cambiado a isActive
+    return response.data.isActive;
   } catch (error) {
     console.error("Error en getUserStatus:", error.response?.data || error.message);
     return false;
   }
 };
 
+/**
+ * Obtiene todos los usuarios.
+ * Envia: header con token.
+ * Recibe: array de usuarios con campos:
+ * {
+ *   id: string,
+ *   roleId: string,
+ *   email: string,
+ *   name: string,
+ *   lastName: string,
+ *   phone: string,
+ *   isActive: boolean,
+ *   ...
+ * }
+ */
 export const getAllUsers = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -57,6 +81,11 @@ export const getAllUsers = async () => {
   }
 };
 
+/**
+ * Obtiene los permisos asignados a un usuario.
+ * Envia: header con token.
+ * Recibe: objeto con campo permissions: array de permisos (strings o ids).
+ */
 export const getUserPermissions = async (userId) => {
   try {
     const token = localStorage.getItem("token");
@@ -74,6 +103,18 @@ export const getUserPermissions = async (userId) => {
   }
 };
 
+/**
+ * Actualiza un usuario por id.
+ * Envia: header con token y body con campos a actualizar:
+ * {
+ *   name: string,
+ *   lastName: string,
+ *   phone: string,
+ *   roleId: string,
+ *   isActive: boolean
+ * }
+ * Recibe: objeto con usuario actualizado.
+ */
 export const updateUser = async (userId, updatedData) => {
   try {
     const token = localStorage.getItem("token");
@@ -101,6 +142,11 @@ export const updateUser = async (userId, updatedData) => {
   }
 };
 
+/**
+ * Elimina un usuario por id.
+ * Envia: header con token.
+ * Recibe: objeto con confirmación.
+ */
 export const deleteUser = async (userId) => {
   try {
     const token = localStorage.getItem("token"); 
@@ -118,6 +164,28 @@ export const deleteUser = async (userId) => {
   }
 };
 
+/**
+ * Crea un nuevo usuario.
+ * Envia: header con token y body con:
+ * {
+ *   name: string,
+ *   lastName: string,
+ *   email: string,
+ *   password: string,
+ *   phone: string,
+ *   roleId: string
+ * }
+ * Recibe: objeto con usuario creado:
+ * {
+ *   id: string,
+ *   roleId: string,
+ *   email: string,
+ *   name: string,
+ *   lastName: string,
+ *   phone: string,
+ *   ...
+ * }
+ */
 export const createUser = async (userData) => {
   try {
     const token = localStorage.getItem("token");
@@ -146,6 +214,20 @@ export const createUser = async (userData) => {
   }
 };
 
+/**
+ * Obtiene un usuario por id.
+ * Envia: header con token.
+ * Recibe: objeto usuario con campos:
+ * {
+ *   id: string,
+ *   roleId: string,
+ *   email: string,
+ *   name: string,
+ *   lastName: string,
+ *   phone: string,
+ *   ...
+ * }
+ */
 export const getUserByID = async (userId) => {
   try {
     const token = localStorage.getItem("token");
@@ -161,8 +243,13 @@ export const getUserByID = async (userId) => {
     console.error("Error al obtener usuario:", error.response?.data || error.message);
     throw error;
   }
-}
+};
 
+/**
+ * Obtiene el deliveryId asociado a un userId (repartidor).
+ * Envia: header con token.
+ * Recibe: objeto con deliveryId u otros datos relacionados.
+ */
 export const getDeliveryId = async (userId) => {
   try {
     const token = localStorage.getItem("token");
@@ -178,4 +265,4 @@ export const getDeliveryId = async (userId) => {
     console.error("Error al obtener el ID de entrega:", error.response?.data || error.message);
     throw error;
   }
-}
+};

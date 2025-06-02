@@ -6,7 +6,24 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todas las relaciones rol-permiso
+/**
+ * Obtener todas las relaciones rol-permiso.
+ * Envia: Header con token JWT.
+ * Recibe: Array con estructura:
+ * [
+ *   {
+ *     id: string,
+ *     roleId: string,
+ *     permissionId: string,
+ *     listar: boolean,
+ *     eliminar: boolean,
+ *     crear: boolean,
+ *     editar: boolean,
+ *     descargar: boolean
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllRolPermissions = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -30,7 +47,30 @@ export const getAllRolPermissions = async () => {
   }
 };
 
-// Crear una nueva relación rol-permiso
+/**
+ * Crear una nueva relación rol-permiso.
+ * Envia: Header con token JWT y body con:
+ * {
+ *   roleId: string,
+ *   permissionId: string,
+ *   listar: boolean,
+ *   eliminar: boolean,
+ *   crear: boolean,
+ *   editar: boolean,
+ *   descargar: boolean
+ * }
+ * Recibe: Objeto con la relación creada:
+ * {
+ *   id: string,
+ *   roleId: string,
+ *   permissionId: string,
+ *   listar: boolean,
+ *   eliminar: boolean,
+ *   crear: boolean,
+ *   editar: boolean,
+ *   descargar: boolean
+ * }
+ */
 export const createRolPermission = async (rolPermissionData) => {
   try {
     const token = localStorage.getItem("token");
@@ -55,7 +95,30 @@ export const createRolPermission = async (rolPermissionData) => {
   }
 };
 
-// Editar una relación rol-permiso existente
+/**
+ * Editar una relación rol-permiso existente.
+ * Envia: Header con token JWT y body con datos actualizados:
+ * {
+ *   roleId?: string,
+ *   permissionId?: string,
+ *   listar?: boolean,
+ *   eliminar?: boolean,
+ *   crear?: boolean,
+ *   editar?: boolean,
+ *   descargar?: boolean
+ * }
+ * Recibe: Objeto con la relación actualizada:
+ * {
+ *   id: string,
+ *   roleId: string,
+ *   permissionId: string,
+ *   listar: boolean,
+ *   eliminar: boolean,
+ *   crear: boolean,
+ *   editar: boolean,
+ *   descargar: boolean
+ * }
+ */
 export const updateRolPermission = async (id, rolPermissionData) => {
   try {
     const token = localStorage.getItem("token");
@@ -80,7 +143,11 @@ export const updateRolPermission = async (id, rolPermissionData) => {
   }
 };
 
-// Eliminar una relación rol-permiso
+/**
+ * Eliminar una relación rol-permiso.
+ * Envia: Header con token JWT.
+ * Recibe: Objeto con confirmación de eliminación.
+ */
 export const deleteRolPermission = async (id) => {
   try {
     const token = localStorage.getItem("token");

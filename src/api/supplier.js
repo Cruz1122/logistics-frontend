@@ -6,7 +6,20 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los suppliers
+/**
+ * Obtener todos los suppliers.
+ * Envia: Header con token JWT.
+ * Recibe: Array con estructura:
+ * [
+ *   {
+ *     id: string,
+ *     name: string,
+ *     phone: string,
+ *     email: string
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllSuppliers = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -27,7 +40,22 @@ export const getAllSuppliers = async () => {
   }
 };
 
-// Crear un nuevo supplier
+/**
+ * Crear un nuevo supplier.
+ * Envia: Header con token JWT y body con:
+ * {
+ *   name: string,
+ *   phone: string,
+ *   email: string
+ * }
+ * Recibe: Objeto con el supplier creado:
+ * {
+ *   id: string,
+ *   name: string,
+ *   phone: string,
+ *   email: string
+ * }
+ */
 export const createSupplier = async (supplierData) => {
   try {
     const token = localStorage.getItem("token");
@@ -52,7 +80,22 @@ export const createSupplier = async (supplierData) => {
   }
 };
 
-// Editar un supplier existente
+/**
+ * Editar un supplier existente.
+ * Envia: Header con token JWT y body con:
+ * {
+ *   name: string,
+ *   phone: string,
+ *   email: string
+ * }
+ * Recibe: Objeto con el supplier actualizado:
+ * {
+ *   id: string,
+ *   name: string,
+ *   phone: string,
+ *   email: string
+ * }
+ */
 export const updateSupplier = async (id, supplierData) => {
   try {
     const token = localStorage.getItem("token");
@@ -77,7 +120,11 @@ export const updateSupplier = async (id, supplierData) => {
   }
 };
 
-// Eliminar un supplier
+/**
+ * Eliminar un supplier.
+ * Envia: Header con token JWT.
+ * Recibe: Objeto con confirmación de eliminación.
+ */
 export const deleteSupplier = async (id) => {
   try {
     const token = localStorage.getItem("token");

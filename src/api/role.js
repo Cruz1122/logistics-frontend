@@ -6,7 +6,19 @@ const API_URL =
 
 console.log(`API_URL: ${API_URL}`);
 
-// Obtener todos los roles
+/**
+ * Obtener todos los roles.
+ * Envia: Header con token JWT.
+ * Recibe: Array con estructura:
+ * [
+ *   {
+ *     id: string,
+ *     name: string,
+ *     description: string
+ *   },
+ *   ...
+ * ]
+ */
 export const getAllRoles = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -27,7 +39,20 @@ export const getAllRoles = async () => {
   }
 };
 
-// Crear un nuevo rol
+/**
+ * Crear un nuevo rol.
+ * Envia: Header con token JWT y body con:
+ * {
+ *   name: string,
+ *   description: string
+ * }
+ * Recibe: Objeto con el rol creado:
+ * {
+ *   id: string,
+ *   name: string,
+ *   description: string
+ * }
+ */
 export const createRole = async (roleData) => {
   try {
     const token = localStorage.getItem("token");
@@ -48,7 +73,20 @@ export const createRole = async (roleData) => {
   }
 };
 
-// Editar un rol existente
+/**
+ * Editar un rol existente.
+ * Envia: Header con token JWT y body con datos actualizados:
+ * {
+ *   name?: string,
+ *   description?: string
+ * }
+ * Recibe: Objeto con el rol actualizado:
+ * {
+ *   id: string,
+ *   name: string,
+ *   description: string
+ * }
+ */
 export const updateRole = async (id, roleData) => {
   try {
     const token = localStorage.getItem("token");
@@ -69,7 +107,11 @@ export const updateRole = async (id, roleData) => {
   }
 };
 
-// Eliminar un rol
+/**
+ * Eliminar un rol.
+ * Envia: Header con token JWT.
+ * Recibe: Objeto con confirmación de eliminación.
+ */
 export const deleteRole = async (id) => {
   try {
     const token = localStorage.getItem("token");
@@ -90,7 +132,11 @@ export const deleteRole = async (id) => {
   }
 };
 
-// Obtener un rol por su nombre
+/**
+ * Obtener un rol por su nombre.
+ * Envia: Header con token JWT.
+ * Recibe: Id del rol (string).
+ */
 export const getRoleByName = async (name) => {
   try {
     const token = localStorage.getItem("token");
