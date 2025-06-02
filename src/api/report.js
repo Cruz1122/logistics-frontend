@@ -5,7 +5,7 @@ const API_URL =
   "https://logistics-backend-n3be.onrender.com";
 
   // Function to download a delivery report
-export const downloadReport = async (deliveryId) => {
+export const downloadPdfReport = async (deliveryId) => {
   const token = localStorage.getItem("token");
   try {
     const response = await axios.get(
@@ -25,5 +25,31 @@ export const downloadReport = async (deliveryId) => {
     link.click();
   } catch (error) {
     console.error("Error downloading report:", error);
+    throw error;
+  }
+};
+
+
+export const downloadExcelReport = async (deliveryId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const response = await axios.get(
+      `${API_URL}/reports/reports/delivery-report-excel/${deliveryId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        responseType: "blob", // Important for downloading files
+      }
+    );
+    
+    // Create a URL for the blob and trigger a download
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `reporte_${deliveryId}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+  } catch (error) {
+    console.error("Error downloading report:", error);
+    throw error;
   }
 };

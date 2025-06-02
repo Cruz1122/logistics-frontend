@@ -12,9 +12,13 @@ import {
   UserOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
-import { getAllDeliveries, getAllOrders, getAllWarehouses } from "../../../api/location";
+import {
+  getAllDeliveries,
+  getAllOrders,
+  getAllWarehouses,
+} from "../../../api/location";
 import { useNavigate } from "react-router-dom";
-import { downloadReport } from "../../../api/report";
+import { downloadPdfReport, downloadExcelReport } from "../../../api/report";
 
 const DeliveryManager = () => {
   const navigate = useNavigate();
@@ -26,6 +30,10 @@ const DeliveryManager = () => {
   const [filterTodayOrders, setFilterTodayOrders] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportUserId, setReportUserId] = useState(null);
+  const [downloadingFormat, setDownloadingFormat] = useState("");
+
   const itemsPerPage = 2;
 
   const fetchData = async () => {
@@ -130,21 +138,34 @@ const DeliveryManager = () => {
       setTrackingDelivery(false);
     }
   };
-  
-  const handleReportClick = async (idUser) => {
-    if (!idUser) {
-      toast.error("No se pudo obtener el ID del usuario para el reporte");
-      return;
-    }
-    setTrackingDelivery(true);
+
+  const handleReportClick = (idUser) => {
+    setReportUserId(idUser);
+    setShowReportModal(true);
+  };
+
+  const handleDownloadReport = async (format) => {
+    if (!reportUserId) return;
+
+    setDownloadingFormat(format);
     try {
-      await downloadReport(idUser);
-      toast.success("Reporte descargado correctamente");
+      if (format === "pdf") {
+        await downloadPdfReport(reportUserId);
+      } else if (format === "excel") {
+        await downloadExcelReport(reportUserId);
+      } else {
+        throw new Error("Formato no soportado");
+      }
+
+      toast.success(`Reporte ${format.toUpperCase()} descargado correctamente`);
+      setShowReportModal(false);
     } catch (error) {
-      toast.error("Error al descargar el reporte");
       console.error("Error downloading report:", error);
+      toast.error(
+        `Error al descargar el reporte en formato ${format.toUpperCase()}`
+      );
     } finally {
-      setTrackingDelivery(false);
+      setDownloadingFormat("");
     }
   };
 
@@ -165,12 +186,10 @@ const DeliveryManager = () => {
     const matchesState = !filterState || d.state === filterState;
     const matchesCity = !filterCity || d.city === filterCity;
     const matchesTodayOrders = !filterTodayOrders || d.todayOrders > 0;
-
     const searchLower = searchTerm.toLowerCase();
     const matchesSearch =
       d.name.toLowerCase().includes(searchLower) ||
       d.phone.toLowerCase().includes(searchLower);
-
     return matchesState && matchesCity && matchesTodayOrders && matchesSearch;
   });
 
@@ -246,7 +265,8 @@ const DeliveryManager = () => {
               setFilterTodayOrders(e.target.checked);
               setCurrentPage(1);
             }}
-          />With Orders Today
+          />
+          With Orders Today
         </label>
 
         <button className="create-btn" onClick={clearFilters}>
@@ -273,7 +293,11 @@ const DeliveryManager = () => {
             {currentDeliveries.length > 0 ? (
               currentDeliveries.map((d) => (
                 <tr key={d.id}>
-                  <td>{String(d.id).length > 8 ? String(d.id).slice(0, 8) + "..." : d.id}</td>
+                  <td>
+                    {String(d.id).length > 8
+                      ? String(d.id).slice(0, 8) + "..."
+                      : d.id}
+                  </td>
                   <td>
                     <UserOutlined /> {d.name}
                   </td>
@@ -302,7 +326,7 @@ const DeliveryManager = () => {
                         onClick={() => toggleActive(d.idUser, d.isActive)}
                         disabled={trackingDelivery}
                       >
-                        {d.isActive ? "Desactivar" : "Activar"}
+                        {d.isActive ? "Deactivate" : "Activate"}
                       </button>
                       <button
                         className={`action-btn track-btn ${
@@ -352,6 +376,34 @@ const DeliveryManager = () => {
           >
             Next ➡
           </button>
+        </div>
+      )}
+
+      {showReportModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Select the report format</h3>
+            <div className="modal-buttons">
+              <button
+                onClick={() => handleDownloadReport("pdf")}
+                disabled={downloadingFormat !== ""}
+              >
+                {downloadingFormat === "pdf" ? "Downloading..." : "PDF"}
+              </button>
+              <button
+                onClick={() => handleDownloadReport("excel")}
+                disabled={downloadingFormat !== ""}
+              >
+                {downloadingFormat === "excel" ? "Downloading..." : "Excel"}
+              </button>
+            </div>
+            <button
+              className="modal-close cancel-btn"
+              onClick={() => setShowReportModal(false)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>
