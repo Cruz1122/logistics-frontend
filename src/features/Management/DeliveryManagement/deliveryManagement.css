@@ -210,6 +210,22 @@ h2.delivery-title {
   transition: transform 0.2s ease, background-position 0.5s ease;
 }
 
+.action-btn:disabled {
+  background: #ccc !important; /* fondo gris claro */
+  color: #666 !important;      /* texto gris oscuro */
+  cursor: not-allowed !important;
+  transform: none !important;  /* quitar transformaciones */
+  box-shadow: none !important;
+  pointer-events: none !important; /* opcional para evitar clicks */
+  opacity: 0.6;                /* semi-transparente */
+}
+
+.action-btn:disabled:hover {
+  transform: none;
+  background-position: initial;
+}
+
+
 .toggle-btn {
   background: linear-gradient(
     to right,
@@ -217,7 +233,6 @@ h2.delivery-title {
     var(--secondary-color)
   );
   color: white;
-  margin-bottom: 5px;
 }
 
 .track-btn {

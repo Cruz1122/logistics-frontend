@@ -12,10 +12,14 @@ import {
   UserOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { getAllDeliveries, getAllOrders, getAllWarehouses } from "../../../api/location";
+import { useNavigate } from "react-router-dom";
 
 const DeliveryManager = () => {
+  const navigate = useNavigate();
   const [deliveries, setDeliveries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [trackingDelivery, setTrackingDelivery] = useState(false);
   const [filterState, setFilterState] = useState("");
   const [filterCity, setFilterCity] = useState("");
   const [filterTodayOrders, setFilterTodayOrders] = useState(false);
@@ -96,6 +100,34 @@ const DeliveryManager = () => {
     setCurrentPage(1);
   };
 
+  const handleTrackClick = async (idUser) => {
+    if (!idUser) {
+      toast.error("No se pudo obtener el ID del usuario para rastrear");
+      return;
+    }
+    setTrackingDelivery(true);
+    try {
+      const [orders, warehouses, deliveries] = await Promise.all([
+        getAllOrders(),
+        getAllWarehouses(),
+        getAllDeliveries(),
+      ]);
+      if (!orders || !warehouses || !deliveries) {
+        toast.error("Error fetching data for tracking");
+        return;
+      }
+      navigate(`/global-map/${idUser}`, {
+        state: { fromFlow: true, orders, warehouses, deliveries },
+      });
+    } catch (error) {
+      toast.error("Error fetching data for tracking");
+      console.error(error);
+    } finally {
+      setTrackingDelivery(false);
+    }
+  };
+  
+
   const filteredCities = filterState
     ? [
         ...new Set(
@@ -142,7 +174,7 @@ const DeliveryManager = () => {
 
   return (
     <div className="delivery-manager">
-      <h2 class="delivery-title">Delivery Personnel</h2>
+      <h2 className="delivery-title">Delivery Personnel</h2>
 
       <div className="delivery-controls">
         <div className="search-wrapper">
@@ -194,8 +226,7 @@ const DeliveryManager = () => {
               setFilterTodayOrders(e.target.checked);
               setCurrentPage(1);
             }}
-          />
-          With Orders Today
+          />With Orders Today
         </label>
 
         <button className="create-btn" onClick={clearFilters}>
@@ -251,6 +282,7 @@ const DeliveryManager = () => {
                       <button
                         className="action-btn toggle-btn"
                         onClick={() => toggleActive(d.idUser, d.isActive)}
+                        disabled={trackingDelivery}
                       >
                         {d.isActive ? "Desactivar" : "Activar"}
                       </button>
@@ -258,8 +290,8 @@ const DeliveryManager = () => {
                         className={`action-btn track-btn ${
                           !d.isActive ? "disabled" : ""
                         }`}
-                        disabled={!d.isActive}
-                        onClick={() => console.log("Track delivery", d.id)}
+                        disabled={!d.isActive || trackingDelivery}
+                        onClick={() => handleTrackClick(d.id)}
                       >
                         Track
                       </button>
