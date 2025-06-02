@@ -103,15 +103,12 @@ export const AppRoutes = () => {
   const { isAuthenticated, permissions, loading } = useSelector(
     (state) => state.auth
   );
-  console.log("[AppRoutes] Loading:", loading);
 
   // Verificar si permisos están cargados (podría ser vacío pero aún así se puede decidir)
   // Si tus permisos pueden estar vacíos válidamente (ejemplo: usuario sin permisos),
   // podrías usar otra bandera de estado en redux que indique "permisos cargados"
   const permissionsLoaded =
     Array.isArray(permissions) && permissions.length > 0;
-  console.log("[AppRoutes] permisos:", permissions);
-  console.log("[AppRoutes] permisos cargados:", permissionsLoaded);
 
   if (isAuthenticated) {
      if (!permissionsLoaded) {

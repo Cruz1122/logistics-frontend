@@ -63,7 +63,7 @@ const authSlice = createSlice({
       const { token, rolId, permissions = [] } = action.payload;
 
       if (token && token !== "null") {
-        console.log("[setUser] Token válido, guardando estado...");
+        console.log("[setUser] Valid token, saving state...");
         state.token = token;
         state.rolId = rolId || null;
         state.permissions = permissions;
@@ -72,9 +72,9 @@ const authSlice = createSlice({
         localStorage.setItem("token", token);
         localStorage.setItem("rolId", rolId);
         localStorage.setItem("permissions", JSON.stringify(permissions)); // <--- Guardar en localStorage
-        console.log("[setUser] Estado guardado exitosamente");
+        console.log("[setUser] State saved successfully");
       } else {
-        console.warn("[setUser] Token inválido o nulo, limpiando estado...");
+        console.warn("[setUser] Invalid or null token, clearing state...");
         state.token = null;
         state.rolId = null;
         state.permissions = [];

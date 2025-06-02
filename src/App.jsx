@@ -46,6 +46,7 @@ function App() {
   }, [location.pathname]);
 
   const isHome = location.pathname === "/";
+  console.log("User is authenticated: ", isAuthenticated);
 
   return (
     <div className="app-container">

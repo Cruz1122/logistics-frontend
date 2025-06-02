@@ -21,22 +21,21 @@ export const useLocationTracking = () => {
     if (!deliveryRoleId) return; // espera a tener el id
     if (auth?.rolId !== deliveryRoleId) return; // solo si es delivery
 
-    console.log("Rastreo de ubicación habilitado");
+    console.log("Location tracking enabled");
 
     const updateLocation = async () => {
       const userId = getUserIdFromToken();
       const deliveryPersonId = await getDeliveryId(userId);
-      console.log("ID del repartidor:", deliveryPersonId);
       
       navigator.geolocation.getCurrentPosition(
         (position) => {
-            console.log("Ubicación obtenida:", position);
-            
+            console.log("Location obtained:", position);
+
           const { latitude, longitude } = position.coords;
           sendLocationUpdate(deliveryPersonId, latitude, longitude);
         },
         (error) => {
-          console.error("Error al obtener la ubicación:", error);
+          console.error("Error obtaining location:", error);
         }
       );
     };

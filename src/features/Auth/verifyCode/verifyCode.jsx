@@ -62,9 +62,6 @@ const VerifyCode = () => {
           return;
         }
 
-        console.log("[VerifyCode] rolId:", rolId);
-        console.log("[VerifyCode] permissions:", permissions);
-
         dispatch(setUser({ token: response.token, rolId, permissions }));
         dispatch(setAuthenticated(true));
 

@@ -4,7 +4,6 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
-console.log(`API_URL: ${API_URL}`);
 
 /**
  * Obtener todos los almacenes.

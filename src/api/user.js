@@ -5,7 +5,6 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
-console.log(`API_URL: ${API_URL}`);
 
 /**
  * Extrae el userId del token JWT almacenado en localStorage.
@@ -34,7 +33,6 @@ export const getUserStatus = async () => {
   const userId = getUserIdFromToken();
   try {
     const token = localStorage.getItem("token");
-    console.log("UserID: ", userId);
 
     const response = await axios.get(`${API_URL}/auth/users/status/${userId}`, {
       headers: {
@@ -150,7 +148,6 @@ export const updateUser = async (userId, updatedData) => {
 export const deleteUser = async (userId) => {
   try {
     const token = localStorage.getItem("token"); 
-    console.log("UserID to delete: ",userId);
     
     const response = await axios.delete(`${API_URL}/auth/users/${userId}`, {
       headers: {
