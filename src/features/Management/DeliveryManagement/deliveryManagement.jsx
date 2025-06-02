@@ -12,6 +12,7 @@ import {
   UserOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
+import { getAllDeliveries, getAllOrders, getAllWarehouses } from "../../../api/location";
 
 const DeliveryManager = () => {
   const [deliveries, setDeliveries] = useState([]);
@@ -96,6 +97,17 @@ const DeliveryManager = () => {
     setCurrentPage(1);
   };
 
+  const handleTrackClick = async (idUser) => {
+    const orders = await getAllOrders();
+    const warehouses = await getAllWarehouses();
+    const deliveries = await getAllDeliveries();
+    if (!orders || !warehouses || !deliveries) {
+      toast.error("Error fetching data for tracking");
+      return;
+    }
+    navigate(`/track/${idUser}`, { state: { fromFlow: true, orders, warehouses, deliveries } });
+  };
+
   const filteredCities = filterState
     ? [
         ...new Set(
@@ -142,7 +154,7 @@ const DeliveryManager = () => {
 
   return (
     <div className="delivery-manager">
-      <h2 class="delivery-title">Delivery Personnel</h2>
+      <h2 className="delivery-title">Delivery Personnel</h2>
 
       <div className="delivery-controls">
         <div className="search-wrapper">
@@ -259,7 +271,7 @@ const DeliveryManager = () => {
                           !d.isActive ? "disabled" : ""
                         }`}
                         disabled={!d.isActive}
-                        onClick={() => console.log("Track delivery", d.id)}
+                        onClick={() => handleTrackClick(d.idUser)}
                       >
                         Track
                       </button>

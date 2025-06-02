@@ -4,7 +4,7 @@ import { logoutUser, setAuthenticated } from "../redux/authSlice";
 import { lazy, useEffect } from "react";
 import PropTypes from "prop-types";
 import { FullScreenLoader } from "../App";
-import MapView from "../components/maps/MapView";
+import MapView from "../components/maps/TrackingMap";
 
 // Lazy load components - Auth
 const SignIn = lazy(() => import("../features/Auth/signIn/signIn"));
