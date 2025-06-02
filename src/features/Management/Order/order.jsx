@@ -14,6 +14,9 @@ import {
 } from "../../../api/order.js";
 
 import { getAllPersonDelivery } from "../../../api/deliveryperson.js";
+import { getAllUsers } from "../../../api/user.js";
+import { getCityById } from "../../../api/city.js";
+import { getAllProductWarehouses } from "../../../api/productwarehouse.js";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,6 +27,7 @@ const ORDERS_PER_PAGE = 5;
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [personsDelivery, setPersonsDelivery] = useState([]);
+  const [guestUsers, setGuestUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -31,58 +35,64 @@ const Orders = () => {
   const [deleteOrder, setDeleteOrder] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Carga inicial combinada: personas de entrega y órdenes
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         setLoading(true);
-        const [deliveryPersons, ordersRes] = await Promise.all([
+
+        const [deliveryPersons, ordersRes, allUsers] = await Promise.all([
           getAllPersonDelivery(),
           getAllOrders(),
+          getAllUsers(),
         ]);
+
+        const GUEST_ROLE_ID = import.meta.env.VITE_GUEST_ID;
+        const guests = allUsers.filter((user) => user.roleId === GUEST_ROLE_ID);
+        setGuestUsers(guests);
         setPersonsDelivery(deliveryPersons);
 
         const mappedOrders = ordersRes.map((order) => {
           const person = deliveryPersons.find((p) => p.id === order.deliveryId);
-
-          // Formatear fecha estimada para visualización
-          const formattedEstimatedDelivery = new Date(
-            order.estimatedDeliveryTime
-          )
+          const customer = allUsers.find((u) => u.id === order.customerId);
+          const formattedEstimatedDelivery = new Date(order.estimatedDeliveryTime)
             .toISOString()
-            .slice(0, 10); // YYYY-MM-DD
+            .slice(0, 10);
 
           return {
             ...order,
             deliveryPersonName: person ? person.name : "Unknown delivery",
+            customerName: customer ? customer.name : "Unknown customer",
             estimatedDeliveryTime: formattedEstimatedDelivery,
           };
         });
 
         setOrders(mappedOrders);
       } catch (error) {
-        toast.error("Error fetching orders or delivery persons");
+        toast.error("Error fetching data");
         console.error(error);
       } finally {
         setLoading(false);
       }
     };
+
     fetchInitialData();
   }, []);
 
-  // Refrescar sólo las órdenes usando personas ya cargadas
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const ordersRes = await getAllOrders();
+      const allUsers = guestUsers; // guestUsers ya está filtrado
       const mappedOrders = ordersRes.map((order) => {
         const person = personsDelivery.find((p) => p.id === order.deliveryId);
+        const customer = allUsers.find((u) => u.id === order.customerId);
         const formattedEstimatedDelivery = new Date(order.estimatedDeliveryTime)
           .toISOString()
           .slice(0, 10);
         return {
           ...order,
           deliveryPersonName: person ? person.name : "Unknown delivery",
+          customerName: customer ? customer.name : "Unknown customer",
           estimatedDeliveryTime: formattedEstimatedDelivery,
         };
       });
@@ -157,9 +167,7 @@ const Orders = () => {
     }
   };
 
-  if (loading) {
-    return <FullScreenLoader />;
-  }
+  if (loading) return <FullScreenLoader />;
 
   return (
     <div className="personDelivery-container">
@@ -192,6 +200,7 @@ const Orders = () => {
             <tr>
               <th>ID</th>
               <th>Customer ID</th>
+              <th>Customer Name</th>
               <th>Delivery Person</th>
               <th>Status</th>
               <th>Delivery Address</th>
@@ -207,32 +216,22 @@ const Orders = () => {
                 <tr key={o.id}>
                   <td>{o.id}</td>
                   <td>{o.customerId}</td>
+                  <td>{o.customerName}</td>
                   <td>{o.deliveryPersonName}</td>
                   <td>{o.status}</td>
                   <td>{o.deliveryAddress}</td>
                   <td>{new Date(o.creationDate).toLocaleDateString()}</td>
-                  <td>
-                    {new Date(o.estimatedDeliveryTime).toLocaleDateString()}
-                  </td>
+                  <td>{new Date(o.estimatedDeliveryTime).toLocaleDateString()}</td>
                   <td>${o.totalAmount.toFixed(2)}</td>
                   <td>
-                    <FaEdit
-                      onClick={() => setEditOrder(o)}
-                      className="edit-btn"
-                    />
-                    <FaTrash
-                      onClick={() => setDeleteOrder(o)}
-                      className="delete-btn"
-                    />
+                    <FaEdit onClick={() => setEditOrder(o)} className="edit-btn" />
+                    <FaTrash onClick={() => setDeleteOrder(o)} className="delete-btn" />
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td
-                  colSpan="9"
-                  style={{ textAlign: "center", padding: "1rem" }}
-                >
+                <td colSpan="10" style={{ textAlign: "center", padding: "1rem" }}>
                   No orders found.
                 </td>
               </tr>
@@ -266,9 +265,12 @@ const Orders = () => {
           onClose={() => setShowCreateModal(false)}
           onCreate={handleCreate}
           loading={loading}
-          personsDelivery={personsDelivery}
+          guestUsers={guestUsers}
+          getCityById={getCityById}
+          getAllProductWarehouses={getAllProductWarehouses}
         />
       )}
+
       {editOrder && (
         <EditOrderModal
           order={editOrder}
@@ -278,6 +280,7 @@ const Orders = () => {
           personsDelivery={personsDelivery}
         />
       )}
+
       {deleteOrder && (
         <DeleteOrderModal
           order={deleteOrder}

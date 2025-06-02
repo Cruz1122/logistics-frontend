@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./signUp.css";
 import formImage from "../../../assets/backgrounds/form.webp";
 import { Link, useNavigate } from "react-router-dom";
 import { signUpRequest } from "../../../api/auth";
+import { getAllCities } from "../../../api/city"; // Asegúrate de tener esta función
 import { toast } from "react-toastify";
 
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -16,9 +19,21 @@ const SignUp = () => {
     phone: "",
     code: "",
     password: "",
+    cityId: "",
   });
 
-  const [error, setError] = useState("");
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const data = await getAllCities();
+        setCities(data.sort((a, b) => a.name.localeCompare(b.name)));
+      } catch (err) {
+        toast.error("Error loading cities");
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,15 +62,13 @@ const SignUp = () => {
         email: form.email,
         phone: fullPhone,
         password: form.password,
+        cityId: form.cityId,
       };
 
-      // Hacemos la solicitud de registro
       await signUpRequest(payload);
 
-      // Mostramos un mensaje de éxito
       toast.success("Account created successfully!");
 
-      // Redirigimos a la página de verificación de correo
       navigate("/verify-email", {
         state: { email: form.email, fromFlow: true },
       });
@@ -126,14 +139,6 @@ const SignUp = () => {
                   Code
                 </option>
                 <option value="+57">🇨🇴 +57</option>
-                <option value="+1">🇺🇸 +1</option>
-                <option value="+44">🇬🇧 +44</option>
-                <option value="+33">🇫🇷 +33</option>
-                <option value="+49">🇩🇪 +49</option>
-                <option value="+34">🇪🇸 +34</option>
-                <option value="+55">🇧🇷 +55</option>
-                <option value="+91">🇮🇳 +91</option>
-                <option value="+81">🇯🇵 +81</option>
               </select>
 
               <input
@@ -158,6 +163,22 @@ const SignUp = () => {
               pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}"
               title="Min 6 characters with uppercase, lowercase, number and special character"
             />
+
+            <select
+              name="cityId"
+              value={form.cityId}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled hidden>
+                Select City
+              </option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
+            </select>
 
             <button type="submit" disabled={loading} className="signup-button">
               {loading ? "Signing Up..." : "Sign Up"}
