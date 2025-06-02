@@ -14,6 +14,7 @@ import {
 } from "@ant-design/icons";
 import { getAllDeliveries, getAllOrders, getAllWarehouses } from "../../../api/location";
 import { useNavigate } from "react-router-dom";
+import { downloadReport } from "../../../api/report";
 
 const DeliveryManager = () => {
   const navigate = useNavigate();
@@ -72,6 +73,7 @@ const DeliveryManager = () => {
   };
 
   const toggleActive = async (idUser, currentIsActive) => {
+    setTrackingDelivery(true);
     try {
       const userData = await getUserByID(idUser);
       userData.isActive = !currentIsActive;
@@ -89,6 +91,8 @@ const DeliveryManager = () => {
     } catch (error) {
       console.error("Error actualizando el estado del usuario:", error);
       toast.error("Error al actualizar estado del usuario");
+    } finally {
+      setTrackingDelivery(false);
     }
   };
 
@@ -127,6 +131,22 @@ const DeliveryManager = () => {
     }
   };
   
+  const handleReportClick = async (idUser) => {
+    if (!idUser) {
+      toast.error("No se pudo obtener el ID del usuario para el reporte");
+      return;
+    }
+    setTrackingDelivery(true);
+    try {
+      await downloadReport(idUser);
+      toast.success("Reporte descargado correctamente");
+    } catch (error) {
+      toast.error("Error al descargar el reporte");
+      console.error("Error downloading report:", error);
+    } finally {
+      setTrackingDelivery(false);
+    }
+  };
 
   const filteredCities = filterState
     ? [
@@ -239,7 +259,6 @@ const DeliveryManager = () => {
           <thead>
             <tr>
               <th>Id</th>
-              <th>IdUser</th>
               <th>Name</th>
               <th>Phone</th>
               <th>City</th>
@@ -254,8 +273,7 @@ const DeliveryManager = () => {
             {currentDeliveries.length > 0 ? (
               currentDeliveries.map((d) => (
                 <tr key={d.id}>
-                  <td>{d.id}</td>
-                  <td>{d.idUser}</td>
+                  <td>{String(d.id).length > 8 ? String(d.id).slice(0, 8) + "..." : d.id}</td>
                   <td>
                     <UserOutlined /> {d.name}
                   </td>
@@ -294,6 +312,13 @@ const DeliveryManager = () => {
                         onClick={() => handleTrackClick(d.id)}
                       >
                         Track
+                      </button>
+                      <button
+                        className="action-btn report-btn"
+                        disabled={trackingDelivery}
+                        onClick={() => handleReportClick(d.id)}
+                      >
+                        Download report
                       </button>
                     </div>
                   </td>

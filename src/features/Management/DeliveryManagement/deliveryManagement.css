@@ -245,6 +245,14 @@ h2.delivery-title {
   transform: scale(1.05);
 }
 
+.report-btn {
+  background: linear-gradient(90deg, #f54747 0%, #c30000 100%);
+  color: white;
+}
+.report-btn:hover {
+  transform: scale(1.05);
+}
+
 .badge-status {
   display: inline-flex;
   align-items: center;
