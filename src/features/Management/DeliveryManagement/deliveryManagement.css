@@ -253,6 +253,28 @@ h2.delivery-title {
   transform: scale(1.05);
 }
 
+.pdf-button {
+  background: linear-gradient(90deg, #f54747 0%, #c30000 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, background-position 0.5s ease;
+}
+
+.excel-button {
+  background: linear-gradient(to right, #37d05b, #218838);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease, background-position 0.5s ease;
+}
+
 .badge-status {
   display: inline-flex;
   align-items: center;
@@ -332,7 +354,7 @@ h2.delivery-title {
   text-align: center;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   max-width: 90%;
-  width: 400px;
+  width: 500px;
 }
 
 .modal-content h3 {
@@ -347,18 +369,6 @@ h2.delivery-title {
   justify-content: center;
   gap: 1rem;
   flex-wrap: wrap;
-}
-
-.modal-buttons button {
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.3s ease;
 }
 
 .modal-buttons button:hover {
@@ -383,7 +393,7 @@ h2.delivery-title {
 }
 
 .cancel-btn {
-  background: linear-gradient(90deg, #f54747 0%, #c30000 100%);
+  background: linear-gradient(90deg, #a7a7a7 0%, #545454 100%);
   color: white;
   padding: 12px 20px;
   border-radius: 8px;

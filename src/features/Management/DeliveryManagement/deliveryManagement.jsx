@@ -11,6 +11,8 @@ import {
   CloseCircleOutlined,
   UserOutlined,
   SearchOutlined,
+  FilePdfOutlined,
+  FileExcelOutlined,
 } from "@ant-design/icons";
 import {
   getAllDeliveries,
@@ -212,7 +214,7 @@ const DeliveryManager = () => {
   if (loading) return <FullScreenLoader />;
 
   return (
-    <div className="delivery-manager">
+    <div className="delivery-manager" style={{ marginLeft: "2rem" }}>
       <h2 className="delivery-title">Delivery Personnel</h2>
 
       <div className="delivery-controls">
@@ -308,12 +310,12 @@ const DeliveryManager = () => {
                     {d.isActive ? (
                       <span className="badge-status active">
                         <CheckCircleOutlined className="icons" />
-                        Activo
+                        Active
                       </span>
                     ) : (
                       <span className="badge-status inactive">
                         <CloseCircleOutlined className="icons" />
-                        Inactivo
+                        Inactive
                       </span>
                     )}
                   </td>
@@ -385,15 +387,19 @@ const DeliveryManager = () => {
             <h3>Select the report format</h3>
             <div className="modal-buttons">
               <button
+                className="pdf-button"
                 onClick={() => handleDownloadReport("pdf")}
                 disabled={downloadingFormat !== ""}
               >
+                <FilePdfOutlined style={{ marginRight: "1rem" }} />
                 {downloadingFormat === "pdf" ? "Downloading..." : "PDF"}
               </button>
               <button
+                className="excel-button"
                 onClick={() => handleDownloadReport("excel")}
                 disabled={downloadingFormat !== ""}
               >
+                <FileExcelOutlined style={{ marginRight: "1rem" }} />
                 {downloadingFormat === "excel" ? "Downloading..." : "Excel"}
               </button>
             </div>
