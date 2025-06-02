@@ -20,25 +20,29 @@ import { FullScreenLoader } from "../../App";
 
 const { Title, Text } = Typography;
 
+// Map container style
 const containerStyle = {
   width: "100%",
   height: "82.4vh",
 };
 
+// Default center for the map ~ Bogotá, Colombia
 const defaultCenter = {
   lat: 4.65,
   lng: -74.05,
 };
 
+// Google Maps API key and backend gateway URL from environment variables
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL || "https://logistics-backend-n3be.onrender.com";
 
 const MapView = () => {
-  const { deliveryId } = useParams();
-  const location = useLocation();
-  const addressCoordinates = location.state?.addressCoordinates;
-  const latestLocation = location.state?.latestLocation;
+  const { deliveryId } = useParams(); // Get the deliveryId from the URL parameters
+  const location = useLocation(); // Get the current location state
+  const addressCoordinates = location.state?.addressCoordinates; // Coordinates of the delivery address
+  const latestLocation = location.state?.latestLocation; // Latest known location of the delivery person
 
+  // State to manage the marker position, directions, route info, and map options
   const [markerPosition, setMarkerPosition] = useState(latestLocation || defaultCenter);
   const [directions, setDirections] = useState(null);
   const [routeInfo, setRouteInfo] = useState(null);
@@ -52,42 +56,47 @@ const MapView = () => {
     fullscreenControl: false,
   });
 
+  // Reference to the map and socket client
   const mapRef = useRef(null);
   const socketRef = useRef(null);
 
-  // Inicializa WebSocket y escucha ubicación delivery
+  // Effect to initialize the WebSocket connection and listen for location updates
   useEffect(() => {
     if (!deliveryId) return;
 
+    // Initialize the WebSocket client
     const socketClient = io(GATEWAY_URL, {
       path: "/geo/socket.io",
       transports: ["websocket"],
     });
     socketRef.current = socketClient;
 
+    // Set up event listeners for the WebSocket connection
     socketClient.on("connect", () => {
       socketClient.emit("subscribe", { deliveryPersonId: deliveryId });
     });
 
+    // Listen for location updates from the WebSocket
     socketClient.on("locationUpdate", (data) => {
       const [lng, lat] = data.location.coordinates;
       setMarkerPosition({ lat, lng });
     });
 
     socketClient.on("disconnect", () => {
-      console.log("Desconectado del WebSocket");
+      console.log("Disconnected from WebSocket server");
     });
 
     socketClient.on("connect_error", (error) => {
-      console.error("Error de conexión WebSocket:", error);
+      console.error("WebSocket connection error:", error);
     });
 
+    // Clean up the WebSocket connection on component unmount
     return () => {
       socketClient.disconnect();
     };
   }, [deliveryId]);
 
-  // Callback cuando DirectionsService calcula ruta
+  // Callback function to handle directions response
   const directionsCallback = (response) => {
     if (response !== null) {
       if (response.status === "OK") {
@@ -100,19 +109,19 @@ const MapView = () => {
           destination: leg.end_address,
         });
       } else {
-        console.error("Error al calcular ruta:", response);
+        console.error("Error calculating directions:", response);
       }
     }
   };
 
-  // Cuando el mapa carga, seteamos opciones que requieren window.google.maps.*
+  // When the map loads, we set options that require window.google.maps.*
   const onLoad = (map) => {
     mapRef.current = map;
     if (!mapLoaded) {
       map.panTo(markerPosition || defaultCenter);
       setMapLoaded(true);
 
-      // Ahora sí podemos acceder a window.google.maps
+      // Now we can access window.google.maps
       setMapOptions({
         draggable: true,
         zoomControl: true,
@@ -135,9 +144,12 @@ const MapView = () => {
     }
   };
 
+  // If markerPosition or addressCoordinates are not set, show a loading screen
+  // This ensures that the map does not render until we have the necessary data
   if (!markerPosition || !addressCoordinates)
     return <FullScreenLoader/>;
 
+  // Render the Google Map with DirectionsService and DirectionsRenderer
   return (
     <div style={{ position: "relative", width: "100%", height: "82.4vh" }}>
       <LoadScript
@@ -164,7 +176,7 @@ const MapView = () => {
           )}
         </GoogleMap>
       </LoadScript>
-
+      
       {routeInfo && (
         <Card
           style={{

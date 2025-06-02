@@ -4,6 +4,7 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
+// Function to get all orders coordinates
 export const getAllOrders = async () => {
     try {
         const token = localStorage.getItem("token");
@@ -17,6 +18,7 @@ export const getAllOrders = async () => {
     }
 };
 
+// Function to get all warehouses coordinates
 export const getAllWarehouses = async () => {
     try {
         const token = localStorage.getItem("token");
@@ -30,6 +32,7 @@ export const getAllWarehouses = async () => {
     }
 };
 
+// Function to get all deliveries coordinates
 export const getAllDeliveries = async () => {
     try {
         const token = localStorage.getItem("token");
