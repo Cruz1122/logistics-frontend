@@ -4,18 +4,17 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
-
 /**
- * Obtiene todas las personas de entrega.
- * Envia: Header con token JWT.
- * Recibe: Array de objetos persona de entrega.
- * Ejemplo:
+ * Gets all delivery persons.
+ * Sends: Header with JWT token.
+ * Receives: Array of delivery person objects.
+ * Example:
  * [
  *   {
  *     id: "dp123",
  *     name: "Juan Pérez",
  *     idUser: "user123",
- *     ... (otros campos)
+ *     ... (other fields)
  *   },
  *   ...
  * ]
@@ -33,7 +32,7 @@ export const getAllPersonDelivery = async () => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllPersonDeliveries:",
+      "Error in getAllPersonDeliveries:",
       error.response?.data || error.message
     );
     return [];
@@ -41,20 +40,20 @@ export const getAllPersonDelivery = async () => {
 };
 
 /**
- * Crea una nueva persona de entrega.
- * Envia:
+ * Creates a new delivery person.
+ * Sends:
  * {
  *   fullName: string,
  *   phone: string,
  *   email: string
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
  *   idUser: string,
- *   ... (otros campos),
+ *   ... (other fields),
  * }
  */
 export const createPersonDelivery = async (personDeliveryData) => {
@@ -74,7 +73,7 @@ export const createPersonDelivery = async (personDeliveryData) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createPersonDelivery:",
+      "Error in createPersonDelivery:",
       error.response?.data || error.message
     );
     throw error;
@@ -82,21 +81,21 @@ export const createPersonDelivery = async (personDeliveryData) => {
 };
 
 /**
- * Actualiza una persona de entrega existente por ID.
- * Envia:
- *   id: string (en URL),
+ * Updates an existing delivery person by ID.
+ * Sends:
+ *   id: string (in URL),
  *   body: {
  *     name?: string,
  *     idUser?: string,
- *     ... // otros campos opcionales
+ *     ... // other optional fields
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
  *   idUser: string,
- *  ... // otros campos actualizados
+ *   ... // other updated fields
  * }
  */
 export const updatePersonDelivery = async (id, personDeliveryData) => {
@@ -116,7 +115,7 @@ export const updatePersonDelivery = async (id, personDeliveryData) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updatePersonDelivery:",
+      "Error in updatePersonDelivery:",
       error.response?.data || error.message
     );
     throw error;
@@ -124,11 +123,11 @@ export const updatePersonDelivery = async (id, personDeliveryData) => {
 };
 
 /**
- * Elimina una persona de entrega por ID.
- * Envia:
- *   id: string (en URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Deletes a delivery person by ID.
+ * Sends:
+ *   id: string (in URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -146,7 +145,7 @@ export const deletePersonDelivery = async (id) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deletePersonDelivery:",
+      "Error in deletePersonDelivery:",
       error.response?.data || error.message
     );
     throw error;

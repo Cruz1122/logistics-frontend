@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todos los productos de las órdenes.
- * Envia: Header con token JWT.
- * Recibe: Array de productos por orden, cada uno con la siguiente estructura:
+ * Get all order products.
+ * Sends: Header with JWT token.
+ * Receives: Array of products per order, each with the following structure:
  * [
  *   {
  *     id: string,
@@ -23,17 +23,15 @@ const API_URL =
 export const getAllOrderProducts = async () => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.get(`${API_URL}/orders/order-products/`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllOrderProducts:",
+      "Error in getAllOrderProducts:",
       error.response?.data || error.message
     );
     return [];
@@ -41,35 +39,33 @@ export const getAllOrderProducts = async () => {
 };
 
 /**
- * Crear un nuevo producto para una orden.
- * Envia en el body:
+ * Create a new product for an order.
+ * Sends in the body:
  * {
  *   orderId: string,
  *   productId: string,
  *   quantity: number,
  *   unitPrice: number
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
- *   ...todos los campos enviados
+ *   ...all sent fields
  * }
  */
 export const createOrderProduct = async (orderProductData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.post(`${API_URL}/orders/order-products/`, orderProductData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createOrderProduct:",
+      "Error in createOrderProduct:",
       error.response?.data || error.message
     );
     throw error;
@@ -77,36 +73,34 @@ export const createOrderProduct = async (orderProductData) => {
 };
 
 /**
- * Actualiza un producto de una orden existente.
- * Envia:
- *   id: string (en la URL),
+ * Update a product of an existing order.
+ * Sends:
+ *   id: string (in the URL),
  *   body: {
  *     orderId?: string,
  *     productId?: string,
  *     quantity?: number,
  *     unitPrice?: number
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
- *   ...campos actualizados
+ *   ...updated fields
  * }
  */
 export const updateOrderProduct = async (id, orderProductData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.put(`${API_URL}/orders/order-products/${id}`, orderProductData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updateOrderProduct:",
+      "Error in updateOrderProduct:",
       error.response?.data || error.message
     );
     throw error;
@@ -114,11 +108,11 @@ export const updateOrderProduct = async (id, orderProductData) => {
 };
 
 /**
- * Elimina un producto de una orden por su ID.
- * Envia:
- *   id: string (en la URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Delete a product from an order by its ID.
+ * Sends:
+ *   id: string (in the URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -126,17 +120,15 @@ export const updateOrderProduct = async (id, orderProductData) => {
 export const deleteOrderProduct = async (id) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.delete(`${API_URL}/orders/order-products/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deleteOrderProduct:",
+      "Error in deleteOrderProduct:",
       error.response?.data || error.message
     );
     throw error;

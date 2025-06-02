@@ -5,38 +5,33 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
-
-/**
- * Obtiene el email del usuario autenticado.
- * Envia: token JWT en el header.
- * Recibe: { email: string }
- */
+// Gets the authenticated user's email.
+// Sends: JWT token in the header.
+// Receives: { email: string }
 export const getUserEmail = async () => {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
   try {
     const decoded = jwtDecode(token);
-    const userId = decoded.userId; // Extraemos el userId del token
+    const userId = decoded.userId; // Extract userId from token
 
     const response = await axios.get(`${API_URL}/auth/users/${userId}`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Enviamos el token en el header
+        Authorization: `Bearer ${token}`, // Send token in header
       },
     });
 
     return response.data.email || null;
   } catch (err) {
-    console.error("Error obteniendo el email del usuario:", err);
+    console.error("Error getting user email:", err);
     return null;
   }
 };
 
-/**
- * Extrae el roleId del token almacenado.
- * Envia: token JWT en localStorage.
- * Recibe: string | null
- */
+// Extracts the roleId from the stored token.
+// Sends: JWT token in localStorage.
+// Receives: string | null
 export const getUserRolId = () => {
   const token = localStorage.getItem("token");
   if (!token) return null;
@@ -45,29 +40,27 @@ export const getUserRolId = () => {
     const decoded = jwtDecode(token);
     return decoded.roleId || null; 
   } catch (err) {
-    console.error("Token inválido:", err);
+    console.error("Invalid token:", err);
     return null;
   }
 };
 
-/**
- * Crea un nuevo usuario.
- * Envia:
- * {
- *   name: string,
- *   email: string,
- *   password: string,
- *   phone: string,
- *   roleId: string,
- *   cityId: string,
- *   ... // otros campos necesarios
- * }
- * Recibe:
- * {
- *   message: string,
- *   user: { id, email, ... }
- * }
- */
+// Creates a new user.
+// Sends:
+// {
+//   name: string,
+//   email: string,
+//   password: string,
+//   phone: string,
+//   roleId: string,
+//   cityId: string,
+//   ... // other required fields
+// }
+// Receives:
+// {
+//   message: string,
+//   user: { id, email, ... }
+// }
 export const signUpRequest = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}/auth/auth/signup`, userData);
@@ -77,11 +70,9 @@ export const signUpRequest = async (userData) => {
   }
 };
 
-/**
- * Reenvía el código de autenticación 2FA.
- * Envia: { email: string, method: "sms" | "email" }
- * Recibe: { message: string }
- */
+// Resends the 2FA authentication code.
+// Sends: { email: string, method: "sms" | "email" }
+// Receives: { message: string }
 export const resendTwoFA = async (email, method) => {
   try {
     const response = await axios.post(`${API_URL}/auth/auth/resend-two-factor`, { email, method });
@@ -91,11 +82,9 @@ export const resendTwoFA = async (email, method) => {
   }
 };
 
-/**
- * Inicia sesión con email y password.
- * Envia: { email: string, password: string }
- * Recibe: { message: string, method: "sms" | "email" }
- */
+// Signs in with email and password.
+// Sends: { email: string, password: string }
+// Receives: { message: string, method: "sms" | "email" }
 export const signInRequest = async (loginData) => {
   try {
     const response = await axios.post(`${API_URL}/auth/auth/signin`, loginData);
@@ -105,12 +94,10 @@ export const signInRequest = async (loginData) => {
   }
 };
 
-/**
- * Verifica el código de autenticación 2FA.
- * Envia: { email: string, code: string }
- * Recibe: { token: string, user: { id, email, ... } }
- * Guarda el token en localStorage si es válido.
- */
+// Verifies the 2FA authentication code.
+// Sends: { email: string, code: string }
+// Receives: { token: string, user: { id, email, ... } }
+// Stores the token in localStorage if valid.
 export const verifyCodeRequest = async ({ email, code }) => {
   try {
     const response = await axios.post(`${API_URL}/auth/auth/verify-two-factor`, {
@@ -128,11 +115,9 @@ export const verifyCodeRequest = async ({ email, code }) => {
   }
 };
 
-/**
- * Verifica el email del usuario con un código.
- * Envia: { email: string, code: string }
- * Recibe: { message: string }
- */
+// Verifies the user's email with a code.
+// Sends: { email: string, code: string }
+// Receives: { message: string }
 export const verifyEmailRequest = async ({ email, code }) => {
   const response = await axios.post(`${API_URL}/auth/auth/verify-email`, {
     email,
@@ -141,11 +126,9 @@ export const verifyEmailRequest = async ({ email, code }) => {
   return response.data;
 };
 
-/**
- * Solicita código para restablecer contraseña.
- * Envia: { email: string }
- * Recibe: { message: string }
- */
+// Requests a code to reset password.
+// Sends: { email: string }
+// Receives: { message: string }
 export const forgotPasswordRequest = async ({ email }) => {
   const response = await axios.post(`${API_URL}/auth/auth/request-password-reset`, {
     email
@@ -153,11 +136,9 @@ export const forgotPasswordRequest = async ({ email }) => {
   return response.data;
 };
 
-/**
- * Verifica código y cambia la contraseña.
- * Envia: { email: string, code: string, newPassword: string }
- * Recibe: { message: string }
- */
+// Verifies code and changes the password.
+// Sends: { email: string, code: string, newPassword: string }
+// Receives: { message: string }
 export const verifyCodeAndUpdatePassword = async ({ email, code, newPassword }) => {
   const response = await axios.post(`${API_URL}/auth/auth/reset-password`, {
     email,
@@ -167,11 +148,9 @@ export const verifyCodeAndUpdatePassword = async ({ email, code, newPassword }) 
   return response.data;
 };
 
-/**
- * Obtiene los datos de un usuario por ID.
- * Envia: id de usuario
- * Recibe: { id, email, name, roleId, ... }
- */
+// Gets user data by ID.
+// Sends: user ID
+// Receives: { id, email, name, roleId, ... }
 export const getUserRequest = async (userId) => {
   try {
     const response = await axios.get(`${API_URL}/auth/users/${userId}`);
@@ -181,17 +160,15 @@ export const getUserRequest = async (userId) => {
   }
 };
 
-/**
- * Cambia la contraseña desde la cuenta autenticada.
- * Envia:
- * {
- *   email: string,
- *   password: string,        // contraseña actual
- *   newPassword: string      // nueva contraseña
- * }
- * Header: Authorization: Bearer <token>
- * Recibe: { message: string }
- */
+// Changes the password from the authenticated account.
+// Sends:
+// {
+//   email: string,
+//   password: string,        // current password
+//   newPassword: string      // new password
+// }
+// Header: Authorization: Bearer <token>
+// Receives: { message: string }
 export const resetPasswordRequest = async ({ email, password, newPassword }) => {
   const token = localStorage.getItem("token");
   if (!token) {

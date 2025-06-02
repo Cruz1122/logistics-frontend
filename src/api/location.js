@@ -13,7 +13,7 @@ export const getAllOrders = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error en getAllOrders:", error.response?.data || error.message);
+        console.error("Error in getAllOrders:", error.response?.data || error.message);
         return [];
     }
 };
@@ -27,7 +27,7 @@ export const getAllWarehouses = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error en getAllWarehouses:", error.response?.data || error.message);
+        console.error("Error in getAllWarehouses:", error.response?.data || error.message);
         return [];
     }
 };
@@ -41,7 +41,7 @@ export const getAllDeliveries = async () => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error en getAllDeliveries:", error.response?.data || error.message);
+        console.error("Error in getAllDeliveries:", error.response?.data || error.message);
         return [];
     }
 };

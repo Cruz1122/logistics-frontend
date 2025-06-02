@@ -6,8 +6,8 @@ const API_URL =
 
 
 /**
- * Obtener todos los ProductWarehouses.
- * Retorna un array de objetos con los campos:
+ * Get all ProductWarehouses.
+ * Returns an array of objects with the fields:
  * id, productId, warehouseId, stockQuantity, reorderLevel,
  * lastRestock, expirationDate, status, deletedAt
  */
@@ -19,14 +19,14 @@ export const getAllProductWarehouses = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en getAllProductWarehouses:", error.response?.data || error.message);
+    console.error("Error in getAllProductWarehouses:", error.response?.data || error.message);
     return [];
   }
 };
 
 /**
- * Crear un nuevo ProductWarehouse.
- * Espera un objeto con:
+ * Create a new ProductWarehouse.
+ * Expects an object with:
  * {
  *   productId: string,
  *   warehouseId: string,
@@ -46,14 +46,14 @@ export const createProductWarehouse = async (productWarehouseData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en createProductWarehouse:", error.response?.data || error.message);
+    console.error("Error in createProductWarehouse:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Actualizar un ProductWarehouse existente por ID.
- * Puede enviar campos parciales para actualizar.
+ * Update an existing ProductWarehouse by ID.
+ * You can send partial fields to update.
  */
 export const updateProductWarehouse = async (id, productWarehouseData) => {
   try {
@@ -63,13 +63,13 @@ export const updateProductWarehouse = async (id, productWarehouseData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en updateProductWarehouse:", error.response?.data || error.message);
+    console.error("Error in updateProductWarehouse:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Eliminar un ProductWarehouse por ID.
+ * Delete a ProductWarehouse by ID.
  */
 export const deleteProductWarehouse = async (id) => {
   try {
@@ -79,7 +79,7 @@ export const deleteProductWarehouse = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en deleteProductWarehouse:", error.response?.data || error.message);
+    console.error("Error in deleteProductWarehouse:", error.response?.data || error.message);
     throw error;
   }
 };

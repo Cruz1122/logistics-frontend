@@ -7,8 +7,8 @@ const API_URL =
 
 
 /**
- * Extrae el userId del token JWT almacenado en localStorage.
- * Retorna el userId (string) o null si no hay token o es inválido.
+ * Extracts the userId from the JWT token stored in localStorage.
+ * Returns the userId (string) or null if there is no token or it is invalid.
  */
 export const getUserIdFromToken = () => {
   const token = localStorage.getItem("token");
@@ -19,15 +19,15 @@ export const getUserIdFromToken = () => {
     const decoded = jwtDecode(token);
     return decoded.userId || null; 
   } catch (err) {
-    console.error("Token inválido:", err);
+    console.error("Invalid token:", err);
     return null;
   }
 };
 
 /**
- * Obtiene el estado activo (isActive) del usuario por userId.
- * Envia: header con token.
- * Recibe: objeto con campo isActive: boolean.
+ * Gets the active status (isActive) of the user by userId.
+ * Sends: header with token.
+ * Receives: object with field isActive: boolean.
  */
 export const getUserStatus = async () => {
   const userId = getUserIdFromToken();
@@ -42,15 +42,15 @@ export const getUserStatus = async () => {
 
     return response.data.isActive;
   } catch (error) {
-    console.error("Error en getUserStatus:", error.response?.data || error.message);
+    console.error("Error in getUserStatus:", error.response?.data || error.message);
     return false;
   }
 };
 
 /**
- * Obtiene todos los usuarios.
- * Envia: header con token.
- * Recibe: array de usuarios con campos:
+ * Gets all users.
+ * Sends: header with token.
+ * Receives: array of users with fields:
  * {
  *   id: string,
  *   roleId: string,
@@ -74,15 +74,15 @@ export const getAllUsers = async () => {
 
     return response.data;
   } catch (error) {
-    console.error("Error en getAllUsers:", error.response?.data || error.message);
+    console.error("Error in getAllUsers:", error.response?.data || error.message);
     return [];
   }
 };
 
 /**
- * Obtiene los permisos asignados a un usuario.
- * Envia: header con token.
- * Recibe: objeto con campo permissions: array de permisos (strings o ids).
+ * Gets the permissions assigned to a user.
+ * Sends: header with token.
+ * Receives: object with field permissions: array of permissions (strings or ids).
  */
 export const getUserPermissions = async (userId) => {
   try {
@@ -102,8 +102,8 @@ export const getUserPermissions = async (userId) => {
 };
 
 /**
- * Actualiza un usuario por id.
- * Envia: header con token y body con campos a actualizar:
+ * Updates a user by id.
+ * Sends: header with token and body with fields to update:
  * {
  *   name: string,
  *   lastName: string,
@@ -111,7 +111,7 @@ export const getUserPermissions = async (userId) => {
  *   roleId: string,
  *   isActive: boolean
  * }
- * Recibe: objeto con usuario actualizado.
+ * Receives: object with updated user.
  */
 export const updateUser = async (userId, updatedData) => {
   try {
@@ -135,15 +135,15 @@ export const updateUser = async (userId, updatedData) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error al actualizar usuario:", error.response?.data || error.message);
+    console.error("Error updating user:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Elimina un usuario por id.
- * Envia: header con token.
- * Recibe: objeto con confirmación.
+ * Deletes a user by id.
+ * Sends: header with token.
+ * Receives: object with confirmation.
  */
 export const deleteUser = async (userId) => {
   try {
@@ -162,8 +162,8 @@ export const deleteUser = async (userId) => {
 };
 
 /**
- * Crea un nuevo usuario.
- * Envia: header con token y body con:
+ * Creates a new user.
+ * Sends: header with token and body with:
  * {
  *   name: string,
  *   lastName: string,
@@ -172,7 +172,7 @@ export const deleteUser = async (userId) => {
  *   phone: string,
  *   roleId: string
  * }
- * Recibe: objeto con usuario creado:
+ * Receives: object with created user:
  * {
  *   id: string,
  *   roleId: string,
@@ -206,15 +206,15 @@ export const createUser = async (userData) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error al crear usuario:", error.response?.data || error.message);
+    console.error("Error creating user:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Obtiene un usuario por id.
- * Envia: header con token.
- * Recibe: objeto usuario con campos:
+ * Gets a user by id.
+ * Sends: header with token.
+ * Receives: user object with fields:
  * {
  *   id: string,
  *   roleId: string,
@@ -237,15 +237,15 @@ export const getUserByID = async (userId) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error al obtener usuario:", error.response?.data || error.message);
+    console.error("Error getting user:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Obtiene el deliveryId asociado a un userId (repartidor).
- * Envia: header con token.
- * Recibe: objeto con deliveryId u otros datos relacionados.
+ * Gets the deliveryId associated with a userId (delivery person).
+ * Sends: header with token.
+ * Receives: object with deliveryId or other related data.
  */
 export const getDeliveryId = async (userId) => {
   try {
@@ -259,7 +259,7 @@ export const getDeliveryId = async (userId) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error al obtener el ID de entrega:", error.response?.data || error.message);
+    console.error("Error getting delivery ID:", error.response?.data || error.message);
     throw error;
   }
 };

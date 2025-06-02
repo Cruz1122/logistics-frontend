@@ -20,7 +20,7 @@ export const downloadReport = async (deliveryId) => {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `reporte_${deliveryId}.pdf`);
+    link.setAttribute("download", `report_${deliveryId}.pdf`);
     document.body.appendChild(link);
     link.click();
   } catch (error) {

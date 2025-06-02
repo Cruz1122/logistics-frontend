@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todas las órdenes.
- * Envia: Header con token JWT.
- * Recibe: Array de órdenes, cada una con la siguiente estructura:
+ * Function to get all orders
+ * Sends: Header with JWT token.
+ * Receives: Array of orders, each with the following structure:
  * [
  *   {
  *     id: string,
@@ -37,7 +37,7 @@ export const getAllOrders = async () => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllOrders:",
+      "Error in getAllOrders:",
       error.response?.data || error.message
     );
     return [];
@@ -45,23 +45,23 @@ export const getAllOrders = async () => {
 };
 
 /**
- * Crear una nueva orden.
- * Envia en el body:
+ * Function to create a new order
+ * Sends in the body:
  * {
  *   customerId: string,
  *   delivery_id: string,
- *   status: string, // Ejemplo: "PENDING"
+ *   status: string, // Example: "PENDING"
  *   deliveryAddress: string,
  *   creationDate: string (ISO),
  *   estimatedDeliveryTime: string (ISO),
  *   totalAmount: number,
  *   trackingCode: string
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
- *   ...todos los campos enviados
+ *   ...all sent fields
  * }
  */
 export const createOrder = async (orderData) => {
@@ -77,7 +77,7 @@ export const createOrder = async (orderData) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createOrder:",
+      "Error in createOrder:",
       error.response?.data || error.message
     );
     throw error;
@@ -85,9 +85,9 @@ export const createOrder = async (orderData) => {
 };
 
 /**
- * Actualiza una orden existente.
- * Envia:
- *   id: string (en la URL),
+ * Function to update an existing order
+ * Sends:
+ *   id: string (in the URL),
  *   body: {
  *     customerId?: string,
  *     delivery_id?: string,
@@ -98,11 +98,11 @@ export const createOrder = async (orderData) => {
  *     totalAmount?: number,
  *     trackingCode?: string
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
- *   ...campos actualizados
+ *   ...updated fields
  * }
  */
 export const updateOrder = async (id, orderData) => {
@@ -118,7 +118,7 @@ export const updateOrder = async (id, orderData) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updateOrder:",
+      "Error in updateOrder:",
       error.response?.data || error.message
     );
     throw error;
@@ -126,11 +126,11 @@ export const updateOrder = async (id, orderData) => {
 };
 
 /**
- * Elimina una orden por su ID.
- * Envia:
- *   id: string (en la URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Function to delete an order by its ID
+ * Sends:
+ *   id: string (in the URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -148,7 +148,7 @@ export const deleteOrder = async (id) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deleteOrder:",
+      "Error in deleteOrder:",
       error.response?.data || error.message
     );
     throw error;

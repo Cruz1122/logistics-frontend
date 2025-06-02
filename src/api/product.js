@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todos los productos.
- * Envia: Header con token JWT.
- * Recibe: Array de productos con estructura:
+ * Get all products.
+ * Sends: Header with JWT token.
+ * Receives: Array of products with structure:
  * [
  *   {
  *     id: string,
@@ -34,14 +34,14 @@ export const getAllProducts = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en getAllProducts:", error.response?.data || error.message);
+    console.error("Error in getAllProducts:", error.response?.data || error.message);
     return [];
   }
 };
 
 /**
- * Crear un nuevo producto.
- * Envia en el body:
+ * Create a new product.
+ * Sends in the body:
  * {
  *   categoryId: string,
  *   name: string,
@@ -54,11 +54,11 @@ export const getAllProducts = async () => {
  *   isFragile: boolean,
  *   needsCooling: boolean
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
- *   ...otros campos enviados
+ *   ...other sent fields
  * }
  */
 export const createProduct = async (productData) => {
@@ -69,15 +69,15 @@ export const createProduct = async (productData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en createProduct:", error.response?.data || error.message);
+    console.error("Error in createProduct:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Actualizar un producto existente.
- * Envia:
- *   id: string (en la URL),
+ * Update an existing product.
+ * Sends:
+ *   id: string (in the URL),
  *   body: {
  *     categoryId?: string,
  *     name?: string,
@@ -90,11 +90,11 @@ export const createProduct = async (productData) => {
  *     isFragile?: boolean,
  *     needsCooling?: boolean
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
- *   ...campos actualizados
+ *   ...updated fields
  * }
  */
 export const updateProduct = async (id, productData) => {
@@ -105,17 +105,17 @@ export const updateProduct = async (id, productData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en updateProduct:", error.response?.data || error.message);
+    console.error("Error in updateProduct:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Eliminar un producto por su ID.
- * Envia:
- *   id: string (en la URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Delete a product by its ID.
+ * Sends:
+ *   id: string (in the URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -128,7 +128,7 @@ export const deleteProduct = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en deleteProduct:", error.response?.data || error.message);
+    console.error("Error in deleteProduct:", error.response?.data || error.message);
     throw error;
   }
 };

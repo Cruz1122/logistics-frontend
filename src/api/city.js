@@ -6,10 +6,10 @@ const API_URL =
 
 
 /**
- * Obtiene todas las ciudades registradas.
- * Envia: Header con token JWT.
- * Recibe: Array de objetos ciudad.
- * Ejemplo:
+ * Gets all registered cities.
+ * Sends: Header with JWT token.
+ * Receives: Array of city objects.
+ * Example:
  * [
  *   { id: "abc123", name: "Medellín", stateId: "123"},
  *   ...
@@ -23,20 +23,20 @@ export const getAllCities = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en getAllCities:", error.response?.data || error.message);
+    console.error("Error in getAllCities:", error.response?.data || error.message);
     return [];
   }
 };
 
 /**
- * Crea una nueva ciudad.
- * Envia:
+ * Creates a new city.
+ * Sends:
  * {
  *   name: string,
  *   stateId: string
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
@@ -51,25 +51,25 @@ export const createCity = async (cityData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en createCity:", error.response?.data || error.message);
+    console.error("Error in createCity:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Actualiza una ciudad existente por ID.
- * Envia:
- *   id: string (en URL),
+ * Updates an existing city by ID.
+ * Sends:
+ *   id: string (in URL),
  *   body: {
  *     name: string,
  *     stateId: string
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
-  *  stateId: string,
+ *   stateId: string,
  * }
  */
 export const updateCity = async (id, cityData) => {
@@ -80,17 +80,17 @@ export const updateCity = async (id, cityData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en updateCity:", error.response?.data || error.message);
+    console.error("Error in updateCity:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Elimina una ciudad por ID.
- * Envia:
- *   id: string (en URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Deletes a city by ID.
+ * Sends:
+ *   id: string (in URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -103,17 +103,17 @@ export const deleteCity = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en deleteCity:", error.response?.data || error.message);
+    console.error("Error in deleteCity:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Obtiene una ciudad por su ID.
- * Envia:
- *   id: string (en URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Gets a city by its ID.
+ * Sends:
+ *   id: string (in URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
@@ -128,7 +128,7 @@ export const getCityById = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en getCityById:", error.response?.data || error.message);
+    console.error("Error in getCityById:", error.response?.data || error.message);
     throw error;
   }
 };

@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todos los estados.
- * Envia: Header con token JWT.
- * Recibe: Array con estructura:
+ * Get all states.
+ * Sends: Header with JWT token.
+ * Receives: Array with structure:
  * [
  *   {
  *     id: string,
@@ -20,17 +20,15 @@ const API_URL =
 export const getAllStates = async () => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.get(`${API_URL}/inventory/state`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllStates:",
+      "Error in getAllStates:",
       error.response?.data || error.message
     );
     return [];
@@ -38,12 +36,12 @@ export const getAllStates = async () => {
 };
 
 /**
- * Crear un nuevo estado.
- * Envia: Header con token JWT y body con:
+ * Create a new state.
+ * Sends: Header with JWT token and body with:
  * {
  *   name: string
  * }
- * Recibe: Objeto con el estado creado:
+ * Receives: Object with the created state:
  * {
  *   id: string,
  *   name: string
@@ -52,7 +50,6 @@ export const getAllStates = async () => {
 export const createState = async (stateData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.post(
       `${API_URL}/inventory/state`,
       stateData,
@@ -62,11 +59,10 @@ export const createState = async (stateData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createState:",
+      "Error in createState:",
       error.response?.data || error.message
     );
     throw error;
@@ -74,12 +70,12 @@ export const createState = async (stateData) => {
 };
 
 /**
- * Editar un estado existente.
- * Envia: Header con token JWT y body con:
+ * Edit an existing state.
+ * Sends: Header with JWT token and body with:
  * {
  *   name: string
  * }
- * Recibe: Objeto con el estado actualizado:
+ * Receives: Object with the updated state:
  * {
  *   id: string,
  *   name: string
@@ -88,7 +84,6 @@ export const createState = async (stateData) => {
 export const updateState = async (id, stateData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.put(
       `${API_URL}/inventory/state/${id}`,
       stateData,
@@ -98,11 +93,10 @@ export const updateState = async (id, stateData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updateState:",
+      "Error in updateState:",
       error.response?.data || error.message
     );
     throw error;
@@ -110,24 +104,22 @@ export const updateState = async (id, stateData) => {
 };
 
 /**
- * Eliminar un estado.
- * Envia: Header con token JWT.
- * Recibe: Objeto con confirmación de eliminación.
+ * Delete a state.
+ * Sends: Header with JWT token.
+ * Receives: Object with deletion confirmation.
  */
 export const deleteState = async (id) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.delete(`${API_URL}/inventory/state/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deleteState:",
+      "Error in deleteState:",
       error.response?.data || error.message
     );
     throw error;

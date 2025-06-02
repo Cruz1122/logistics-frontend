@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todos los permisos.
- * Envia: Header con token JWT.
- * Recibe: Array de permisos con la siguiente estructura:
+ * Get all permissions.
+ * Sends: Header with JWT token.
+ * Receives: Array of permissions with the following structure:
  * [
  *   {
  *     id: string,
@@ -21,7 +21,6 @@ const API_URL =
 export const getAllPermissions = async () => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.get(
       `${API_URL}/auth/permissions/permissions`,
       {
@@ -30,11 +29,10 @@ export const getAllPermissions = async () => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllPermissions:",
+      "Error in getAllPermissions:",
       error.response?.data || error.message
     );
     return [];
@@ -42,14 +40,14 @@ export const getAllPermissions = async () => {
 };
 
 /**
- * Crear un nuevo permiso.
- * Envia en el body:
+ * Create a new permission.
+ * Sends in the body:
  * {
  *   name: string,
  *   description: string
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
@@ -59,7 +57,6 @@ export const getAllPermissions = async () => {
 export const createPermission = async (permissionData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.post(
       `${API_URL}/auth/permissions`,
       permissionData,
@@ -69,11 +66,10 @@ export const createPermission = async (permissionData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createPermission:",
+      "Error in createPermission:",
       error.response?.data || error.message
     );
     throw error;
@@ -81,15 +77,15 @@ export const createPermission = async (permissionData) => {
 };
 
 /**
- * Editar un permiso existente.
- * Envia:
- *   id: string (en la URL),
+ * Edit an existing permission.
+ * Sends:
+ *   id: string (in the URL),
  *   body: {
  *     name?: string,
  *     description?: string
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
@@ -99,7 +95,6 @@ export const createPermission = async (permissionData) => {
 export const updatePermission = async (id, permissionData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.put(
       `${API_URL}/auth/permissions/${id}`,
       permissionData,
@@ -109,11 +104,10 @@ export const updatePermission = async (id, permissionData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updatePermission:",
+      "Error in updatePermission:",
       error.response?.data || error.message
     );
     throw error;
@@ -121,11 +115,11 @@ export const updatePermission = async (id, permissionData) => {
 };
 
 /**
- * Eliminar un permiso por su ID.
- * Envia:
- *   id: string (en la URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Delete a permission by its ID.
+ * Sends:
+ *   id: string (in the URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -133,17 +127,15 @@ export const updatePermission = async (id, permissionData) => {
 export const deletePermission = async (id) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.delete(`${API_URL}/auth/permissions/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deletePermission:",
+      "Error in deletePermission:",
       error.response?.data || error.message
     );
     throw error;

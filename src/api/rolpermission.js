@@ -6,19 +6,19 @@ const API_URL =
 
 
 /**
- * Obtener todas las relaciones rol-permiso.
- * Envia: Header con token JWT.
- * Recibe: Array con estructura:
+ * Get all role-permission relations.
+ * Sends: Header with JWT token.
+ * Receives: Array with structure:
  * [
  *   {
  *     id: string,
  *     roleId: string,
  *     permissionId: string,
- *     listar: boolean,
- *     eliminar: boolean,
- *     crear: boolean,
- *     editar: boolean,
- *     descargar: boolean
+ *     list: boolean,
+ *     delete: boolean,
+ *     create: boolean,
+ *     edit: boolean,
+ *     download: boolean
  *   },
  *   ...
  * ]
@@ -26,7 +26,6 @@ const API_URL =
 export const getAllRolPermissions = async () => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.get(
       `${API_URL}/auth/role-permissions/role-permissions`,
       {
@@ -35,11 +34,10 @@ export const getAllRolPermissions = async () => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllRolPermissions:",
+      "Error in getAllRolPermissions:",
       error.response?.data || error.message
     );
     return [];
@@ -47,33 +45,32 @@ export const getAllRolPermissions = async () => {
 };
 
 /**
- * Crear una nueva relación rol-permiso.
- * Envia: Header con token JWT y body con:
+ * Create a new role-permission relation.
+ * Sends: Header with JWT token and body with:
  * {
  *   roleId: string,
  *   permissionId: string,
- *   listar: boolean,
- *   eliminar: boolean,
- *   crear: boolean,
- *   editar: boolean,
- *   descargar: boolean
+ *   list: boolean,
+ *   delete: boolean,
+ *   create: boolean,
+ *   edit: boolean,
+ *   download: boolean
  * }
- * Recibe: Objeto con la relación creada:
+ * Receives: Object with the created relation:
  * {
  *   id: string,
  *   roleId: string,
  *   permissionId: string,
- *   listar: boolean,
- *   eliminar: boolean,
- *   crear: boolean,
- *   editar: boolean,
- *   descargar: boolean
+ *   list: boolean,
+ *   delete: boolean,
+ *   create: boolean,
+ *   edit: boolean,
+ *   download: boolean
  * }
  */
 export const createRolPermission = async (rolPermissionData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.post(
       `${API_URL}/auth/role-permissions`,
       rolPermissionData,
@@ -83,11 +80,10 @@ export const createRolPermission = async (rolPermissionData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createRolPermission:",
+      "Error in createRolPermission:",
       error.response?.data || error.message
     );
     throw error;
@@ -95,33 +91,32 @@ export const createRolPermission = async (rolPermissionData) => {
 };
 
 /**
- * Editar una relación rol-permiso existente.
- * Envia: Header con token JWT y body con datos actualizados:
+ * Edit an existing role-permission relation.
+ * Sends: Header with JWT token and body with updated data:
  * {
  *   roleId?: string,
  *   permissionId?: string,
- *   listar?: boolean,
- *   eliminar?: boolean,
- *   crear?: boolean,
- *   editar?: boolean,
- *   descargar?: boolean
+ *   list?: boolean,
+ *   delete?: boolean,
+ *   create?: boolean,
+ *   edit?: boolean,
+ *   download?: boolean
  * }
- * Recibe: Objeto con la relación actualizada:
+ * Receives: Object with the updated relation:
  * {
  *   id: string,
  *   roleId: string,
  *   permissionId: string,
- *   listar: boolean,
- *   eliminar: boolean,
- *   crear: boolean,
- *   editar: boolean,
- *   descargar: boolean
+ *   list: boolean,
+ *   delete: boolean,
+ *   create: boolean,
+ *   edit: boolean,
+ *   download: boolean
  * }
  */
 export const updateRolPermission = async (id, rolPermissionData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.put(
       `${API_URL}/auth/role-permissions/${id}`,
       rolPermissionData,
@@ -131,11 +126,10 @@ export const updateRolPermission = async (id, rolPermissionData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updateRolPermission:",
+      "Error in updateRolPermission:",
       error.response?.data || error.message
     );
     throw error;
@@ -143,14 +137,13 @@ export const updateRolPermission = async (id, rolPermissionData) => {
 };
 
 /**
- * Eliminar una relación rol-permiso.
- * Envia: Header con token JWT.
- * Recibe: Objeto con confirmación de eliminación.
+ * Delete a role-permission relation.
+ * Sends: Header with JWT token.
+ * Receives: Object with deletion confirmation.
  */
 export const deleteRolPermission = async (id) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.delete(
       `${API_URL}/auth/role-permissions/${id}`,
       {
@@ -159,11 +152,10 @@ export const deleteRolPermission = async (id) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deleteRolPermission:",
+      "Error in deleteRolPermission:",
       error.response?.data || error.message
     );
     throw error;

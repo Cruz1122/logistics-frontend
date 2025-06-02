@@ -4,14 +4,13 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
-
 /**
- * Obtiene todas las categorías registradas en el sistema.
- * Envia: Header con token JWT.
- * Recibe: Array de objetos categoría.
- * Ejemplo de respuesta:
+ * Gets all categories registered in the system.
+ * Sends: Header with JWT token.
+ * Receives: Array of category objects.
+ * Example response:
  * [
- *   { id: "123", name: "Electrónica" },
+ *   { id: "123", name: "Electronics" },
  *   ...
  * ]
  */
@@ -28,7 +27,7 @@ export const getAllCategories = async () => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllCategories:",
+      "Error in getAllCategories:",
       error.response?.data || error.message
     );
     return [];
@@ -36,13 +35,13 @@ export const getAllCategories = async () => {
 };
 
 /**
- * Crea una nueva categoría.
- * Envia:
+ * Creates a new category.
+ * Sends:
  * {
  *   name: string
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
@@ -65,7 +64,7 @@ export const createCategory = async (categoryData) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createCategory:",
+      "Error in createCategory:",
       error.response?.data || error.message
     );
     throw error;
@@ -73,14 +72,14 @@ export const createCategory = async (categoryData) => {
 };
 
 /**
- * Actualiza una categoría existente por ID.
- * Envia:
- *   id: string (como parte de la URL),
+ * Updates an existing category by ID.
+ * Sends:
+ *   id: string (as part of the URL),
  *   body: {
  *     name: string
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   name: string,
@@ -103,7 +102,7 @@ export const updateCategory = async (id, categoryData) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updateCategory:",
+      "Error in updateCategory:",
       error.response?.data || error.message
     );
     throw error;
@@ -111,11 +110,11 @@ export const updateCategory = async (id, categoryData) => {
 };
 
 /**
- * Elimina una categoría por ID.
- * Envia:
- *   id: string (como parte de la URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Deletes a category by ID.
+ * Sends:
+ *   id: string (as part of the URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -133,7 +132,7 @@ export const deleteCategory = async (id) => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deleteCategory:",
+      "Error in deleteCategory:",
       error.response?.data || error.message
     );
     throw error;

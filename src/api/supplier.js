@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todos los suppliers.
- * Envia: Header con token JWT.
- * Recibe: Array con estructura:
+ * Get all suppliers.
+ * Sends: Header with JWT token.
+ * Receives: Array with structure:
  * [
  *   {
  *     id: string,
@@ -22,17 +22,15 @@ const API_URL =
 export const getAllSuppliers = async () => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.get(`${API_URL}/inventory/supplier`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllSuppliers:",
+      "Error in getAllSuppliers:",
       error.response?.data || error.message
     );
     return [];
@@ -40,14 +38,14 @@ export const getAllSuppliers = async () => {
 };
 
 /**
- * Crear un nuevo supplier.
- * Envia: Header con token JWT y body con:
+ * Create a new supplier.
+ * Sends: Header with JWT token and body with:
  * {
  *   name: string,
  *   phone: string,
  *   email: string
  * }
- * Recibe: Objeto con el supplier creado:
+ * Receives: Object with the created supplier:
  * {
  *   id: string,
  *   name: string,
@@ -58,7 +56,6 @@ export const getAllSuppliers = async () => {
 export const createSupplier = async (supplierData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.post(
       `${API_URL}/inventory/supplier`,
       supplierData,
@@ -68,11 +65,10 @@ export const createSupplier = async (supplierData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en createSupplier:",
+      "Error in createSupplier:",
       error.response?.data || error.message
     );
     throw error;
@@ -80,14 +76,14 @@ export const createSupplier = async (supplierData) => {
 };
 
 /**
- * Editar un supplier existente.
- * Envia: Header con token JWT y body con:
+ * Edit an existing supplier.
+ * Sends: Header with JWT token and body with:
  * {
  *   name: string,
  *   phone: string,
  *   email: string
  * }
- * Recibe: Objeto con el supplier actualizado:
+ * Receives: Object with the updated supplier:
  * {
  *   id: string,
  *   name: string,
@@ -98,7 +94,6 @@ export const createSupplier = async (supplierData) => {
 export const updateSupplier = async (id, supplierData) => {
   try {
     const token = localStorage.getItem("token");
-
     const response = await axios.put(
       `${API_URL}/inventory/supplier/${id}`,
       supplierData,
@@ -108,11 +103,10 @@ export const updateSupplier = async (id, supplierData) => {
         },
       }
     );
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en updateSupplier:",
+      "Error in updateSupplier:",
       error.response?.data || error.message
     );
     throw error;
@@ -120,24 +114,22 @@ export const updateSupplier = async (id, supplierData) => {
 };
 
 /**
- * Eliminar un supplier.
- * Envia: Header con token JWT.
- * Recibe: Objeto con confirmación de eliminación.
+ * Delete a supplier.
+ * Sends: Header with JWT token.
+ * Receives: Object with deletion confirmation.
  */
 export const deleteSupplier = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    
     const response = await axios.delete(`${API_URL}/inventory/supplier/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     console.error(
-      "Error en deleteSupplier:",
+      "Error in deleteSupplier:",
       error.response?.data || error.message
     );
     throw error;

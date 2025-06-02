@@ -6,9 +6,9 @@ const API_URL =
 
 
 /**
- * Obtener todos los ProductSuppliers.
- * Envia: Header con token JWT.
- * Recibe: Array con estructura:
+ * Get all ProductSuppliers.
+ * Sends: Header with JWT token.
+ * Receives: Array with structure:
  * [
  *   {
  *     id: string,
@@ -26,20 +26,20 @@ export const getAllProductSuppliers = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en getAllProductSuppliers:", error.response?.data || error.message);
+    console.error("Error in getAllProductSuppliers:", error.response?.data || error.message);
     return [];
   }
 };
 
 /**
- * Crear un nuevo ProductSupplier.
- * Envia en el body:
+ * Create a new ProductSupplier.
+ * Sends in the body:
  * {
  *   productId: string,
  *   supplierId: string
  * }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   productId: string,
@@ -54,21 +54,21 @@ export const createProductSupplier = async (productSupplierData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en createProductSupplier:", error.response?.data || error.message);
+    console.error("Error in createProductSupplier:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Actualizar un ProductSupplier existente.
- * Envia:
- *   id: string (en la URL),
+ * Update an existing ProductSupplier.
+ * Sends:
+ *   id: string (in the URL),
  *   body: {
  *     productId?: string,
  *     supplierId?: string
  *   }
- * Header: Authorization con token JWT.
- * Recibe:
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   id: string,
  *   productId: string,
@@ -83,17 +83,17 @@ export const updateProductSupplier = async (id, productSupplierData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en updateProductSupplier:", error.response?.data || error.message);
+    console.error("Error in updateProductSupplier:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Eliminar un ProductSupplier por su ID.
- * Envia:
- *   id: string (en la URL)
- * Header: Authorization con token JWT.
- * Recibe:
+ * Delete a ProductSupplier by its ID.
+ * Sends:
+ *   id: string (in the URL)
+ * Header: Authorization with JWT token.
+ * Receives:
  * {
  *   message: string
  * }
@@ -106,7 +106,7 @@ export const deleteProductSupplier = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en deleteProductSupplier:", error.response?.data || error.message);
+    console.error("Error in deleteProductSupplier:", error.response?.data || error.message);
     throw error;
   }
 };

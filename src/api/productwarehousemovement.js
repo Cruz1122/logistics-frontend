@@ -6,7 +6,7 @@ const API_URL =
 
 
 
-// Obtener todos los movimientos de productos en almacenes
+// Get all product movements in warehouses
 export const getAllProductWarehouseMovements = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -16,7 +16,7 @@ export const getAllProductWarehouseMovements = async () => {
     return response.data;
   } catch (error) {
     console.error(
-      "Error en getAllProductWarehouseMovements:",
+      "Error in getAllProductWarehouseMovements:",
       error.response?.data || error.message
     );
     return [];

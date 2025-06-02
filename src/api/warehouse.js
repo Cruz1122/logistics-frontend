@@ -6,8 +6,8 @@ const API_URL =
 
 
 /**
- * Obtener todos los almacenes.
- * Retorna un array con objetos que tienen:
+ * Get all warehouses.
+ * Returns an array of objects with:
  * {
  *   id: string,
  *   cityId: string,
@@ -29,14 +29,14 @@ export const getAllWarehouses = async () => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en getAllWarehouses:", error.response?.data || error.message);
+    console.error("Error in getAllWarehouses:", error.response?.data || error.message);
     return [];
   }
 };
 
 /**
- * Crear un nuevo almacén.
- * warehouseData debe contener:
+ * Create a new warehouse.
+ * warehouseData must contain:
  * {
  *   cityId: string,
  *   managerId: string,
@@ -48,7 +48,7 @@ export const getAllWarehouses = async () => {
  *   capacityM2: number,
  *   status: string
  * }
- * Retorna el objeto almacén creado.
+ * Returns the created warehouse object.
  */
 export const createWarehouse = async (warehouseData) => {
   try {
@@ -58,16 +58,16 @@ export const createWarehouse = async (warehouseData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en createWarehouse:", error.response?.data || error.message);
+    console.error("Error in createWarehouse:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Actualizar un almacén existente.
- * id: id del almacén a actualizar.
- * warehouseData con los campos para actualizar (los mismos que en create).
- * Retorna el objeto almacén actualizado.
+ * Update an existing warehouse.
+ * id: id of the warehouse to update.
+ * warehouseData with the fields to update (same as in create).
+ * Returns the updated warehouse object.
  */
 export const updateWarehouse = async (id, warehouseData) => {
   try {
@@ -77,14 +77,14 @@ export const updateWarehouse = async (id, warehouseData) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en updateWarehouse:", error.response?.data || error.message);
+    console.error("Error in updateWarehouse:", error.response?.data || error.message);
     throw error;
   }
 };
 
 /**
- * Eliminar un almacén por id.
- * Retorna un objeto de confirmación.
+ * Delete a warehouse by id.
+ * Returns a confirmation object.
  */
 export const deleteWarehouse = async (id) => {
   try {
@@ -94,7 +94,7 @@ export const deleteWarehouse = async (id) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error en deleteWarehouse:", error.response?.data || error.message);
+    console.error("Error in deleteWarehouse:", error.response?.data || error.message);
     throw error;
   }
 };
