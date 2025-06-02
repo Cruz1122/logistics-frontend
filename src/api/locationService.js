@@ -5,7 +5,7 @@ const API_URL =
   import.meta.env.VITE_GATEWAY_URL ||
   "https://logistics-backend-n3be.onrender.com";
 
-// Enviar ubicación desde el repartidor
+// Send location update for a delivery person
 export const sendLocationUpdate = async (deliveryPersonId, lat, lng) => {
   const token = localStorage.getItem("token");
   try {
@@ -25,16 +25,16 @@ export const sendLocationUpdate = async (deliveryPersonId, lat, lng) => {
         },
       }
     );
-    console.log("Ubicación enviada");
+    console.log("Location sent");
   } catch (error) {
     console.error(
-      "Error enviando ubicación:",
+      "Error sending location:",
       error.response?.data || error.message
     );
   }
 };
 
-// Obtener información de la orden
+// Get information about an order by its tracking code
 export const getInfoOrder = async (code) => {
   const token = localStorage.getItem("token");
   try {
@@ -48,26 +48,27 @@ export const getInfoOrder = async (code) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error al obtener la información de la orden:", error);
+    console.error("Error fetching order information:", error);
     throw error;
   }
 };
 
-// Obtener coords dada una dirección
+// Get coordinates by address
 export const getCoordsByAddress = async (address) => {
   try {
-    const encodedAddress = encodeURIComponent(address.trim());
+    const encodedAddress = encodeURIComponent(address.trim()); // Encode the address to handle special characters
 
     const response = await axios.get(
       `${API_URL}/orders/orders/coords/${encodedAddress}`
     );
     return response.data;
   } catch (error) {
-    console.error("Error al obtener las coordenadas de la dirección:", error);
+    console.error("Error fetching coordinates by address:", error);
     throw error;
   }
 };
 
+// Get the latest location of a delivery person
 export const getLatestLocation = async (deliveryPersonId) => {
   const token = localStorage.getItem("token");
   try {
@@ -80,6 +81,9 @@ export const getLatestLocation = async (deliveryPersonId) => {
       }
     );
     const { location } = response.data || {};
+
+    // Check if the location is valid and has coordinates
+    // Ensure that location is an object and has the coordinates array
     if (
       location &&
       Array.isArray(location.coordinates) &&
@@ -92,7 +96,7 @@ export const getLatestLocation = async (deliveryPersonId) => {
     }
     return null;
   } catch (error) {
-    console.error("Error al obtener la última ubicación:", error);
+    console.error("Error fetching latest location:", error);
     throw error;
   }
 };
