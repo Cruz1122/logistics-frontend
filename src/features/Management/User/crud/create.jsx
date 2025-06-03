@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./modal.css";
 import { toast } from "react-toastify";
+import { getAllCities } from "../../../../api/city";
 
 const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
+  const [cities, setCities] = useState([]);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -10,6 +12,7 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
     lastName: "",
     phone: "",
     role: "",
+    cityId: "",
   });
 
   useEffect(() => {
@@ -21,9 +24,23 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
         lastName: "",
         phone: "",
         role: "",
+        cityId: "",
       });
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const data = await getAllCities();
+        setCities(data.sort((a, b) => a.name.localeCompare(b.name)));
+      } catch (err) {
+        toast.error("Error loading cities");
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -131,6 +148,27 @@ const CreateUserModal = ({ onClose, onCreate, isOpen }) => {
               <option value="Dispatcher">Dispatcher</option>
               <option value="Manager">Manager</option>
               <option value="Guest">Guest</option>
+            </select>
+          </label>
+        </div>
+
+        <div className="form-field">
+          <label>
+            Select City:
+            <select
+              name="cityId"
+              value={formData.cityId}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled hidden>
+                Select City
+              </option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                  {city.name}
+                </option>
+              ))}
             </select>
           </label>
         </div>

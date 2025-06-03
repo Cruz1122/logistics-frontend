@@ -186,7 +186,8 @@ export const deleteUser = async (userId) => {
 export const createUser = async (userData) => {
   try {
     const token = localStorage.getItem("token");
-
+    console.log(userData);
+    
     const response = await axios.post(
       `${API_URL}/auth/users`,
       {
@@ -196,6 +197,7 @@ export const createUser = async (userData) => {
         password: userData.password,
         phone: userData.phone,
         roleId: userData.roleId,
+        cityId: userData.cityId
       },
       {
         headers: {
