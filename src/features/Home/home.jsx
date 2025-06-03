@@ -4,7 +4,12 @@ import { FaArrowRight, FaArrowUp, FaShippingFast } from "react-icons/fa";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import "./home.css";
-import { getInfoOrder, getCoordsByAddress, getLatestLocation } from "../../api/locationService";
+import {
+  getInfoOrder,
+  getCoordsByAddress,
+  getLatestLocation,
+} from "../../api/locationService";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -14,40 +19,49 @@ const Home = () => {
 
   // Estado para guardar el código ingresado
   const [trackingCode, setTrackingCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleTrackClick = async () => {
     if (trackingCode.trim() === "") {
-      alert("Por favor ingresa un código de rastreo");
+      toast.error("Por favor ingresa un código de rastreo");
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const order = await getInfoOrder(trackingCode);
-
       const deliveryId = order?.deliveryPerson?.id;
 
       if (!deliveryId) {
-        alert("No se encontró un repartidor para este código de rastreo.");
+        toast.error(
+          "No se encontró un repartidor para este código de rastreo."
+        );
         return;
       }
-      const address = order?.deliveryAddress;
 
+      const address = order?.deliveryAddress;
       const addressCoordinates = await getCoordsByAddress(address);
       if (!addressCoordinates) {
-        alert("No se pudieron obtener las coordenadas de la dirección.");
+        toast.error("No se pudieron obtener las coordenadas de la dirección.");
         return;
       }
 
       const latestLocation = await getLatestLocation(deliveryId);
 
       if (order) {
-        navigate(`/track/${deliveryId}`, { state: { fromFlow: true, addressCoordinates, latestLocation } }); // Navega al mapa
+        toast.success("Redirigiendo al mapa...");
+        navigate(`/track/${deliveryId}`, {
+          state: { fromFlow: true, addressCoordinates, latestLocation },
+        });
       } else {
-        alert("Código de rastreo no válido o no encontrado.");
+        toast.error("Código de rastreo no válido o no encontrado.");
       }
     } catch (error) {
       console.error("Error al obtener la orden:", error);
-      alert("Ocurrió un error al rastrear el pedido.");
+      toast.error("Ocurrió un error al rastrear el pedido.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -102,8 +116,12 @@ const Home = () => {
               value={trackingCode}
               onChange={(e) => setTrackingCode(e.target.value)}
             />
-            <button className="main-button" onClick={handleTrackClick}>
-              Track
+            <button
+              className="main-button"
+              onClick={handleTrackClick}
+              disabled={isLoading}
+            >
+              {isLoading ? "Tracking..." : "Track"}
             </button>
           </div>
         </div>
