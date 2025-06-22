@@ -1,0 +1,134 @@
+@import "../../../styles/colors.css"; /* Asegúrate de tener la variable --text-color aquí */
+
+.forgot-container {
+  display: flex;
+  height: 82.4vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.forgot-image {
+  flex: 1;
+  position: relative;
+  height: 100%;
+}
+
+.forgot-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.forgot-form {
+  flex: 1.2;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.forgot-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 60rem;
+  padding: 20px;
+  box-sizing: border-box;
+  height: auto;
+}
+
+.forgot-form h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.forgot-form p {
+  margin-bottom: 30px;
+  color: #4a5568;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"] {
+  padding: 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 1rem;
+  background-color: white;
+  color: #333;
+}
+
+input:focus {
+  border-color: #1e3a8a;
+  outline: none;
+}
+
+.forgot-button {
+  padding: 12px;
+  background: linear-gradient(
+    to right,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.forgot-button:hover {
+  opacity: 0.9;
+}
+
+.vertical-divider {
+  width: 2px;
+  background-color: #2975bc;
+  height: 100%;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .forgot-form {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .forgot-container {
+    flex-direction: column;
+  }
+
+  .vertical-divider {
+    display: none;
+  }
+
+  .forgot-image {
+    display: none;
+  }
+
+  .forgot-form {
+    padding: 20px;
+    max-width: 100%;
+  }
+
+  .forgot-form form {
+    padding: 10px;
+  }
+}

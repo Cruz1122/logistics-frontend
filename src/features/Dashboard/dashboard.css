@@ -1,0 +1,122 @@
+.dashboard-container {
+  display: grid;
+  place-items: center; /* Centra horizontal y verticalmente */
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.cards-grid {
+  display: flex;
+  flex-wrap: wrap;            /* Permite bajar filas */
+  justify-content: center;    /* Centra horizontalmente */
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;             /* Centra el contenedor en la página */
+}
+
+.dashboard-card {
+  flex: 1 1 22%; /* Crece, encoge, base ~22% para 4 columnas con gap */
+  max-width: 300px;  /* Limita el ancho máximo */
+  min-width: 250px;  /* Para evitar que se hagan demasiado pequeñas */
+  box-sizing: border-box;
+  height: 300px; /* Puedes ajustar según tu necesidad */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dashboard-card h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #1a202c;
+  word-break: break-word;
+  height: 40px; /* altura fija para el título */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Medianos: 2 columnas */
+@media (max-width: 1024px) {
+  .dashboard-card {
+    flex: 1 1 45%; /* base 45% para 2 columnas con gap */
+    max-width: none;
+  }
+}
+
+/* Pequeños: 1 columna */
+@media (max-width: 640px) {
+  .dashboard-card {
+    flex: 1 1 90%; /* base 90% para 1 columna */
+    max-width: none;
+  }
+}
+
+.dashboard-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  width: 100%; /* Asegura que las tarjetas ocupen todo el ancho disponible */
+  max-width: 300px; /* Limita el tamaño máximo de las tarjetas */
+}
+
+.dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Aumenta la sombra para un efecto más notorio */
+}
+
+.card-icon {
+  margin-bottom: 12px;
+  color: black;
+  transition: color 0.3s ease;
+}
+
+.dashboard-card:hover .card-icon {
+  color: var(--primary-color, #4f46e5);
+}
+
+.dashboard-card p {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin-bottom: 16px;
+  word-break: break-word;
+  height: 60px; /* altura fija para 2 o 3 líneas */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* número de líneas visibles */
+  -webkit-box-orient: vertical;
+}
+
+.card-button {
+  background: linear-gradient(
+    to right,
+    var(--primary-color, #4f46e5),
+    var(--secondary-color, #6366f1)
+  );
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px; /* Tamaño del botón */
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  margin-top: auto; /* Empuja el botón hacia abajo */
+}
+
+.card-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05); /* Efecto de escala en hover */
+}
+
+.card-button:focus {
+  outline: none; /* Eliminar borde de enfoque */
+}

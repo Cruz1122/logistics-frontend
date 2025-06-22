@@ -1,0 +1,186 @@
+/* Fuentes y contenedor general */
+.account-page {
+  max-width: 520px;
+  background-color: #fff;
+  border-radius: 14px;
+  padding: 2.5rem 3rem;
+  box-shadow: 0 0 25px rgba(0,0,0,0.12);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #2e3a59;
+  user-select: none;
+}
+
+.account-header {
+  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 2.2rem;
+  color: #1a2238;
+  letter-spacing: 0.02em;
+}
+
+/* Tarjeta de información del usuario */
+.user-info-card {
+  background-color: #f8faff;
+  border-radius: 14px;
+  padding: 1.8rem 2.5rem;
+  box-shadow: inset 0 0 10px rgba(80,100,150,0.08);
+  margin-bottom: 2rem;
+}
+
+.user-info-header {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.user-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4a90e2;
+  box-shadow: 0 0 8px rgba(74,144,226,0.4);
+}
+
+.user-name-role h2 {
+  font-size: 1.9rem;
+  margin: 0;
+  color: #253858;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.user-name-role p {
+  font-size: 1.1rem;
+  color: #556080;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Detalles adicionales */
+.user-info-details {
+  border-top: 1px solid #d9e2ec;
+  padding-top: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.user-info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334e68;
+}
+
+.label {
+  color: #627d98;
+}
+
+/* Botones generales */
+.buttons-container {
+  display: flex;
+  gap: 1.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.account-button {
+  flex: 1 1 45%;
+  padding: 0.65rem 0;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.05);
+  user-select: none;
+}
+
+.logout-button {
+  background: linear-gradient(135deg, #fa3131 0%, #f55555 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(255, 56, 42, 0.6);
+  margin: 0;
+}
+
+.logout-button:hover {
+  background: linear-gradient(135deg, #ff3737 0%, #ff0000 100%);
+  box-shadow: 0 6px 18px rgba(251, 13, 13, 0.8);
+}
+
+.reset-button {
+  box-shadow: 0 4px 14px rgb(59 130 246 / 0.6);
+  margin: 0;
+}
+
+.reset-button:hover {
+  box-shadow: 0 6px 18px rgb(37 99 235 / 0.8);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.38);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 2.4rem 3rem;
+  border-radius: 16px;
+  max-width: 360px;
+  width: 90%;
+  box-shadow: 0 0 30px rgb(0 0 0 / 0.15);
+  text-align: center;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.modal-content h2 {
+  font-size: 1.9rem;
+  margin-bottom: 1rem;
+  color: #e94e3a;
+}
+
+.modal-content p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #3c4a69;
+  font-weight: 500;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.8rem;
+}
+
+.modal-button.cancel {
+  background-color: #cbd5e1;
+  color: #ffffff;
+  border: none;
+}
+
+.modal-button.cancel:hover {
+  background-color: #94a3b8;
+}
+
+.modal-button.confirm {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+}
+
+.modal-button.confirm:hover {
+  background-color: #dc2626;
+}

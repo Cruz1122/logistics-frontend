@@ -1,0 +1,36 @@
+.inactive-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.inactive-container h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.inactive-container p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+}
+
+.inactive-icon {
+  max-width: 150px;
+  width: 80%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .inactive-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .inactive-container p {
+    font-size: 1rem;
+  }
+
+  .inactive-icon {
+    max-width: 120px;
+  }
+    
+}
